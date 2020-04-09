@@ -46,16 +46,121 @@ class prixcarburants extends eqLogic {
       $d = 2 * atan2(sqrt($a), sqrt(1 - $a));
       return round(($earth_radius * $d)/1000);
       }
-
-
+  
+  		
+	  public static function custom_sort($a,$b) {
+        return $a['prix']>$b['prix'];
+      }
+  
+  	  public static function MAJVehicules() {
     
+        	$doc = new DOMDocument;
+            $reader = XMLReader::open(__DIR__.'/PrixCarburants_instantane.xml');
+        
+            foreach (self::byType('prixcarburants') as $unvehicule) {
+              
+                if ($unvehicule->getIsEnable() == 1) {
+                  	
+                  $maselection = array();
+                  $nom = $unvehicule->getName();
+                  $typecarburant = $unvehicule->getConfiguration('typecarburant','');
+                  $idx = 0;
+                  
+                  $maselection = array();
+                  $stack = array();
+                  $rayon = $unvehicule->getConfiguration('rayon','30');
+                  $malat = $unvehicule->getConfiguration('latitude','');
+                  $malng = $unvehicule->getConfiguration('longitude','');
+                  $station1 = $unvehicule->getConfiguration('station1','');
+                  if ($station1 != ''){
+                  	  $rayon = 9999999;
+                  }
+                    
+
+                            
+                  while($reader->read()) {
+                    if ($reader->nodeType == XMLReader::ELEMENT && $reader->name == 'pdv') {
+
+                      $lat = $reader->getAttribute('latitude')/100000;
+                      $lng = $reader->getAttribute('longitude')/100000;
+                      $mastationid = $reader->getAttribute('id');
+
+                      $dist = prixcarburants::distance($malat,$malng,$lat,$lng);
+                      if ($dist < $rayon) { //On enregistrer uniquement ceux qui sont a proximitées
+                        
+                        $unestation = simplexml_import_dom($doc->importNode($reader->expand(), true));
+
+                        foreach ($unestation->prix as $prix){
+                          
+                          if ($prix->attributes()->nom == $typecarburant){ // FILTRER SELON CARBURANTS
+                            
+                            if ($station1 != '') {
+                             	if ($mastationid != $station1) continue; 
+                            }
+                              
+                            $prixlitre = $prix->attributes()->valeur.'';
+                            $maj = $prix->attributes()->maj.'';
+                            
+                            $maselection[$idx]['adresse'] = $unestation->adresse.', '.$unestation->ville;
+                            $maselection[$idx]['prix'] = $prixlitre;
+                            $maselection[$idx]['maj']  = $maj;
+                            $maselection[$idx]['distance'] = $dist;
+                            $maselection[$idx]['id'] = $mastationid;
+                            $idx++;
+                          }
+                        }
+
+                      }
+                    }
+                  }
+            $reader->close();
+                  
+					log::add('prixcarburants','debug',' step count selection '.count($maselection).' '.$nom);
+
+                  	usort($maselection, "prixcarburants::custom_sort");
+                  	
+                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
+                  	if ($macmd != null) $macmd->event($maselection[0]['adresse']);
+                  
+                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 Adresse');
+                  	if ($macmd != null) $macmd->event($maselection[1]['adresse']);
+                  
+                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 Adresse');
+                  	if ($macmd != null) $macmd->event($maselection[2]['adresse']);
+                  
+                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Prix');
+                  	if ($macmd != null) $macmd->event($maselection[0]['prix']);
+                  
+                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 Prix');
+                  	if ($macmd != null) $macmd->event($maselection[1]['prix']);
+                  
+                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 Prix');
+                  	if ($macmd != null) $macmd->event($maselection[2]['prix']);
+                  
+                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 MAJ');
+                  	if ($macmd != null) $macmd->event($maselection[0]['maj']);
+                  
+                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 MAJ');
+                  	if ($macmd != null) $macmd->event($maselection[1]['maj']);
+                  
+                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 MAJ');
+                  	if ($macmd != null) $macmd->event($maselection[2]['maj']);
+
+                    $unvehicule->refreshWidget();
+                }
+             
+        }
+
+      }
+
+    /*
      //* Fonction exécutée automatiquement toutes les heures par Jeedom
       public static function cronHourly() {
 			
      
        
       }
-     
+     */
 
     
      //* Fonction exécutée automatiquement tous les jours par Jeedom
@@ -63,7 +168,7 @@ class prixcarburants extends eqLogic {
 
         $filenamezip = __DIR__.'/PrixCarburants.zip';
 
-       	$current = file_get_contents("https://donnees.roulez-eco.fr/opendata/instantane");
+       	/*$current = file_get_contents("https://donnees.roulez-eco.fr/opendata/instantane");
         file_put_contents($filenamezip, $current);
         
         $zip = new ZipArchive;
@@ -73,48 +178,19 @@ class prixcarburants extends eqLogic {
           	log::add('prixcarburants','debug','prix zip ok get'.__DIR__);
           
             unlink(__DIR__.'/PrixCarburants.zip');
-
-            $doc = new DOMDocument;
-            $reader = XMLReader::open(__DIR__.'/PrixCarburants_instantane.xml');
-
-            $stack = array();
-           	$malat = 44.853026;
-            $malng = -0.294088;
-
-            while($reader->read()) {
-              if ($reader->nodeType == XMLReader::ELEMENT && $reader->name == 'pdv') {
-
-                $lat = $reader->getAttribute('latitude')/100000;
-                $lng = $reader->getAttribute('longitude')/100000;
-                $dist = prixcarburants::distance($malat,$malng,$lat,$lng);
-                
-                if ($dist < 15) {
-                  
-                  log::add('prixcarburants','debug',' '.$dist.' '.$node->ville);
-                  //Détails
-                  $node = simplexml_import_dom($doc->importNode($reader->expand(), true));
-                  $node->distance = $dist;
-                  array_push($stack, $node);
-                }
-              }
-            }
-            $reader->close();
+		*/
+            
           
-          function custom_sort($a,$b) {
-          	return $a->distance>$b->distance;
-    	}
-          
-          	usort($stack, "custom_sort");
+          	prixcarburants::MAJVehicules();
+         
 
-             log::add('prixcarburants','debug',' count '.$stack[0]->ville);
-
-        } else {
+        /*} else {
             log::add('prixcarburants','debug','prix zip nok get'.__DIR__);
-        }
+        }*/
         
        
         
-        }
+     }
                     
 
 
@@ -125,6 +201,103 @@ class prixcarburants extends eqLogic {
     }
 
     public function postInsert() {
+      
+      $mynewcolis = new prixcarburants();
+            
+      $top1adr = null;
+      $top1adr = new prixcarburantsCmd();
+      $top1adr->setName('Top 1 Adresse');
+      $top1adr->setEqLogic_id($this->getId());
+      $top1adr->setSubType('string');
+      $top1adr->setType('info');
+      $top1adr->setIsHistorized(0);
+      $top1adr->setIsVisible(1);
+      $top1adr->save();
+      
+      $top1prix = null;
+      $top1prix = new prixcarburantsCmd();
+      $top1prix->setName('Top 1 Prix');
+      $top1prix->setEqLogic_id($this->getId());
+      $top1prix->setSubType('numeric');
+      $top1prix->setType('info');
+      $top1prix->setIsHistorized(0);
+      $top1prix->setIsVisible(1);
+      $top1prix->setUnite('€/L');
+      $top1prix->save();
+      
+      $top1maj = null;
+      $top1maj = new prixcarburantsCmd();
+      $top1maj->setName('Top 1 MAJ');
+      $top1maj->setEqLogic_id($this->getId());
+      $top1maj->setSubType('string');
+      $top1maj->setType('info');
+      $top1maj->setIsHistorized(0);
+      $top1maj->setIsVisible(1);
+      $top1maj->save();
+      
+      
+      $top2adr = null;
+      $top2adr = new prixcarburantsCmd();
+      $top2adr->setName('Top 2 Adresse');
+      $top2adr->setEqLogic_id($this->getId());
+      $top2adr->setSubType('string');
+      $top2adr->setType('info');
+      $top2adr->setIsHistorized(0);
+      $top2adr->setIsVisible(1);
+      $top2adr->save();
+
+      $top2prix = null;
+      $top2prix = new prixcarburantsCmd();
+      $top2prix->setName('Top 2 Prix');
+      $top2prix->setEqLogic_id($this->getId());
+      $top2prix->setSubType('numeric');
+      $top2prix->setType('info');
+      $top2prix->setIsHistorized(0);
+      $top2prix->setIsVisible(1);
+      $top2prix->setUnite('€/L');
+      $top2prix->save();
+
+      $top2maj = null;
+      $top2maj = new prixcarburantsCmd();
+      $top2maj->setName('Top 2 MAJ');
+      $top2maj->setEqLogic_id($this->getId());
+      $top2maj->setSubType('string');
+      $top2maj->setType('info');
+      $top2maj->setIsHistorized(0);
+      $top2maj->setIsVisible(1);
+      $top2maj->save();
+      
+      $top3adr = null;
+      $top3adr = new prixcarburantsCmd();
+      $top3adr->setName('Top 3 Adresse');
+      $top3adr->setEqLogic_id($this->getId());
+      $top3adr->setSubType('string');
+      $top3adr->setType('info');
+      $top3adr->setIsHistorized(0);
+      $top3adr->setIsVisible(1);
+      $top3adr->save();
+
+      $top3prix = null;
+      $top3prix = new prixcarburantsCmd();
+      $top3prix->setName('Top 3 Prix');
+      $top3prix->setEqLogic_id($this->getId());
+      $top3prix->setSubType('numeric');
+      $top3prix->setType('info');
+      $top3prix->setIsHistorized(0);
+      $top3prix->setIsVisible(1);
+      $top3prix->setUnite('€/L');
+      $top3prix->save();
+
+      $top3maj = null;
+      $top3maj = new prixcarburantsCmd();
+      $top3maj->setName('Top 3 MAJ');
+      $top3maj->setEqLogic_id($this->getId());
+      $top3maj->setSubType('string');
+      $top3maj->setType('info');
+      $top3maj->setIsHistorized(0);
+      $top3maj->setIsVisible(1);
+      $top3maj->save();
+      
         
     }
 
@@ -133,6 +306,8 @@ class prixcarburants extends eqLogic {
     }
 
     public function postSave() {
+      
+      prixcarburants::cronDaily();
         
     }
 

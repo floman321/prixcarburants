@@ -55,7 +55,7 @@ foreach ($eqLogics as $eqLogic) {
     <form class="form-horizontal">
         <fieldset>
             <div class="form-group">
-                <label class="col-sm-3 control-label">{{Nom de l'équipement template}}</label>
+                <label class="col-sm-3 control-label">{{Nom du véhicule}}</label>
                 <div class="col-sm-3">
                     <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
                     <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement template}}"/>
@@ -98,12 +98,12 @@ foreach (jeeObject::all() as $object) {
         <div class="col-sm-3">
             <select id="sel_object" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="typecarburant">
                         <option value="">{{Aucun}}</option>
-                        <option value="Gazone">Gazole</option>';
+                        <option value="Gazole">Gazole</option>';
                         <option value="E10">SP95-E10</option>';
                         <option value="SP95">SP95</option>';
                         <option value="SP98">SP98</option>';
                         <option value="E85">E85</option>';
-                        <option value="GPL">GPL</option>';
+                        <option value="GPLc">GPL</option>';
                         ?>
                    </select>
         </div>
@@ -112,46 +112,31 @@ foreach (jeeObject::all() as $object) {
 
     
     <div class="form-group">
-                <label class="col-sm-3 control-label" >{{Station}}</label>
+                <label class="col-sm-3 control-label" >Rayon maxi (Km) : </label>
                 <div class="col-sm-3">
-                
-                <a id="bt_displayZwaveData" class="btn btn-default"><i class="fas fa-tree"></i> {{Arbre Z-Wave}}</a>
-                
-                        <?php
-                        
-                        
-                        
-                        /*
-                        	if (file_exists(__DIR__.'/PrixCarburants_instantane.xml')) {
-                                //$xml = simplexml_load_file(__DIR__.'/PrixCarburants_instantane.xml');
-                                
-                                $doc = new DOMDocument;
-                                $reader = XMLReader::open(__DIR__.'/PrixCarburants_instantane.xml');
-                                
-                                echo '<input list="pasta" data-l1key="configuration" data-l2key="typecarburant">';
-                                echo '<datalist id="pasta">';
-
-								while($reader->read()) {
-                                if ($reader->nodeType == XMLReader::ELEMENT && $reader->name == 'pdv') {
-                                		
-                                    $node = simplexml_import_dom($doc->importNode($reader->expand(), true));
-                                  	//$cp = $reader->getAttribute('ville');
-                                    $cp = strtoupper($node->ville);
-                                    
-                                      echo '<option>'. $cp . '</option>';
-                             	 }
-                                }
-                                
-                                echo '</datalist>';
-
-                              $reader->close();
+                    <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="Saisir un nombre de kilométre"/>
+           		</div>
+     </div>   
+    <div class="form-group">
+                <label class="col-sm-3 control-label" >Chercher autour de : </label>
+                <div class="col-sm-3">
+                  <a href="https://www.torop.net/coordonnees-gps.php" target="_blank">Pour obtenir vos coordonnées GPS, cliquez ici</a>
+                    <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="latitude" placeholder="par exemple 44.455"/>
+                  	<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="longitude" placeholder="par exempl -0.5555"/>
+           		</div>
+     </div>   
+                          
+      <div class="form-group">
+                <label class="col-sm-3 control-label" >OU </label>
+     </div> 
+                          
                               
-                              }
-                              */
-                          ?>
-                   </select>
-               </div>
+          <div class="form-group">
+          <label class="col-sm-3 control-label" >Vos station favorites : </label>
+          <div class="col-sm-3">
+          <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="station1" placeholder="Saisir le numero identifiant de la station"/>
            </div>
+            </div>
     
 </fieldset>
 </form>
