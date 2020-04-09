@@ -145,6 +145,17 @@ class prixcarburants extends eqLogic {
                   
                     $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 MAJ');
                   	if ($macmd != null) $macmd->event($maselection[2]['maj']);
+                  
+                  
+                  
+                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 ID');
+                  	if ($macmd != null) $macmd->event($maselection[0]['id']);
+                  
+                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 ID');
+                  	if ($macmd != null) $macmd->event($maselection[1]['id']);
+                  
+                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 ID');
+                  	if ($macmd != null) $macmd->event($maselection[2]['id']);
 
                     $unvehicule->refreshWidget();
                 }
@@ -235,6 +246,16 @@ class prixcarburants extends eqLogic {
       $top1maj->setIsVisible(1);
       $top1maj->save();
       
+      $top1id = null;
+      $top1id = new prixcarburantsCmd();
+      $top1id->setName('Top 1 ID');
+      $top1id->setEqLogic_id($this->getId());
+      $top1id->setSubType('string');
+      $top1id->setType('info');
+      $top1id->setIsHistorized(0);
+      $top1id->setIsVisible(0);
+      $top1id->save();
+      
       
       $top2adr = null;
       $top2adr = new prixcarburantsCmd();
@@ -267,6 +288,16 @@ class prixcarburants extends eqLogic {
       $top2maj->setIsVisible(1);
       $top2maj->save();
       
+      $top2id = null;
+      $top2id = new prixcarburantsCmd();
+      $top2id->setName('Top 2 ID');
+      $top2id->setEqLogic_id($this->getId());
+      $top2id->setSubType('string');
+      $top2id->setType('info');
+      $top2id->setIsHistorized(0);
+      $top2id->setIsVisible(0);
+      $top2id->save();
+      
       $top3adr = null;
       $top3adr = new prixcarburantsCmd();
       $top3adr->setName('Top 3 Adresse');
@@ -297,6 +328,17 @@ class prixcarburants extends eqLogic {
       $top3maj->setIsHistorized(0);
       $top3maj->setIsVisible(1);
       $top3maj->save();
+      
+      $top3id = null;
+      $top3id = new prixcarburantsCmd();
+      $top3id->setName('Top 3 ID');
+      $top3id->setEqLogic_id($this->getId());
+      $top3id->setSubType('string');
+      $top3id->setType('info');
+      $top3id->setIsHistorized(0);
+      $top3id->setIsVisible(0);
+      $top3id->save();
+      
       
         
     }
