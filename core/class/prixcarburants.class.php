@@ -100,7 +100,7 @@ class prixcarburants extends eqLogic {
                   $malat = $unvehicule->getConfiguration('latitude','');
                   $malng = $unvehicule->getConfiguration('longitude','');
                   $station1 = $unvehicule->getConfiguration('station1','');
-                  
+              
                   
                   while($reader->read()) {
                     if ($reader->nodeType == XMLReader::ELEMENT && $reader->name == 'pdv') {
@@ -152,59 +152,59 @@ class prixcarburants extends eqLogic {
                       usort($maselection, "prixcarburants::custom_sort");
                   	
                         $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
-                        if ($macmd != null) $macmd->event($maselection[0]['adresse']);
+                        if (is_object($macmd)) $macmd->event($maselection[0]['adresse']);
 
                         $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 Adresse');
-                        if ($macmd != null) $macmd->event($maselection[1]['adresse']);
+                        if (is_object($macmd)) $macmd->event($maselection[1]['adresse']);
 
                         $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 Adresse');
-                        if ($macmd != null) $macmd->event($maselection[2]['adresse']);
+                        if (is_object($macmd)) $macmd->event($maselection[2]['adresse']);
 
 
                         $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Prix');
-                        if ($macmd != null) $macmd->event($maselection[0]['prix']);
+                        if (is_object($macmd)) $macmd->event($maselection[0]['prix']);
 
                         $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 Prix');
-                        if ($macmd != null) $macmd->event($maselection[1]['prix']);
+                        if (is_object($macmd)) $macmd->event($maselection[1]['prix']);
 
                         $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 Prix');
-                        if ($macmd != null) $macmd->event($maselection[2]['prix']);
+                        if (is_object($macmd)) $macmd->event($maselection[2]['prix']);
 
 
                         $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 MAJ');
-                        if ($macmd != null) $macmd->event($maselection[0]['maj']);
+                        if (is_object($macmd)) $macmd->event($maselection[0]['maj']);
 
                         $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 MAJ');
-                        if ($macmd != null) $macmd->event($maselection[1]['maj']);
+                        if (is_object($macmd)) $macmd->event($maselection[1]['maj']);
 
                         $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 MAJ');
-                        if ($macmd != null) $macmd->event($maselection[2]['maj']);
+                        if (is_object($macmd)) $macmd->event($maselection[2]['maj']);
 
 
 
                         $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 ID');
-                        if ($macmd != null) $macmd->event($maselection[0]['id']);
+                        if (is_object($macmd)) $macmd->event($maselection[0]['id']);
 
                         $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 ID');
-                        if ($macmd != null) $macmd->event($maselection[1]['id']);
+                        if (is_object($macmd)) $macmd->event($maselection[1]['id']);
 
                         $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 ID');
-                        if ($macmd != null) $macmd->event($maselection[2]['id']);
+                        if (is_object($macmd)) $macmd->event($maselection[2]['id']);
                       
                       
                     }else{
 
                   		$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
-                      if($macmd != null) $macmd->event($maselection[0]['adresse']);
+                      if (is_object($macmd)) $macmd->event($maselection[0]['adresse']);
                       
                       $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Prix');
-                        if ($macmd != null) $macmd->event($maselection[0]['prix']);
+                      if (is_object($macmd)) $macmd->event($maselection[0]['prix']);
                       
                       $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 MAJ');
-                        if ($macmd != null) $macmd->event($maselection[0]['maj']);
+                      if (is_object($macmd)) $macmd->event($maselection[0]['maj']);
                       
                       $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 ID');
-                        if ($macmd != null) $macmd->event($maselection[0]['id']);
+                       if (is_object($macmd)) $macmd->event($maselection[0]['id']);
                       
                     }
 
@@ -268,6 +268,7 @@ class prixcarburants extends eqLogic {
       $top1adr->setType('info');
       $top1adr->setIsHistorized(0);
       $top1adr->setIsVisible(1);
+      $top1adr->setDisplay('showNameOndashboard',0);
       $top1adr->save();
       
       $top1prix = null;
@@ -279,6 +280,9 @@ class prixcarburants extends eqLogic {
       $top1prix->setIsHistorized(0);
       $top1prix->setIsVisible(1);
       $top1prix->setUnite('€/L');
+      $top1prix->setDisplay('showNameOndashboard',0);
+      $top1prix->setTemplate('dashboard','badge');
+      $top1prix->setTemplate('mobile','badge');
       $top1prix->save();
       
       $top1maj = null;
@@ -288,6 +292,7 @@ class prixcarburants extends eqLogic {
       $top1maj->setSubType('string');
       $top1maj->setType('info');
       $top1maj->setIsHistorized(0);
+      $top1maj->setDisplay('showNameOndashboard',0);
       $top1maj->setIsVisible(1);
       $top1maj->save();
       
@@ -309,6 +314,7 @@ class prixcarburants extends eqLogic {
       $top2adr->setSubType('string');
       $top2adr->setType('info');
       $top2adr->setIsHistorized(0);
+      $top2adr->setDisplay('showNameOndashboard',0);
       $top2adr->setIsVisible(1);
       $top2adr->save();
 
@@ -320,7 +326,10 @@ class prixcarburants extends eqLogic {
       $top2prix->setType('info');
       $top2prix->setIsHistorized(0);
       $top2prix->setIsVisible(1);
+      $top2prix->setDisplay('showNameOndashboard',0);
       $top2prix->setUnite('€/L');
+      $top2prix->setTemplate('dashboard','badge');
+      $top2prix->setTemplate('mobile','badge');
       $top2prix->save();
 
       $top2maj = null;
@@ -331,6 +340,7 @@ class prixcarburants extends eqLogic {
       $top2maj->setType('info');
       $top2maj->setIsHistorized(0);
       $top2maj->setIsVisible(1);
+      $top2maj->setDisplay('showNameOndashboard',0);
       $top2maj->save();
       
       $top2id = null;
@@ -351,6 +361,7 @@ class prixcarburants extends eqLogic {
       $top3adr->setType('info');
       $top3adr->setIsHistorized(0);
       $top3adr->setIsVisible(1);
+      $top3adr->setDisplay('showNameOndashboard',0);
       $top3adr->save();
 
       $top3prix = null;
@@ -361,6 +372,9 @@ class prixcarburants extends eqLogic {
       $top3prix->setType('info');
       $top3prix->setIsHistorized(0);
       $top3prix->setIsVisible(1);
+      $top3prix->setDisplay('showNameOndashboard',0);
+      $top3prix->setTemplate('dashboard','badge');
+      $top3prix->setTemplate('mobile','badge');
       $top3prix->setUnite('€/L');
       $top3prix->save();
 
@@ -372,6 +386,7 @@ class prixcarburants extends eqLogic {
       $top3maj->setType('info');
       $top3maj->setIsHistorized(0);
       $top3maj->setIsVisible(1);
+      $top3maj->setDisplay('showNameOndashboard',0);
       $top3maj->save();
       
       $top3id = null;

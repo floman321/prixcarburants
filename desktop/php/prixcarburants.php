@@ -138,6 +138,7 @@ foreach (jeeObject::all() as $object) {
           <label class="col-sm-3 control-label" >Votre station favorite : </label>
           <div class="col-sm-3">
           <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="station1" placeholder="Saisir le numero identifiant de la station"/>
+            <a href="plugins/prixcarburants/core/class/stations.json" target="_blank">Pour voir la liste des stations, cliquez ici</a>
            </div>
             </div>
     
