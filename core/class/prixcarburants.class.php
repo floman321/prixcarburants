@@ -52,6 +52,22 @@ class prixcarburants extends eqLogic {
         return $a['prix']>$b['prix'];
       }
   
+  	  public static function getMarqueStation($idstation) {
+
+  		$handle = @fopen(__DIR__."/stations.json", "r");
+            if ($handle) {
+              while (!feof($handle)) {
+                $buffer = fgetss($handle, 4096);
+                $tab = json_decode($buffer,true);
+                if ($tab['id']==$idstation) {
+                  fclose($handle);
+                  return $tab['marque'];
+                }
+              }
+              fclose($handle);
+            }
+      }
+  
   	  public static function MAJVehicules($oneveh) {
         
         	if ($oneveh != null){
@@ -61,12 +77,17 @@ class prixcarburants extends eqLogic {
              	log::add('prixcarburants','debug',' allveh '); 
               	$Vehicules = self::byType('prixcarburants');
             }
+        
+        	
+        	
+	        
+            
+        	
     
             foreach ($Vehicules as $unvehicule) {
               
-              
         
-                if ($unvehicule->getIsEnable() == 1) {
+                if ($unvehicule->getIsEnable() == 0) continue;
                   
                   $reader = XMLReader::open(__DIR__.'/PrixCarburants_instantane.xml');
               	  $doc = new DOMDocument;
@@ -106,67 +127,90 @@ class prixcarburants extends eqLogic {
                             
                             $prixlitre = $prix->attributes()->valeur.'';
                             $maj = $prix->attributes()->maj.'';
+                            $marque = prixcarburants::getMarqueStation($mastationid);
                             
-                            $maselection[$idx]['adresse'] = $unestation->adresse.', '.$unestation->ville;
+                            $maselection[$idx]['adresse'] = $marque.', '.$unestation->ville;
                             $maselection[$idx]['prix'] = $prixlitre;
                             $maselection[$idx]['maj']  = $maj;
                             $maselection[$idx]['distance'] = $dist;
                             $maselection[$idx]['id'] = $mastationid;
                             $idx++;
+                            
                           }
                         }
 
                       
-                    }
-                  }
+                    }//PDV
+                    
+                  }// XML
             	$reader->close();
                   
 					log::add('prixcarburants','debug',' step count selection '.count($maselection).' '.$nom);
-
-                  	usort($maselection, "prixcarburants::custom_sort");
+                  		
+              		if ($station1 == '') { // enmode station favoris
+                      
+                      usort($maselection, "prixcarburants::custom_sort");
                   	
-                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
-                  	if ($macmd != null) $macmd->event($maselection[0]['adresse']);
-                  
-                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 Adresse');
-                  	if ($macmd != null) $macmd->event($maselection[1]['adresse']);
-                  
-                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 Adresse');
-                  	if ($macmd != null) $macmd->event($maselection[2]['adresse']);
-                  
-                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Prix');
-                  	if ($macmd != null) $macmd->event($maselection[0]['prix']);
-                  
-                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 Prix');
-                  	if ($macmd != null) $macmd->event($maselection[1]['prix']);
-                  
-                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 Prix');
-                  	if ($macmd != null) $macmd->event($maselection[2]['prix']);
-                  
-                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 MAJ');
-                  	if ($macmd != null) $macmd->event($maselection[0]['maj']);
-                  
-                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 MAJ');
-                  	if ($macmd != null) $macmd->event($maselection[1]['maj']);
-                  
-                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 MAJ');
-                  	if ($macmd != null) $macmd->event($maselection[2]['maj']);
-                  
-                  
-                  
-                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 ID');
-                  	if ($macmd != null) $macmd->event($maselection[0]['id']);
-                  
-                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 ID');
-                  	if ($macmd != null) $macmd->event($maselection[1]['id']);
-                  
-                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 ID');
-                  	if ($macmd != null) $macmd->event($maselection[2]['id']);
+                        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
+                        if ($macmd != null) $macmd->event($maselection[0]['adresse']);
+
+                        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 Adresse');
+                        if ($macmd != null) $macmd->event($maselection[1]['adresse']);
+
+                        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 Adresse');
+                        if ($macmd != null) $macmd->event($maselection[2]['adresse']);
+
+
+                        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Prix');
+                        if ($macmd != null) $macmd->event($maselection[0]['prix']);
+
+                        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 Prix');
+                        if ($macmd != null) $macmd->event($maselection[1]['prix']);
+
+                        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 Prix');
+                        if ($macmd != null) $macmd->event($maselection[2]['prix']);
+
+
+                        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 MAJ');
+                        if ($macmd != null) $macmd->event($maselection[0]['maj']);
+
+                        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 MAJ');
+                        if ($macmd != null) $macmd->event($maselection[1]['maj']);
+
+                        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 MAJ');
+                        if ($macmd != null) $macmd->event($maselection[2]['maj']);
+
+
+
+                        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 ID');
+                        if ($macmd != null) $macmd->event($maselection[0]['id']);
+
+                        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 ID');
+                        if ($macmd != null) $macmd->event($maselection[1]['id']);
+
+                        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 ID');
+                        if ($macmd != null) $macmd->event($maselection[2]['id']);
+                      
+                      
+                    }else{
+
+                  		$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
+                      if($macmd != null) $macmd->event($maselection[0]['adresse']);
+                      
+                      $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Prix');
+                        if ($macmd != null) $macmd->event($maselection[0]['prix']);
+                      
+                      $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 MAJ');
+                        if ($macmd != null) $macmd->event($maselection[0]['maj']);
+                      
+                      $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 ID');
+                        if ($macmd != null) $macmd->event($maselection[0]['id']);
+                      
+                    }
 
                     $unvehicule->refreshWidget();
-                }
              
-        }
+        	}//foreach
 
       }
 
