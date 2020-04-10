@@ -119,11 +119,14 @@ foreach (jeeObject::all() as $object) {
      </div>   
     <div class="form-group">
                 <label class="col-sm-3 control-label" >Chercher autour de : </label>
+                  
                 <div class="col-sm-3">
-                  <a href="https://www.torop.net/coordonnees-gps.php" target="_blank">Pour obtenir vos coordonnées GPS, cliquez ici</a>
-                    <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="latitude" placeholder="par exemple 44.455"/>
-                  	<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="longitude" placeholder="par exempl -0.5555"/>
+                    Latitude<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="latitude" placeholder="par exemple 44.455"/>
+                  	Longitude<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="longitude" placeholder="par exemple -0.5555"/>
            		</div>
+                  <div class="col-sm-3">
+                  <a href="https://www.torop.net/coordonnees-gps.php" target="_blank">Pour obtenir vos coordonnées GPS, cliquez ici</a>
+                  </div>
      </div>   
                           
       <div class="form-group">
@@ -132,7 +135,7 @@ foreach (jeeObject::all() as $object) {
                           
                               
           <div class="form-group">
-          <label class="col-sm-3 control-label" >Vos station favorites : </label>
+          <label class="col-sm-3 control-label" >Votre station favorite : </label>
           <div class="col-sm-3">
           <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="station1" placeholder="Saisir le numero identifiant de la station"/>
            </div>

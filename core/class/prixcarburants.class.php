@@ -52,52 +52,58 @@ class prixcarburants extends eqLogic {
         return $a['prix']>$b['prix'];
       }
   
-  	  public static function MAJVehicules() {
-    
-        	$doc = new DOMDocument;
-            $reader = XMLReader::open(__DIR__.'/PrixCarburants_instantane.xml');
+  	  public static function MAJVehicules($oneveh) {
         
-            foreach (self::byType('prixcarburants') as $unvehicule) {
+        	if ($oneveh != null){
+				log::add('prixcarburants','debug',' onlyoneveh ');
+              $Vehicules = array($oneveh);
+            }else{
+             	log::add('prixcarburants','debug',' allveh '); 
+              	$Vehicules = self::byType('prixcarburants');
+            }
+    
+            foreach ($Vehicules as $unvehicule) {
               
+              
+        
                 if ($unvehicule->getIsEnable() == 1) {
-                  	
+                  
+                  $reader = XMLReader::open(__DIR__.'/PrixCarburants_instantane.xml');
+              	  $doc = new DOMDocument;
                   $maselection = array();
-                  $nom = $unvehicule->getName();
-                  $typecarburant = $unvehicule->getConfiguration('typecarburant','');
                   $idx = 0;
                   
-                  $maselection = array();
-                  $stack = array();
+                  $nom = $unvehicule->getName();
+                  $typecarburant = $unvehicule->getConfiguration('typecarburant','');
                   $rayon = $unvehicule->getConfiguration('rayon','30');
                   $malat = $unvehicule->getConfiguration('latitude','');
                   $malng = $unvehicule->getConfiguration('longitude','');
                   $station1 = $unvehicule->getConfiguration('station1','');
-                  if ($station1 != ''){
-                  	  $rayon = 9999999;
-                  }
-                    
-
-                            
+                  
+                  
                   while($reader->read()) {
                     if ($reader->nodeType == XMLReader::ELEMENT && $reader->name == 'pdv') {
 
                       $lat = $reader->getAttribute('latitude')/100000;
                       $lng = $reader->getAttribute('longitude')/100000;
                       $mastationid = $reader->getAttribute('id');
-
-                      $dist = prixcarburants::distance($malat,$malng,$lat,$lng);
-                      if ($dist < $rayon) { //On enregistrer uniquement ceux qui sont a proximitées
-                        
+					  $dist = 0;
+                      
+                      if ($station1 == ''){
+                        $dist = prixcarburants::distance($malat,$malng,$lat,$lng);
+                        if ($dist > $rayon) continue; //On enregistrer uniquement ceux qui sont a proximitées
+                      }
+                      
                         $unestation = simplexml_import_dom($doc->importNode($reader->expand(), true));
 
                         foreach ($unestation->prix as $prix){
                           
                           if ($prix->attributes()->nom == $typecarburant){ // FILTRER SELON CARBURANTS
-                            
+                  
                             if ($station1 != '') {
                              	if ($mastationid != $station1) continue; 
                             }
-                              
+                            
                             $prixlitre = $prix->attributes()->valeur.'';
                             $maj = $prix->attributes()->maj.'';
                             
@@ -110,10 +116,10 @@ class prixcarburants extends eqLogic {
                           }
                         }
 
-                      }
+                      
                     }
                   }
-            $reader->close();
+            	$reader->close();
                   
 					log::add('prixcarburants','debug',' step count selection '.count($maselection).' '.$nom);
 
@@ -179,7 +185,7 @@ class prixcarburants extends eqLogic {
 
         $filenamezip = __DIR__.'/PrixCarburants.zip';
 
-       	/*$current = file_get_contents("https://donnees.roulez-eco.fr/opendata/instantane");
+       	$current = file_get_contents("https://donnees.roulez-eco.fr/opendata/instantane");
         file_put_contents($filenamezip, $current);
         
         $zip = new ZipArchive;
@@ -189,17 +195,12 @@ class prixcarburants extends eqLogic {
           	log::add('prixcarburants','debug','prix zip ok get'.__DIR__);
           
             unlink(__DIR__.'/PrixCarburants.zip');
-		*/
-            
-          
+		
           	prixcarburants::MAJVehicules();
          
-
-        /*} else {
+        } else {
             log::add('prixcarburants','debug','prix zip nok get'.__DIR__);
-        }*/
-        
-       
+        }
         
      }
                     
@@ -339,8 +340,6 @@ class prixcarburants extends eqLogic {
       $top3id->setIsVisible(0);
       $top3id->save();
       
-      
-        
     }
 
     public function preSave() {
@@ -349,7 +348,7 @@ class prixcarburants extends eqLogic {
 
     public function postSave() {
       
-      prixcarburants::cronDaily();
+      prixcarburants::MAJVehicules($this);
         
     }
 

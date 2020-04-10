@@ -1,7 +1,7 @@
 {
 	"id" : "prixcarburants",
 	"name" : "Prix Carburants",
-	"description" : "Plugin template pour la création de plugin",
+	"description" : "Récuper les informations des prix des carburants via https://www.prix-carburants.gouv.fr",
 	"licence" : "AGPL",
 	"author" : "Jeedom SAS",
 	"require" : "3.2",
@@ -12,9 +12,8 @@
 	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog",
 	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
 	"link" : {
-		"forum":"Lien vers le forum",
-		"video" : "Lien vers une video"
+		"forum":"https://community.jeedom.com/t/projet-en-cours-prix-carburants/23547/3"
 	},
 	"language" : ["fr_FR","en_US","de_DE","sp_SP","ru_RU","id_ID","it_IT"],
-	"compatibility" : ["miniplus","smart","rpi","docker","diy","mobile"]
+	"compatibility" : ["miniplus","smart","rpi","docker","diy"]
 }
