@@ -240,7 +240,7 @@ class prixcarburants extends eqLogic {
           
             unlink(__DIR__.'/PrixCarburants.zip');
 		
-          	prixcarburants::MAJVehicules();
+          	prixcarburants::MAJVehicules(null);
          
         } else {
             log::add('prixcarburants','debug','prix zip nok get'.__DIR__);
