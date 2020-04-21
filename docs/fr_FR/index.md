@@ -9,7 +9,7 @@ Aucune
 
 Création des équipements
 ===
-![image](https://github.com/floman321/prixcarburants/blob/master/docs/fr_FR/Capture d’écran 2020-04-21 à 20.23.00.png?raw=true)
+![image](https://github.com/floman321/prixcarburants/blob/master/docs/fr_FR/Capture1.png?raw=true)
 
 Dans un premier temps, merci de choisir un carburant puis
 
