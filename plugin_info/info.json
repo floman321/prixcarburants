@@ -1,16 +1,16 @@
 {
 	"id" : "prixcarburants",
 	"name" : "Prix Carburants",
-	"description" : "Récuper les informations des prix des carburants via https://www.prix-carburants.gouv.fr",
+	"description" : "Récupère les informations des prix des carburants via https://www.prix-carburants.gouv.fr",
 	"licence" : "AGPL",
-	"author" : "Jeedom SAS",
+	"author" : "Florian G.",
 	"require" : "3.2",
 	"category" : "organization",
 	"hasDependency" : false,
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
-	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog",
-	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
+	"changelog" : "https://jeedom.github.io/prixcarburants/#language#/changelog",
+	"documentation" : "https://jeedom.github.io/prixcarburants/#language#/",
 	"link" : {
 		"forum":"https://community.jeedom.com/t/projet-en-cours-prix-carburants/23547/3"
 	},
