@@ -53,19 +53,14 @@ class prixcarburants extends eqLogic {
       }
   
   	  public static function getMarqueStation($idstation) {
-
-  		$handle = @fopen(__DIR__."/stations.json", "r");
-            if ($handle) {
-              while (!feof($handle)) {
-                $buffer = fgetss($handle, 4096);
-                $tab = json_decode($buffer,true);
-                if ($tab['id']==$idstation) {
-                  fclose($handle);
-                  return $tab['marque'];
-                }
-              }
-              fclose($handle);
-            }
+		$json = file_get_contents(__DIR__."/stations.json");
+		$parsed_json = json_decode($json, true);
+		foreach($parsed_json as $row) {
+			if($row['id'] == $idstation) {
+				return $row['marque'];
+				break;
+			}
+		}
       }
   
   	  public static function MAJVehicules($oneveh) {
