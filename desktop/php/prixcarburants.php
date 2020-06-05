@@ -98,13 +98,12 @@ foreach (jeeObject::all() as $object) {
         <div class="col-sm-3">
             <select id="sel_object" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="typecarburant">
                         <option value="">{{Aucun}}</option>
-                        <option value="Gazole">Gazole</option>';
-                        <option value="E10">SP95-E10</option>';
-                        <option value="SP95">SP95</option>';
-                        <option value="SP98">SP98</option>';
-                        <option value="E85">E85</option>';
-                        <option value="GPLc">GPL</option>';
-                        ?>
+                        <option value="Gazole">Gazole</option>
+                        <option value="E10">SP95-E10</option>
+                        <option value="SP95">SP95</option>
+                        <option value="SP98">SP98</option>
+                        <option value="E85">E85</option>
+                        <option value="GPLc">GPL</option>
                    </select>
         </div>
     </div>
