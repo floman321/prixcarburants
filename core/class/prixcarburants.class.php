@@ -100,6 +100,7 @@ class prixcarburants extends eqLogic {
                   $malat = $unvehicule->getConfiguration('latitude','');
                   $malng = $unvehicule->getConfiguration('longitude','');
                   $station1 = $unvehicule->getConfiguration('station1','');
+		  $maformatdate = $unvehicule->getConfiguration('formatdate','');
               
                   
                   while($reader->read()) {
@@ -131,7 +132,7 @@ class prixcarburants extends eqLogic {
                             
                             $maselection[$idx]['adresse'] = $marque.', '.$unestation->ville;
                             $maselection[$idx]['prix'] = $prixlitre;
-                            $maselection[$idx]['maj']  = $maj;
+                            $maselection[$idx]['maj']  = date($maformatdate, strtotime($maj));
                             $maselection[$idx]['distance'] = $dist;
                             $maselection[$idx]['id'] = $mastationid;
                             $idx++;
