@@ -141,7 +141,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								<label class="col-sm-3 control-label">Format date</label>
 								<div class="col-sm-3">
 									<select id="sel_object" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="formatdate">
-										<option value="">{{Aucun}}</option>
+										<option value="Y-m-d à G:i:s">{{Par défaut}}</option>
 										<option value="j M Y à G:i:s"><?php echo date("j M Y à G:i:s"); ?></option>
 										<option value="j M Y à G:i"><?php echo date("j M Y à G:i"); ?></option>
 										<option value="j M y à G:i:s"><?php echo date("j M y à G:i:s"); ?></option>
