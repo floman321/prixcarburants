@@ -135,59 +135,18 @@ class prixcarburants extends eqLogic {
 				usort($maselection, "prixcarburants::custom_sort");
 				
 				For($i = 0; $i < $nbstation; $i++) {
-				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top '.$i + 1.' Adresse');
+				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i + 1 . ' Adresse');
 				    if (is_object($macmd)) $macmd->event($maselection[$i]['adresse']);
 				    
-				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top '.$i + 1.' Prix');
+				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i + 1 . ' Prix');
 				    if (is_object($macmd)) $macmd->event($maselection[$i]['prix']);
 				    
-				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top '.$i + 1.' MAJ');
+				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i + 1 . ' MAJ');
 				    if (is_object($macmd)) $macmd->event($maselection[$i]['maj']);
 				    
-				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top '.$i + 1.' ID');
+				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i + 1 . ' ID');
 				    if (is_object($macmd)) $macmd->event($maselection[$i]['id']);
 				}
-			
-				/*
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
-				if (is_object($macmd)) $macmd->event($maselection[0]['adresse']);
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 Adresse');
-				if (is_object($macmd)) $macmd->event($maselection[1]['adresse']);
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 Adresse');
-				if (is_object($macmd)) $macmd->event($maselection[2]['adresse']);
-				
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Prix');
-				if (is_object($macmd)) $macmd->event($maselection[0]['prix']);
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 Prix');
-				if (is_object($macmd)) $macmd->event($maselection[1]['prix']);
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 Prix');
-				if (is_object($macmd)) $macmd->event($maselection[2]['prix']);
-				
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 MAJ');
-				if (is_object($macmd)) $macmd->event($maselection[0]['maj']);
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 MAJ');
-				if (is_object($macmd)) $macmd->event($maselection[1]['maj']);
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 MAJ');
-				if (is_object($macmd)) $macmd->event($maselection[2]['maj']);
-				
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 ID');
-				if (is_object($macmd)) $macmd->event($maselection[0]['id']);
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 2 ID');
-				if (is_object($macmd)) $macmd->event($maselection[1]['id']);
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 ID');
-				if (is_object($macmd)) $macmd->event($maselection[2]['id']);
-				*/
 			}else{
 				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
 				if (is_object($macmd)) $macmd->event($maselection[0]['adresse']);
