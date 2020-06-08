@@ -84,8 +84,8 @@ class prixcarburants extends eqLogic {
 			$nom = $unvehicule->getName();
 			$typecarburant = $unvehicule->getConfiguration('typecarburant','');
 			$rayon = $unvehicule->getConfiguration('rayon','30');
-			$malat = $unvehicule->getConfiguration('latitude','');
-			$malng = $unvehicule->getConfiguration('longitude','');
+			$malat = $unvehicule->getConfiguration('latitude','46.492794');
+			$malng = $unvehicule->getConfiguration('longitude','2.601271');
 			$station1 = $unvehicule->getConfiguration('station1','');
 			$monformatdate = $unvehicule->getConfiguration('formatdate','');
 			
