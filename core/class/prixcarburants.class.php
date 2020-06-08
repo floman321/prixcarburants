@@ -88,6 +88,7 @@ class prixcarburants extends eqLogic {
 			$malng = $unvehicule->getConfiguration('longitude','2.601271');
 			$station1 = $unvehicule->getConfiguration('station1','');
 			$monformatdate = $unvehicule->getConfiguration('formatdate','');
+			$nbstation = $unvehicule->getConfiguration('nbstation','3');
 			
 			
 			while($reader->read()) {
@@ -133,6 +134,21 @@ class prixcarburants extends eqLogic {
 				
 				usort($maselection, "prixcarburants::custom_sort");
 				
+				For($i = 0; $i < $nbstation; $i++) {
+				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top '.$i + 1.' Adresse');
+				    if (is_object($macmd)) $macmd->event($maselection[$i]['adresse']);
+				    
+				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top '.$i + 1.' Prix');
+				    if (is_object($macmd)) $macmd->event($maselection[$i]['prix']);
+				    
+				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top '.$i + 1.' MAJ');
+				    if (is_object($macmd)) $macmd->event($maselection[$i]['maj']);
+				    
+				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top '.$i + 1.' ID');
+				    if (is_object($macmd)) $macmd->event($maselection[$i]['id']);
+				}
+			
+				/*
 				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
 				if (is_object($macmd)) $macmd->event($maselection[0]['adresse']);
 				
@@ -171,6 +187,7 @@ class prixcarburants extends eqLogic {
 				
 				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 3 ID');
 				if (is_object($macmd)) $macmd->event($maselection[2]['id']);
+				*/
 			}else{
 				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
 				if (is_object($macmd)) $macmd->event($maselection[0]['adresse']);
