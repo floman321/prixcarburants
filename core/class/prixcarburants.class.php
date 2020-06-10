@@ -21,7 +21,7 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
 class prixcarburants extends eqLogic {
 	/*     * *************************Attributs****************************** */
-
+	
 
 
 	/*     * ***********************Methode static*************************** */
@@ -49,7 +49,7 @@ class prixcarburants extends eqLogic {
 
 
 	public static function custom_sort($a,$b) {
-	return $a['prix']>$b['prix'];
+	   return $a['prix']>$b['prix'];
 	}
 
 	public static function getMarqueStation($idstation) {
@@ -130,35 +130,35 @@ class prixcarburants extends eqLogic {
 
 			log::add('prixcarburants','debug',' step count selection '.count($maselection).' '.$nom);
 
-			if ($station1 == '') { // enmode station favoris
+			if ($station1 == '') {
 				
 				usort($maselection, "prixcarburants::custom_sort");
 				
-				For($i = 0; $i < $nbstation; $i++) {
-				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i + 1 . ' Adresse');
-				    if (is_object($macmd)) $macmd->event($maselection[$i]['adresse']);
-				    
-				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i + 1 . ' Prix');
-				    if (is_object($macmd)) $macmd->event($maselection[$i]['prix']);
-				    
-				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i + 1 . ' MAJ');
-				    if (is_object($macmd)) $macmd->event($maselection[$i]['maj']);
-				    
-				    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i + 1 . ' ID');
-				    if (is_object($macmd)) $macmd->event($maselection[$i]['id']);
+				For($i = 1; $i <= $nbstation; $i++) {
+					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' ID');
+					if (is_object($macmd)) $macmd->event($maselection[$i - 1]['id']);
+					
+					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Adresse');
+					if (is_object($macmd)) $macmd->event($maselection[$i - 1]['adresse']);
+					
+					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' MAJ');
+					if (is_object($macmd)) $macmd->event($maselection[$i - 1]['maj']);
+					
+					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Prix');
+					if (is_object($macmd)) $macmd->event($maselection[$i - 1]['prix']);
 				}
-			}else{
+			}else{ // enmode station favoris
+				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 ID');
+				if (is_object($macmd)) $macmd->event($maselection[0]['id']);
+				
 				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
 				if (is_object($macmd)) $macmd->event($maselection[0]['adresse']);
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Prix');
-				if (is_object($macmd)) $macmd->event($maselection[0]['prix']);
 				
 				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 MAJ');
 				if (is_object($macmd)) $macmd->event($maselection[0]['maj']);
 				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 ID');
-				if (is_object($macmd)) $macmd->event($maselection[0]['id']);
+				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Prix');
+				if (is_object($macmd)) $macmd->event($maselection[0]['prix']);
 			}
 			
 			$unvehicule->refreshWidget();
@@ -187,7 +187,6 @@ class prixcarburants extends eqLogic {
 		}
 	}
 	
-	
 	/*
 	//* Fonction exécutée automatiquement toutes les heures par Jeedom
 	public static function cronHourly() {}
@@ -215,156 +214,18 @@ class prixcarburants extends eqLogic {
 	public function preInsert() {}
 
 	public function postInsert() {
-		$mynewcolis = new prixcarburants();
-		
-		$top1adr = null;
-		$top1adr = new prixcarburantsCmd();
-		$top1adr->setName('Top 1 Adresse');
-		$top1adr->setEqLogic_id($this->getId());
-		$top1adr->setSubType('string');
-		$top1adr->setType('info');
-		$top1adr->setIsHistorized(0);
-		$top1adr->setIsVisible(1);
-		$top1adr->setDisplay('showNameOndashboard',0);
-		$top1adr->save();
-		
-		$top1prix = null;
-		$top1prix = new prixcarburantsCmd();
-		$top1prix->setName('Top 1 Prix');
-		$top1prix->setEqLogic_id($this->getId());
-		$top1prix->setSubType('numeric');
-		$top1prix->setType('info');
-		$top1prix->setIsHistorized(0);
-		$top1prix->setIsVisible(1);
-		$top1prix->setUnite('€/L');
-		$top1prix->setDisplay('showNameOndashboard',0);
-		$top1prix->setTemplate('dashboard','badge');
-		$top1prix->setTemplate('mobile','badge');
-		$top1prix->save();
-		
-		$top1maj = null;
-		$top1maj = new prixcarburantsCmd();
-		$top1maj->setName('Top 1 MAJ');
-		$top1maj->setEqLogic_id($this->getId());
-		$top1maj->setSubType('string');
-		$top1maj->setType('info');
-		$top1maj->setIsHistorized(0);
-		$top1maj->setDisplay('showNameOndashboard',0);
-		$top1maj->setIsVisible(1);
-		$top1maj->save();
-		
-		$top1id = null;
-		$top1id = new prixcarburantsCmd();
-		$top1id->setName('Top 1 ID');
-		$top1id->setEqLogic_id($this->getId());
-		$top1id->setSubType('string');
-		$top1id->setType('info');
-		$top1id->setIsHistorized(0);
-		$top1id->setIsVisible(0);
-		$top1id->save();
-		
-		$top2adr = null;
-		$top2adr = new prixcarburantsCmd();
-		$top2adr->setName('Top 2 Adresse');
-		$top2adr->setEqLogic_id($this->getId());
-		$top2adr->setSubType('string');
-		$top2adr->setType('info');
-		$top2adr->setIsHistorized(0);
-		$top2adr->setDisplay('showNameOndashboard',0);
-		$top2adr->setIsVisible(1);
-		$top2adr->save();
-		
-		$top2prix = null;
-		$top2prix = new prixcarburantsCmd();
-		$top2prix->setName('Top 2 Prix');
-		$top2prix->setEqLogic_id($this->getId());
-		$top2prix->setSubType('numeric');
-		$top2prix->setType('info');
-		$top2prix->setIsHistorized(0);
-		$top2prix->setIsVisible(1);
-		$top2prix->setDisplay('showNameOndashboard',0);
-		$top2prix->setUnite('€/L');
-		$top2prix->setTemplate('dashboard','badge');
-		$top2prix->setTemplate('mobile','badge');
-		$top2prix->save();
-		
-		$top2maj = null;
-		$top2maj = new prixcarburantsCmd();
-		$top2maj->setName('Top 2 MAJ');
-		$top2maj->setEqLogic_id($this->getId());
-		$top2maj->setSubType('string');
-		$top2maj->setType('info');
-		$top2maj->setIsHistorized(0);
-		$top2maj->setIsVisible(1);
-		$top2maj->setDisplay('showNameOndashboard',0);
-		$top2maj->save();
-		
-		$top2id = null;
-		$top2id = new prixcarburantsCmd();
-		$top2id->setName('Top 2 ID');
-		$top2id->setEqLogic_id($this->getId());
-		$top2id->setSubType('string');
-		$top2id->setType('info');
-		$top2id->setIsHistorized(0);
-		$top2id->setIsVisible(0);
-		$top2id->save();
-		
-		$top3adr = null;
-		$top3adr = new prixcarburantsCmd();
-		$top3adr->setName('Top 3 Adresse');
-		$top3adr->setEqLogic_id($this->getId());
-		$top3adr->setSubType('string');
-		$top3adr->setType('info');
-		$top3adr->setIsHistorized(0);
-		$top3adr->setIsVisible(1);
-		$top3adr->setDisplay('showNameOndashboard',0);
-		$top3adr->save();
-		
-		$top3prix = null;
-		$top3prix = new prixcarburantsCmd();
-		$top3prix->setName('Top 3 Prix');
-		$top3prix->setEqLogic_id($this->getId());
-		$top3prix->setSubType('numeric');
-		$top3prix->setType('info');
-		$top3prix->setIsHistorized(0);
-		$top3prix->setIsVisible(1);
-		$top3prix->setDisplay('showNameOndashboard',0);
-		$top3prix->setTemplate('dashboard','badge');
-		$top3prix->setTemplate('mobile','badge');
-		$top3prix->setUnite('€/L');
-		$top3prix->save();
-		
-		$top3maj = null;
-		$top3maj = new prixcarburantsCmd();
-		$top3maj->setName('Top 3 MAJ');
-		$top3maj->setEqLogic_id($this->getId());
-		$top3maj->setSubType('string');
-		$top3maj->setType('info');
-		$top3maj->setIsHistorized(0);
-		$top3maj->setIsVisible(1);
-		$top3maj->setDisplay('showNameOndashboard',0);
-		$top3maj->save();
-		
-		$top3id = null;
-		$top3id = new prixcarburantsCmd();
-		$top3id->setName('Top 3 ID');
-		$top3id->setEqLogic_id($this->getId());
-		$top3id->setSubType('string');
-		$top3id->setType('info');
-		$top3id->setIsHistorized(0);
-		$top3id->setIsVisible(0);
-		$top3id->save();
+		//$mynewcolis = new prixcarburants();
 	}
 
 	public function preSave() {}
 
 	public function postSave() {
-		prixcarburants::MAJVehicules($this);
+		//prixcarburants::MAJVehicules($this);
 		
 		//Ajout de la commande pour rafraichir les données
 		$PrixCarburantsCmd = $this->getCmd(null, 'refresh');
 		if (!is_object($PrixCarburantsCmd)) {
-			log::add('QNAP', 'debug', 'refresh');
+			log::add('prixcarburants', 'debug', 'refresh');
 			$PrixCarburantsCmd = new prixcarburantsCmd();
 			$PrixCarburantsCmd->setName(__('Rafraîchir', __FILE__));
 			$PrixCarburantsCmd->setEqLogic_id($this->getId());
@@ -377,7 +238,87 @@ class prixcarburants extends eqLogic {
 
 	public function preUpdate() {}
 
-	public function postUpdate() {}
+	public function postUpdate() {
+		$nbstation = $this->getConfiguration('nbstation','3');
+		
+		$OrdreAffichage = 1;
+		
+		For($i = 1; $i <= 10; $i++) {
+			if($i <= $nbstation) { //Show only required quantity of station
+				$prixcarburantsCmd = $this->getCmd(null, 'TopID_'.$i);
+				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				$prixcarburantsCmd->setName('Top ' . $i . ' ID');
+				$prixcarburantsCmd->setEqLogic_id($this->getId());
+				$prixcarburantsCmd->setLogicalId('TopID_'.$i);
+				$prixcarburantsCmd->setType('info');
+				$prixcarburantsCmd->setSubType('string');
+				$prixcarburantsCmd->setIsHistorized(0);
+				$prixcarburantsCmd->setIsVisible(0);
+				$prixcarburantsCmd->setOrder($OrdreAffichage);
+				$prixcarburantsCmd->save();
+				$OrdreAffichage++;
+				
+				$prixcarburantsCmd = $this->getCmd(null, 'TopAdresse_'.$i);
+				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				$prixcarburantsCmd->setName('Top ' . $i . ' Adresse');
+				$prixcarburantsCmd->setEqLogic_id($this->getId());
+				$prixcarburantsCmd->setLogicalId('TopAdresse_'.$i);
+				$prixcarburantsCmd->setType('info');
+				$prixcarburantsCmd->setSubType('string');
+				$prixcarburantsCmd->setIsHistorized(0);
+				$prixcarburantsCmd->setIsVisible(1);
+				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+				$prixcarburantsCmd->setOrder($OrdreAffichage);
+				$prixcarburantsCmd->save();
+				$OrdreAffichage++;
+				
+				$prixcarburantsCmd = $this->getCmd(null, 'TopMaJ_'.$i);
+				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				$prixcarburantsCmd->setName('Top ' . $i . ' MAJ');
+				$prixcarburantsCmd->setEqLogic_id($this->getId());
+				$prixcarburantsCmd->setLogicalId('TopMaJ_'.$i);
+				$prixcarburantsCmd->setType('info');
+				$prixcarburantsCmd->setSubType('string');
+				$prixcarburantsCmd->setIsHistorized(0);
+				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+				$prixcarburantsCmd->setIsVisible(1);
+				$prixcarburantsCmd->setOrder($OrdreAffichage);
+				$prixcarburantsCmd->save();
+				$OrdreAffichage++;
+				
+				$prixcarburantsCmd = $this->getCmd(null, 'TopPrix_'.$i);
+				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				$prixcarburantsCmd->setName('Top ' . $i . ' Prix');
+				$prixcarburantsCmd->setEqLogic_id($this->getId());
+				$prixcarburantsCmd->setLogicalId('TopPrix_'.$i);
+				$prixcarburantsCmd->setType('info');
+				$prixcarburantsCmd->setSubType('numeric');
+				$prixcarburantsCmd->setIsHistorized(0);
+				$prixcarburantsCmd->setIsVisible(1);
+				$prixcarburantsCmd->setUnite('€/L');
+				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+				$prixcarburantsCmd->setTemplate('dashboard','badge');
+				$prixcarburantsCmd->setTemplate('mobile','badge');
+				$prixcarburantsCmd->setOrder($OrdreAffichage);
+				$prixcarburantsCmd->save();
+				$OrdreAffichage++;
+			} else { //remove undesired station
+				$prixcarburantsCmd = $this->getCmd(null, 'TopAdresse_'.$i);
+				if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
+				
+				$prixcarburantsCmd = $this->getCmd(null, 'TopPrix_'.$i);
+				if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
+				
+				$prixcarburantsCmd = $this->getCmd(null, 'TopMaJ_'.$i);
+				if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
+				
+				$prixcarburantsCmd = $this->getCmd(null, 'TopID_'.$i);
+				if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
+			}
+		}
+		
+		prixcarburants::MAJVehicules($this);
+	}
 
 	public function preRemove() {}
 
@@ -423,8 +364,8 @@ class prixcarburantsCmd extends cmd {
 
 	public function execute($_options = array()) {
 		// If 'click' on 'refresh' command
-        if ($this->getLogicalId() == 'refresh') {
-			log::add('prixcarburants','debug','Call "refresh" command for this object ' . print_r($this, true) . ' by ' . $this->getHumanName());
+		if ($this->getLogicalId() == 'refresh') {
+			log::add('prixcarburants','debug','Call "refresh" command for this object by ' . $this->getHumanName());
 			$this->getEqLogic()->updatePrixCarburant();
 		}
 		return true;
