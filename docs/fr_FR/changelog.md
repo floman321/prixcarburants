@@ -12,5 +12,6 @@
 - Mise à jour de la fonctionnalité de sélection du nombre de station à surveiller, qui ne fonctionnait pas quand l'équipement était créé avant la mise à jour précédente
 - Ajout d'un message quand le nombre de station surveillé à supérieur au nombre de station disponible dans le rayon sélectionné
 
+=======
 ## 10 juin 2020
 - Ajout de la possibilité de choisir le nombre de station surveillée, jusqu'à 10 maximum
