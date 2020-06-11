@@ -130,35 +130,27 @@ class prixcarburants extends eqLogic {
 
 			log::add('prixcarburants','debug',' step count selection '.count($maselection).' '.$nom);
 
-			if ($station1 == '') {
+			if ($station1 != '') $nbstation = 1; //If a favorite is selected, only 1 station need to be fill
 				
-				usort($maselection, "prixcarburants::custom_sort");
-				
-				For($i = 1; $i <= $nbstation; $i++) {
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' ID');
-					if (is_object($macmd)) $macmd->event($maselection[$i - 1]['id']);
-					
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Adresse');
-					if (is_object($macmd)) $macmd->event($maselection[$i - 1]['adresse']);
-					
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' MAJ');
-					if (is_object($macmd)) $macmd->event($maselection[$i - 1]['maj']);
-					
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Prix');
-					if (is_object($macmd)) $macmd->event($maselection[$i - 1]['prix']);
-				}
-			}else{ // enmode station favoris
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 ID');
-				if (is_object($macmd)) $macmd->event($maselection[0]['id']);
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
-				if (is_object($macmd)) $macmd->event($maselection[0]['adresse']);
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 MAJ');
-				if (is_object($macmd)) $macmd->event($maselection[0]['maj']);
-				
-				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Prix');
-				if (is_object($macmd)) $macmd->event($maselection[0]['prix']);
+			usort($maselection, "prixcarburants::custom_sort");
+			
+			For($i = 1; $i <= $nbstation; $i++) {
+			    if($maselection[$i - 1]['prix'] != ''){ //Price available so, there is enough station on selected range
+    				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' ID');
+    				if (is_object($macmd)) $macmd->event($maselection[$i - 1]['id']);
+    				
+    				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Adresse');
+    				if (is_object($macmd)) $macmd->event($maselection[$i - 1]['adresse']);
+    				
+    				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' MAJ');
+    				if (is_object($macmd)) $macmd->event($maselection[$i - 1]['maj']);
+    				
+    				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Prix');
+    				if (is_object($macmd)) $macmd->event($maselection[$i - 1]['prix']);
+			    } else {
+			        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Adresse');
+			        if (is_object($macmd)) $macmd->event('{{Plus de station disponible dans le rayon sélectionné}}');
+			    }
 			}
 			
 			$unvehicule->refreshWidget();
