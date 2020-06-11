@@ -8,5 +8,8 @@
 - mettre en avant une confiance par rapport à la date de dernière mise à jour.
 
 
+## 11 juin 2020
+- Mise à jour de la fonctionnalité de sélection du nombre de station à surveiller, qui ne fonctionnait pas quand l'équipement était créé avant la mise à jour précédente
+
 ## 10 juin 2020
 - Ajout de la possibilité de choisir le nombre de station surveillée, jusqu'à 10 maximum
