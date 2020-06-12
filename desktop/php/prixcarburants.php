@@ -118,14 +118,29 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label" >Chercher autour de : </label>
+								<label class="col-sm-3 control-label" >{{Chercher autour de :}}</label>
 								<div class="col-sm-3">
-									Latitude<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="latitude" placeholder="par exemple 44.455"/>
-									Longitude<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="longitude" placeholder="par exemple -0.5555"/>
-								</div>
-								<div class="col-sm-3">
-									<a href="https://www.torop.net/coordonnees-gps.php" target="_blank">Pour obtenir vos coordonnées GPS, cliquez ici</a>
-								</div>
+                                    <select class="eqLogicAttr form-control" id="geoloc" data-l1key="configuration" data-l2key="geoloc">
+                                        <?php
+                                        $none = 0;
+                                        if (class_exists('geotravCmd')) {
+                                            foreach (eqLogic::byType('geotrav') as $geoloc) {
+                                                if ($geoloc->getConfiguration('type') == 'location') {
+                                                    $none++;
+                                                    echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
+                                                }
+                                            }
+                                        } 
+                                        if ((config::byKey('info::latitude') != '') && (config::byKey('info::longitude') != '') ) {
+                                            echo '<option value="jeedom">Configuration Jeedom</option>';
+                                            $none++;
+                                        }
+                                        if ($none == 0) {
+                                            echo '<option value="none">Pas de localisation disponible</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
 							</div>
 							<div class="form-group">
 								<label class="col-sm-3 control-label" >OU </label>
