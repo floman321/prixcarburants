@@ -125,7 +125,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                         $none = 0;
                                         if (class_exists('geotravCmd')) {
                                             foreach (eqLogic::byType('geotrav') as $geoloc) {
-                                                if ($geoloc->getConfiguration('type') == 'location') {
+                                                if ($geoloc->getConfiguration('type') == 'location' && $geoloc->getConfiguration('coordinate') != '') {
                                                     $none++;
                                                     echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
                                                 }
@@ -136,7 +136,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                             $none++;
                                         }
                                         if ($none == 0) {
-                                            echo '<option value="none">Pas de localisation disponible</option>';
+                                            echo '<option value="none">Pas de localisation disponible (latitude et longitude nécessaire)</option>';
                                         }
                                         ?>
                                     </select>

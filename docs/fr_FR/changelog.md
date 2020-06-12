@@ -6,6 +6,8 @@
 - Pouvoir sur un seul véhicule avoir le choix entre suivre une station favorite et des stations autour des coordonnées
 - mettre en avant une confiance par rapport à la date de dernière mise à jour.
 
+## 12 juin 2020 v2
+- Modification pour ne prendre en compte que les localisations possédant des coordonnées de latitude et longitude
 
 ## 12 juin 2020
 - Changement de la sélection de la localisation. Il faut désormais sélectionner la localisation (geotrav ou configuration) plutôt que rentrer les coordonnées.
