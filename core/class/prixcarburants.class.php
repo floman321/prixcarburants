@@ -84,12 +84,24 @@ class prixcarburants extends eqLogic {
 			$nom = $unvehicule->getName();
 			$typecarburant = $unvehicule->getConfiguration('typecarburant','');
 			$rayon = $unvehicule->getConfiguration('rayon','30');
-			$malat = $unvehicule->getConfiguration('latitude','46.492794');
-			$malng = $unvehicule->getConfiguration('longitude','2.601271');
 			$station1 = $unvehicule->getConfiguration('station1','');
 			$monformatdate = $unvehicule->getConfiguration('formatdate','');
 			$nbstation = $unvehicule->getConfiguration('nbstation','3');
 			
+			//Get position latitude and longitude
+			if ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
+			    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
+			    if (is_object($macmd)) $macmd->event('{{Pas de localisation sélectionnée}}');
+			    return;
+			} elseif ($unvehicule->getConfiguration('geoloc') == "jeedom") {
+			    $malat = config::byKey('info::latitude');
+			    $malng = config::byKey('info::longitude');
+			} else {
+			    $coordonnees = geotravCmd::byEqLogicIdAndLogicalId($unvehicule->getConfiguration('geoloc'),'location:coordinate')->execCmd();
+			    $expcoord = explode(",",$coordonnees);
+		        $malat = $expcoord[0];
+		        $malng = $expcoord[1];
+			}
 			
 			while($reader->read()) {
 				if ($reader->nodeType == XMLReader::ELEMENT && $reader->name == 'pdv') {
@@ -229,12 +241,12 @@ class prixcarburants extends eqLogic {
 	public function preUpdate() {}
 
 	public function postUpdate() {
-		//Choose correct quantity of station. Only 1 if there is a favorite selected
+		//Choose correct quantity of station. Only 1 if there is a favorite selected, or if there is no location
 		$FavorisMode = $this->getConfiguration('station1','');
-		if($FavorisMode == ''){
-		    $nbstation = $this->getConfiguration('nbstation','3');
-		} else {
+		if($FavorisMode != '' or $this->getConfiguration('geoloc', 'none') == 'none'){
 		    $nbstation = 1;
+		} else {
+		    $nbstation = $this->getConfiguration('nbstation','3');
 		}
 		
 		$OrdreAffichage = 1;
