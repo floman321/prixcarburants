@@ -88,20 +88,22 @@ class prixcarburants extends eqLogic {
 			$monformatdate = $unvehicule->getConfiguration('formatdate','');
 			$nbstation = $unvehicule->getConfiguration('nbstation','3');
 			
-			//Get position latitude and longitude
-			if ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
-			    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
-			    if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée',  __FILE__));
-			    //if (is_object($macmd)) $macmd->event('{{Pas de localisation sélectionnée}}');
-			    return;
-			} elseif ($unvehicule->getConfiguration('geoloc') == "jeedom") {
-			    $malat = config::byKey('info::latitude');
-			    $malng = config::byKey('info::longitude');
-			} else {
-			    $coordonnees = geotravCmd::byEqLogicIdAndLogicalId($unvehicule->getConfiguration('geoloc'),'location:coordinate')->execCmd();
-			    $expcoord = explode(",",$coordonnees);
-		        $malat = $expcoord[0];
-		        $malng = $expcoord[1];
+			//Get position latitude and longitude only if favorite station is not selected
+			if ($station1 == ''){
+    			if ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
+    			    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
+    			    if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée',  __FILE__));
+    			    //if (is_object($macmd)) $macmd->event('{{Pas de localisation sélectionnée}}');
+    			    return;
+    			} elseif ($unvehicule->getConfiguration('geoloc') == "jeedom") {
+    			    $malat = config::byKey('info::latitude');
+    			    $malng = config::byKey('info::longitude');
+    			} else {
+    			    $coordonnees = geotravCmd::byEqLogicIdAndLogicalId($unvehicule->getConfiguration('geoloc'),'location:coordinate')->execCmd();
+    			    $expcoord = explode(",",$coordonnees);
+    		        $malat = $expcoord[0];
+    		        $malng = $expcoord[1];
+    			}
 			}
 			
 			while($reader->read()) {
