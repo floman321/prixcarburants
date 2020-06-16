@@ -1,0 +1,50 @@
+{
+    "plugins\/prixcarburants\/desktop\/php\/prixcarburants.php": {
+        "Gestion": "Management",
+        "Ajouter": "Add",
+        "Configuration": "Setup",
+        "Mes Véhicules": "My vehicles",
+        "Configuration avancée": "Advanced configuration",
+        "Dupliquer": "Duplicate",
+        "Sauvegarder": "Save",
+        "Supprimer": "Delete",
+        "Equipement": "Equipement",
+        "Commandes": "Commandes",
+        "Nom du véhicule :": "Vehicle name:",
+        "Objet parent :": "Parent object:",
+        "Aucun": "None",
+        "Catégorie :": "Category:",
+        "Activer": "Activate",
+        "Visible": "Visible",
+        "Type de carburants :": "Fuel type:",
+        "Gazole": "Diesel",
+        "SP95-E10": "SP95-E10",
+        "SP95": "SP95",
+        "SP98": "SP98",
+        "E85": "E85",
+        "GPL": "GPL",
+        "Rayon maxi (Km) :": "Max radius (Km):",
+        "Chercher autour de :": "Search around :",
+        "Configuration Jeedom": "Jeedom configuration",
+        "Pas de localisation disponible (latitude et longitude nécessaire)": "No location available (latitude and longitude required)",
+        "OU": "OR",
+        "Votre station favorite :": "Your favorite gaz station:",
+        "Pour voir la liste des stations, cliquez ici": "To see the list of gaz stations, click here",
+        "Format date :": "Date format:",
+        "Par défaut": "Default",
+        "Nombre de station affichée :": "Number of stations displayed:",
+        "Nom": "Name",
+        "Paramètres": "Settings",
+        "Action": "Action"
+    },
+    "plugins\/prixcarburants\/desktop\/js\/prixcarburants.js": {
+    	"Afficher": "Display",
+    	"Historiser": "Historize",
+    	"Tester": "Test"
+    },
+    "plugins\/prixcarburants\/core\/class\/prixcarburants.class.php": {
+    	"Pas de localisation sélectionnée": "No location selected",
+    	"Plus de station disponible dans le rayon sélectionné": "No more stations available in the selected radius",
+    	"Actualiser": "Refresh"
+    }
+}

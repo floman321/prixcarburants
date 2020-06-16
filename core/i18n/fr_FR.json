@@ -1,0 +1,50 @@
+{
+    "plugins\/prixcarburants\/desktop\/php\/prixcarburants.php": {
+        "Gestion": "Gestion",
+        "Ajouter": "Ajouter",
+        "Configuration": "Configuration",
+        "Mes Véhicules": "Mes Véhicules",
+        "Configuration avancée": "Configuration avancée",
+        "Dupliquer": "Dupliquer",
+        "Sauvegarder": "Sauvegarder",
+        "Supprimer": "Supprimer",
+        "Equipement": "Equipement",
+        "Commandes": "Commandes",
+        "Nom du véhicule :": "Nom du véhicule :",
+        "Objet parent :": "Objet parent :",
+        "Aucun": "Aucun",
+        "Catégorie :": "Catégorie :",
+        "Activer": "Activer",
+        "Visible": "Visible",
+        "Type de carburants :": "Type de carburants :",
+        "Gazole": "Gazole",
+        "SP95-E10": "SP95-E10",
+        "SP95": "SP95",
+        "SP98": "SP98",
+        "E85": "E85",
+        "GPL": "GPL",
+        "Rayon maxi (Km) :": "Rayon maxi (Km) :",
+        "Chercher autour de :": "Chercher autour de :",
+        "Configuration Jeedom": "Configuration Jeedom",
+        "Pas de localisation disponible (latitude et longitude nécessaire)": "Pas de localisation disponible (latitude et longitude nécessaire)",
+        "OU": "OU",
+        "Votre station favorite :": "Votre station favorite :",
+        "Pour voir la liste des stations, cliquez ici": "Pour voir la liste des stations, cliquez ici",
+        "Format date :": "Format date :",
+        "Par défaut": "Par défaut",
+        "Nombre de station affichée :": "Nombre de station affichée :",
+        "Nom": "Nom",
+        "Paramètres": "Paramètres",
+        "Action": "Action"
+    },
+    "plugins\/prixcarburants\/desktop\/js\/prixcarburants.js": {
+    	"Afficher": "Afficher",
+    	"Historiser": "Historiser",
+    	"Tester": "Tester"
+    },
+    "plugins\/prixcarburants\/core\/class\/prixcarburants.class.php": {
+    	"Pas de localisation sélectionnée": "No location selected",
+    	"Plus de station disponible dans le rayon sélectionné": "No more stations available in the selected radius",
+    	"Actualiser": "Actualiser"
+    }
+}

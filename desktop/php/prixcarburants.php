@@ -59,14 +59,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
 					<form class="form-horizontal">
 						<fieldset>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">{{Nom du véhicule}}</label>
+								<label class="col-sm-3 control-label">{{Nom du véhicule :}}</label>
 								<div class="col-sm-3">
 									<input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
 									<input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement template}}"/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label" >{{Objet parent}}</label>
+								<label class="col-sm-3 control-label" >{{Objet parent :}}</label>
 								<div class="col-sm-3">
 									<select id="sel_object" class="eqLogicAttr form-control" data-l1key="object_id">
 										<option value="">{{Aucun}}</option>
@@ -79,7 +79,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">{{Catégorie}}</label>
+								<label class="col-sm-3 control-label">{{Catégorie :}}</label>
 								<div class="col-sm-9">
 									<?php
 									foreach (jeedom::getConfiguration('eqLogic:category') as $key => $value) {
@@ -98,21 +98,21 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">{{Type Carburants}}</label>
+								<label class="col-sm-3 control-label">{{Type de carburants :}}</label>
 								<div class="col-sm-3">
 									<select id="sel_object" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="typecarburant">
 										<option value="">{{Aucun}}</option>
-										<option value="Gazole">Gazole</option>
-										<option value="E10">SP95-E10</option>
-										<option value="SP95">SP95</option>
-										<option value="SP98">SP98</option>
-										<option value="E85">E85</option>
-										<option value="GPLc">GPL</option>
+										<option value="Gazole">{{Gazole}}</option>
+										<option value="E10">{{SP95-E10}}</option>
+										<option value="SP95">{{SP95}}</option>
+										<option value="SP98">{{SP98}}</option>
+										<option value="E85">{{E85}}</option>
+										<option value="GPLc">{{GPL}}</option>
 									</select>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label" >Rayon maxi (Km) : </label>
+								<label class="col-sm-3 control-label" >{{Rayon maxi (Km) :}}</label>
 								<div class="col-sm-3">
 									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="Saisir un nombre de kilométre"/>
 								</div>
@@ -132,28 +132,28 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                             }
                                         } 
                                         if ((config::byKey('info::latitude') != '') && (config::byKey('info::longitude') != '') ) {
-                                            echo '<option value="jeedom">Configuration Jeedom</option>';
+                                            echo '<option value="jeedom">{{Configuration Jeedom}}</option>';
                                             $none++;
                                         }
                                         if ($none == 0) {
-                                            echo '<option value="none">Pas de localisation disponible (latitude et longitude nécessaire)</option>';
+                                            echo '<option value="none">{{Pas de localisation disponible (latitude et longitude nécessaire)}}</option>';
                                         }
                                         ?>
                                     </select>
                                 </div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label" >OU </label>
+								<label class="col-sm-3 control-label" >{{OU}}</label>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label" >Votre station favorite : </label>
+								<label class="col-sm-3 control-label" >{{Votre station favorite :}}</label>
 								<div class="col-sm-3">
 									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="station1" placeholder="Saisir le numero identifiant de la station"/>
-									<a href="plugins/prixcarburants/core/class/stations.json" target="_blank">Pour voir la liste des stations, cliquez ici</a>
+									<a href="plugins/prixcarburants/core/class/stations.json" target="_blank">{{Pour voir la liste des stations, cliquez ici}}</a>
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">Format date</label>
+								<label class="col-sm-3 control-label">{{Format date :}}</label>
 								<div class="col-sm-3">
 									<select id="sel_object" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="formatdate">
 										<option value="Y-m-d à G:i:s">{{Par défaut}}</option>
@@ -169,7 +169,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label">{{Nombre de station affichée}}</label>
+								<label class="col-sm-3 control-label">{{Nombre de station affichée :}}</label>
 								<div class="col-sm-3">
 									<select id="sel_object" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="nbstation">
 										<option value="1">1</option>
@@ -189,11 +189,15 @@ $eqLogics = eqLogic::byType($plugin->getId());
 					</form>
 				</div>
 				<div role="tabpanel" class="tab-pane" id="commandtab">
-					<a class="btn btn-success btn-sm cmdAction pull-right" data-action="add" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Commandes}}</a><br/><br/>
+					<!-- <a class="btn btn-success btn-sm cmdAction pull-right" data-action="add" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Commandes}}</a><br/><br/>-->
 					<table id="table_cmd" class="table table-bordered table-condensed">
 						<thead>
 							<tr>
-							<th>{{Nom}}</th><th>{{Type}}</th><th>{{Action}}</th>
+							<!--  <th>{{Nom}}</th><th>{{Type}}</th><th>{{Action}}</th> -->
+								<th>#</th>
+								<th>{{Nom}}</th>
+								<th style="width: 250px;">{{Paramètres}}</th>
+								<th>{{Action}}</th>
 							</tr>
 						</thead>
 						<tbody>

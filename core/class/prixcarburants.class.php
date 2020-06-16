@@ -91,7 +91,8 @@ class prixcarburants extends eqLogic {
 			//Get position latitude and longitude
 			if ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
 			    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
-			    if (is_object($macmd)) $macmd->event('{{Pas de localisation sélectionnée}}');
+			    if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée',  __FILE__));
+			    //if (is_object($macmd)) $macmd->event('{{Pas de localisation sélectionnée}}');
 			    return;
 			} elseif ($unvehicule->getConfiguration('geoloc') == "jeedom") {
 			    $malat = config::byKey('info::latitude');
@@ -161,7 +162,8 @@ class prixcarburants extends eqLogic {
     				if (is_object($macmd)) $macmd->event($maselection[$i - 1]['prix']);
 			    } else {
 			        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Adresse');
-			        if (is_object($macmd)) $macmd->event('{{Plus de station disponible dans le rayon sélectionné}}');
+			        if (is_object($macmd)) $macmd->event(__('Plus de station disponible dans le rayon sélectionné',  __FILE__));
+			        //if (is_object($macmd)) $macmd->event('{{Plus de station disponible dans le rayon sélectionné}}');
 			    }
 			}
 			
@@ -222,23 +224,44 @@ class prixcarburants extends eqLogic {
 	public function preSave() {}
 
 	public function postSave() {
-		//prixcarburants::MAJVehicules($this);
-		
 		//Ajout de la commande pour rafraichir les données
-		$PrixCarburantsCmd = $this->getCmd(null, 'refresh');
-		if (!is_object($PrixCarburantsCmd)) {
+		$prixcarburantsCmd = $this->getCmd(null, 'refresh');
+		if (!is_object($prixcarburantsCmd)) {
 			log::add('prixcarburants', 'debug', 'refresh');
-			$PrixCarburantsCmd = new prixcarburantsCmd();
-			$PrixCarburantsCmd->setName('{{Rafraichir}}');
-			$PrixCarburantsCmd->setEqLogic_id($this->getId());
-			$PrixCarburantsCmd->setLogicalId('refresh');
-			$PrixCarburantsCmd->setType('action');
-			$PrixCarburantsCmd->setSubType('other');
-			$PrixCarburantsCmd->save();
+			$prixcarburantsCmd = new prixcarburantsCmd();
+			$prixcarburantsCmd->setName(__('Rafraichir',  __FILE__));
+			$prixcarburantsCmd->setEqLogic_id($this->getId());
+			$prixcarburantsCmd->setLogicalId('refresh');
+			$prixcarburantsCmd->setType('action');
+			$prixcarburantsCmd->setSubType('other');
+			$prixcarburantsCmd->setIsHistorized(0);
+			$prixcarburantsCmd->setIsVisible(0);
+			$prixcarburantsCmd->setOrder(0);
+			$prixcarburantsCmd->save();
 		}
 	}
 
-	public function preUpdate() {}
+	public function preUpdate() {
+	    //Pour vieille installation ayant un mauvais nom ; Pourras être supprimé dans quelques temps (vers Septembre, ça devrait être bon)
+	    $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Rafraichir');
+	    if (!is_object($prixcarburantsCmd)) {
+	        $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'{{Rafraichir}}');
+	    }
+	    if (is_object($prixcarburantsCmd)) {
+	        $prixcarburantsCmd->remove();
+	        $prixcarburantsCmd = new prixcarburantsCmd();
+	        $prixcarburantsCmd->setName(__('Actualiser',  __FILE__));
+	        $prixcarburantsCmd->setEqLogic_id($this->getId());
+	        $prixcarburantsCmd->setLogicalId('refresh');
+	        $prixcarburantsCmd->setType('action');
+	        $prixcarburantsCmd->setSubType('other');
+	        $prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+	        $prixcarburantsCmd->setIsHistorized(0);
+	        $prixcarburantsCmd->setIsVisible(0);
+	        $prixcarburantsCmd->setOrder(0);
+	        $prixcarburantsCmd->save();
+	    }
+	}
 
 	public function postUpdate() {
 		//Choose correct quantity of station. Only 1 if there is a favorite selected, or if there is no location
@@ -252,19 +275,6 @@ class prixcarburants extends eqLogic {
 		$OrdreAffichage = 1;
 		
 		For($i = 1; $i <= 10; $i++) {
-		    //Remove all station to avoid having too much station when favorite is selected
-		    $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i . ' ID');
-		    if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
-		    
-		    $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i . ' Adresse');
-		    if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
-		    
-		    $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i . ' MAJ');
-		    if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
-		    
-		    $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i . ' Prix');
-		    if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
-		    
 		    //Show only required quantity of station
 			if($i <= $nbstation) {
 				$prixcarburantsCmd = $this->getCmd(null, 'TopID_'.$i);
@@ -324,6 +334,19 @@ class prixcarburants extends eqLogic {
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
+			} else {
+			    //Remove all station to avoid having too much station when favorite is selected
+			    $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i . ' ID');
+			    if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
+			    
+			    $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i . ' Adresse');
+			    if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
+			    
+			    $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i . ' MAJ');
+			    if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
+			    
+			    $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i . ' Prix');
+			    if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
 			}
 		}
 		
