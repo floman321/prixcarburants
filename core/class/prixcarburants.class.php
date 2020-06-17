@@ -236,8 +236,9 @@ class prixcarburants extends eqLogic {
 			$prixcarburantsCmd->setLogicalId('refresh');
 			$prixcarburantsCmd->setType('action');
 			$prixcarburantsCmd->setSubType('other');
+			$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
 			$prixcarburantsCmd->setIsHistorized(0);
-			$prixcarburantsCmd->setIsVisible(0);
+			$prixcarburantsCmd->setIsVisible(1);
 			$prixcarburantsCmd->setOrder(0);
 			$prixcarburantsCmd->save();
 		}
@@ -259,7 +260,7 @@ class prixcarburants extends eqLogic {
 	        $prixcarburantsCmd->setSubType('other');
 	        $prixcarburantsCmd->setDisplay('showNameOndashboard',0);
 	        $prixcarburantsCmd->setIsHistorized(0);
-	        $prixcarburantsCmd->setIsVisible(0);
+	        $prixcarburantsCmd->setIsVisible(1);
 	        $prixcarburantsCmd->setOrder(0);
 	        $prixcarburantsCmd->save();
 	    }
