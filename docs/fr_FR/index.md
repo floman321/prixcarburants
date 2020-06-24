@@ -19,9 +19,11 @@ Remplisser le champ "Rayon" (par défaut 30km si vide)
 Remplisser le champ "Chercher autour de " : 
 pour renseigner ces 2 champs, vous pouvez vous aider de ce site : https://www.torop.net/coordonnees-gps.php 
 
+![image](https://github.com/floman321/prixcarburants/blob/master/docs/fr_FR/Capture2.PNG?raw=true)
+
+
 - Une recherche d'une station favorite.
 Saisir ici un identifiant.
 Pour vous aider, cliquer sur le lien dans l'interface.
 Vous aurez accès à la liste de toutes les stations ! Vous pourrez récupérer l'information "ID"
 
-![image](https://github.com/floman321/prixcarburants/blob/master/docs/fr_FR/Capture2.PNG?raw=true)
