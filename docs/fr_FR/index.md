@@ -19,7 +19,7 @@ Remplisser le champ "Rayon" (par défaut 30km si vide)
 Remplisser le champ "Chercher autour de " : 
   - Lieus dans le plugin Geoloc
   - Le repère GPS dans la configuration de Jeedom
-(https://192.168.33.2/index.php?v=d&p=administration#infotab)
+(https://adresseipjeedom/index.php?v=d&p=administration#infotab)
 
 pour renseigner ces champs, vous pouvez vous aider de ce site : https://www.torop.net/coordonnees-gps.php 
 
