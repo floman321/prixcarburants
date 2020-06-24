@@ -8,7 +8,8 @@
 - mettre en avant une confiance par rapport à la date de dernière mise à jour (via des couleurs, dont les seuils peuvent être modifé par l'utilisateur)
 
 ## 24 juin 2020
-Modification de la documentation
+- Modification de la documentation
+- Mise sur le market !
 
 ## 16 juin 2020
 - Création de la traduction (fr_FR et en_US)
