@@ -9,7 +9,7 @@ Aucune
 
 Création des équipements
 ===
-![image](https://github.com/floman321/prixcarburants/blob/master/docs/fr_FR/Capture1.png?raw=true)
+![image](https://raw.githubusercontent.com/floman321/prixcarburants/master/docs/fr_FR/Capture1.PNG?raw=true)
 
 Dans un premier temps, merci de choisir un carburant puis
 
