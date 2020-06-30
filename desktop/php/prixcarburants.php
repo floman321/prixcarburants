@@ -124,13 +124,16 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                         <?php
                                         $none = 0;
                                         if (class_exists('geotravCmd')) {
-                                            foreach (eqLogic::byType('geotrav') as $geoloc) {
-                                                if ($geoloc->getConfiguration('type') == 'location' && $geoloc->getConfiguration('coordinate') != '') {
-                                                    $none++;
-                                                    echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
-                                                }
+                                          
+                                            foreach (cmd::searchConfiguration('{"mode":"fixe"','geoloc') as $geoloc) {
+                                            	echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
                                             }
-                                        } 
+
+                                            foreach (cmd::searchConfiguration('{"mode":"dynamic"','geoloc') as $geoloc) {
+                                                $none++;
+                                            	echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
+                                            }
+                                        }
                                         if ((config::byKey('info::latitude') != '') && (config::byKey('info::longitude') != '') ) {
                                             echo '<option value="jeedom">{{Configuration Jeedom}}</option>';
                                             $none++;
@@ -165,6 +168,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 										<option value="j-m-y à G:i"><?php echo date("j-m-y à G:i"); ?></option>
 										<option value="Y-m-j à G:i:s"><?php echo date("Y-m-j à G:i:s"); ?></option>
 										<option value="Y-m-j à G:i"><?php echo date("Y-m-j à G:i"); ?></option>
+                                        <option value="Y-m-j"><?php echo date("Y-m-j"); ?></option>
 									</select>
 								</div>
 							</div>
