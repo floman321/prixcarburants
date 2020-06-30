@@ -99,7 +99,13 @@ class prixcarburants extends eqLogic {
     			    $malat = config::byKey('info::latitude');
     			    $malng = config::byKey('info::longitude');
     			} else {
-    			    $coordonnees = geotravCmd::byEqLogicIdAndLogicalId($unvehicule->getConfiguration('geoloc'),'location:coordinate')->execCmd();
+                  
+                  if (geotravCmd::byEqLogicIdAndLogicalId($unvehicule->getConfiguration('geoloc'),'location:coordinate') != null){
+ 	                $coordonnees = geotravCmd::byEqLogicIdAndLogicalId($unvehicule->getConfiguration('geoloc'),'location:coordinate')->execCmd();
+                  }else{
+                  	$coordonnees = cmd::byId($unvehicule->getConfiguration('geoloc'))->execCmd();
+                  }
+                  	
     			    $expcoord = explode(",",$coordonnees);
     		        $malat = $expcoord[0];
     		        $malng = $expcoord[1];
