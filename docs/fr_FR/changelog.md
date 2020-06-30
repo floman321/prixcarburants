@@ -11,8 +11,7 @@ Cependant, si vous obtenez un message, "pas de station" …
 Merci de re-sélectionner la configuration GPS (Lieu Geoloc ou Config Jeedom) puis sauvegarder.
 
 ## 30 Juin 2020
-- Modification de la liste des lieux géolocalisés avec le plugin Geoloc, 
-On obtiens la liste des lieux fixe et dynamique (Voiture en mouvement par ex).
+- Ajout des lieux géolocalisés dynamiques avec le plugin Geoloc. (Voiture en mouvement par ex).
 
 ## 24 juin 2020
 - Modification de la documentation
