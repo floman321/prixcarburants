@@ -7,8 +7,11 @@
 - Pouvoir sur un seul véhicule avoir le choix entre suivre une station favorite et des stations autour des coordonnées
 - mettre en avant une confiance par rapport à la date de dernière mise à jour (via des couleurs, dont les seuils peuvent être modifé par l'utilisateur)
 
+Cependant, si vous obtenez un message, "pas de station" …
+Merci de re-sélectionner la configuration GPS (Lieu Geoloc ou Config Jeedom) puis sauvegarder.
+
 ## 30 Juin 2020
-Modification de la liste des lieux géolocalisés avec le plugin Geoloc, 
+- Modification de la liste des lieux géolocalisés avec le plugin Geoloc, 
 On obtiens la liste des lieux fixe et dynamique (Voiture en mouvement par ex).
 
 ## 24 juin 2020
