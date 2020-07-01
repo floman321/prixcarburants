@@ -10,6 +10,9 @@
 Cependant, si vous obtenez un message, "pas de station" …
 Merci de re-sélectionner la configuration GPS (Lieu Geoloc ou Config Jeedom) puis sauvegarder.
 
+## 01/07/2020
+- Affiche uniquement les lieu geoloc activés.
+
 ## 30 Juin 2020
 - Ajout des lieux géolocalisés dynamiques avec le plugin Geoloc. (Voiture en mouvement par ex).
 
