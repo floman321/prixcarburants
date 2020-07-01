@@ -7,6 +7,12 @@ $plugin = plugin::byId('prixcarburants');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 
+function startsWith ($string, $startString) 
+{ 
+    $len = strlen($startString); 
+    return (substr($string, 0, $len) === $startString); 
+} 
+
 ?>
 	<div class="row row-overflow">
 		<div class="col-xs-12 eqLogicThumbnailDisplay">
@@ -125,14 +131,22 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                         $none = 0;
                                         if (class_exists('geotravCmd')) {
                                           
-                                            foreach (cmd::searchConfiguration('{"mode":"fixe"','geoloc') as $geoloc) {
-                                            	echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
-                                            }
+                                          foreach (eqLogic::byType('geoloc') as $moneqGeoLoc) {
+                                            
+                                            if ($moneqGeoLoc->getIsEnable()){
+                                                                                            
+                                                foreach (cmd::searchConfigurationEqLogic($moneqGeoLoc->getId(),'{"mode":"fixe"') as $geoloc) {
+                                                    $none++;
+                                                    echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
+                                                }
 
-                                            foreach (cmd::searchConfiguration('{"mode":"dynamic"','geoloc') as $geoloc) {
-                                                $none++;
-                                            	echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
-                                            }
+                                                foreach (cmd::searchConfigurationEqLogic($moneqGeoLoc->getId(),'{"mode":"dynamic"') as $geoloc) {
+                                                    $none++;
+                                                    echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
+                                                }
+                                              
+                                            }											
+										  }                                          
                                         }
                                         if ((config::byKey('info::latitude') != '') && (config::byKey('info::longitude') != '') ) {
                                             echo '<option value="jeedom">{{Configuration Jeedom}}</option>';
