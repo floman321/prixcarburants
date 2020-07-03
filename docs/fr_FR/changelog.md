@@ -1,11 +1,25 @@
 # Changelog : Prix Carburants
 
 ### TODO list
-- Créer une documentation
-- Mettre à jour le fichier contenant la liste des stations (stations.json)
-- Améliorer la sélection de la station favoris (au lieu d'afficher le fichier JSON brut)
-- Pouvoir sur un seul véhicule avoir le choix entre suivre une station favorite et des stations autour des coordonnées
 - mettre en avant une confiance par rapport à la date de dernière mise à jour (via des couleurs, dont les seuils peuvent être modifé par l'utilisateur)
+
+## 03/07/2020
+- Mise à jour des fichiers contenant la liste des stations (JSON).
+- Améliorer la sélection de la station favoris
+- Ajout de la possibilité, sur un seul véhicule avoir le choix entre suivre une station favorite et des stations autour des coordonnées
+- Lors de la création du 1er équipement, création du fichier contenant la liste des prix. Pour avoir une liste à jour, plutôt qu'une ancienne reprise depuis le dépôt.
+
+## 01/07/2020
+- Affiche uniquement les lieu geoloc activés.
+Cependant, si vous obtenez un message, "pas de station" …
+Merci de re-sélectionner la configuration GPS (Lieu Geoloc ou Config Jeedom) puis sauvegarder.
+
+## 30 Juin 2020
+- Ajout des lieux géolocalisés dynamiques avec le plugin Geoloc. (Voiture en mouvement par ex).
+
+## 24 juin 2020
+- Modification de la documentation
+- Mise sur le market !
 
 ## 16 juin 2020
 - Création de la traduction (fr_FR et en_US)

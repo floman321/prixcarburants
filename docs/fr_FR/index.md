@@ -17,9 +17,15 @@ Vous avez 2 options :
 - Une recherche autour d'un point gps (Domicile, Travail).
 Remplisser le champ "Rayon" (par défaut 30km si vide)
 Remplisser le champ "Chercher autour de " : 
-pour renseigner ces 2 champs, vous pouvez vous aider de ce site : https://www.torop.net/coordonnees-gps.php 
+  - Lieus dans le plugin Geoloc
+  - Le repère GPS dans la configuration de Jeedom (https://adresseipjeedom/index.php?v=d&p=administration#infotab)
 
-- Une recherche d'une station favorite.
-Saisir ici un identifiant.
-Pour vous aider, cliquer sur le lien dans l'interface.
-Vous aurez accès à la liste de toutes les stations ! Vous pourrez récupérer l'information "ID"
+![image](https://github.com/floman321/prixcarburants/blob/master/docs/fr_FR/Capture2.PNG?raw=true)
+
+- Une recherche par station favorite.
+  - Choisir dans les menus déroulant le département, la ville puis la station
+  - Ajouter jusqu'à 10 stations favorites, dans l'ordre que vous voulez les afficher
+
+![image](https://github.com/floman321/prixcarburants/blob/master/docs/fr_FR/capture3.PNG?raw=true)
+
+Les 2 options peuvent se cumuler. Les stations favorites s'afficheront alors en premier (dans l'ordre rempli), puis le reste des stations affichées sera complété par celles au meilleurs prix dans le rayon de la localisation sélectionné.
