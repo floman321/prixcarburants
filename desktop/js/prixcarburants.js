@@ -172,12 +172,13 @@ function RetireFavoris(IdCurrent, IdOld) {
 }
 
 //Function to show/hide elements bellow checkbox "geoloc" or "favorite"
-function CheckBx(Type) {
-	if(Type == "Favoris") {
-		if (document.getElementById(Type).checked){
+function CheckBx(Type_) {
+ 
+	if(Type_ == "Favoris+") {
 			document.getElementById('station1_Label').style.display = "block";
 			document.getElementById('station1_Dep').style.display = "block";
-		} else {
+    }
+    if(Type_ == "Favoris-") {
 			for(var i = 1; i <= 10; i++) {
 				document.getElementById('station'+i+'_Label').style.display = "none";
 				document.getElementById('station'+i+'_Dep').style.display = "none";
@@ -189,14 +190,46 @@ function CheckBx(Type) {
 				document.getElementById('station'+i+'_AddFav').style.display = "none";
 				document.getElementById('station'+i+'_RemoveFav').style.display = "none";
 			}
-		}
-	} else if(Type == "ViaLoca") {
-		if (document.getElementById(Type).checked){
+	}
+  
+	if(Type_ == "ViaLoca+") {
 			document.getElementById('Divloca1').style.display = "block";
 			document.getElementById('Divloca2').style.display = "block";
-		} else {
+    }
+    if(Type_ == "ViaLoca-") {
 			document.getElementById('Divloca1').style.display = "none";
 			document.getElementById('Divloca2').style.display = "none";
-		}
 	}
+
 }
+
+$('.eqLogicAttr[data-l1key=configuration][data-l2key=ViaLoca]').change(function() {
+    if ($('.eqLogicAttr[data-l1key=configuration][data-l2key=ViaLoca]').value() == "1") {
+    
+      CheckBx('ViaLoca+');	
+      
+    }else{
+      
+      CheckBx('ViaLoca-');
+      
+    }
+});
+
+$('.eqLogicAttr[data-l1key=configuration][data-l2key=Favoris]').change(function() {
+    if ($('.eqLogicAttr[data-l1key=configuration][data-l2key=Favoris]').value() == "1") {
+    
+      	// show
+      //document.getElementById('Conteneur_favoris').style.display = "block";
+      CheckBx('Favoris+');
+      
+      
+    }
+    else {
+      
+      // hide
+      CheckBx('Favoris-');
+     // document.getElementById('Conteneur_favoris').style.display = "none";
+      
+      
+    }
+});
