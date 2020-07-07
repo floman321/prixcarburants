@@ -159,15 +159,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								<div class="col-sm-3 control-label"> </div>
 								
 								<div class="Conteneur_localisation" style="width: 33%;">
-    								<?php 
-    								if ($eqLogic->getConfiguration('ViaLoca') == '1') {
-    								    $DisplayType = "block";
-    								} else {
-    								    $DisplayType = "none";
-    								}
-    								?>
-    								<label class="checkbox-inline" for="ViaLoca"><input id="ViaLoca" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="ViaLoca" value="ViaLocaCheck" onclick="CheckBx('ViaLoca')" />{{Via une localisation}}</label>
-    								<div class="form-group" id="Divloca1" style="display: <?php echo $DisplayType; ?>;">
+    								
+    								<label class="checkbox-inline" for="ViaLoca"><input id="ViaLoca" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="ViaLoca" />{{Via une localisation}}</label>
+    								<div class="form-group" id="Divloca1">
         								<label class="Conteneur_Label" for="geoloc">{{Chercher autour de :}}</label>
         								<div class="Conteneur_Input">
                                             <select class="eqLogicAttr form-control" id="geoloc" data-l1key="configuration" data-l2key="geoloc">
@@ -189,7 +183,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                                             echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
                                                         }
                                                       
-                                                    }											
+                                                    }
                                                   }                                          
                                                 }
                                                 if ((config::byKey('info::latitude') != '') && (config::byKey('info::longitude') != '') ) {
@@ -204,7 +198,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                         </div>
         							</div>
         							
-                                    <div class="form-group" id="Divloca2" style="display: <?php echo $DisplayType; ?>;">
+                                    <div class="form-group" id="Divloca2" >
         								<label class="Conteneur_Label" for="RayonMax">{{Rayon maxi (Km) :}}</label>
         								<div class="Conteneur_Input">
         									<input type="text" id="RayonMax" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="{{Saisir un nombre de kilométre}}"/>
@@ -214,18 +208,20 @@ $eqLogics = eqLogic::byType($plugin->getId());
     							
     							<div class="Conteneur_favoris" style="width: 33%;" onmouseenter="FinChargement()">
     								<?php 
-    								if ($eqLogic->getConfiguration('Favoris') == '1') {
-    								    $FavSelect = True;
-    								} else {
-    								    $FavSelect = False;
-    								}
+    								$FavSelect = True;
     								?>
     								<label class="checkbox-inline" for="Favoris"><input id="Favoris" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="Favoris" onclick="CheckBx('Favoris')" />{{Via un / des favori(s)}}</label>
     								<?php 
+                                    
+                                    if($eqLogic == null){
+                                    	return 0;
+                                    }
+                                    
     								//Show only elements that was fill
     								for($i=1; $i <= 10; $i++) {
     								    $OptionsCommune = '';
     								    $OptionsStation = '';
+                                                        
     								    if($FavSelect && $eqLogic->getConfiguration('station' . $i . '_Station') != '' && $eqLogic->getConfiguration('station' . $i . '_Station') != '0' && $eqLogic->getConfiguration('station' . $i . '_Dep') != '') {
     								        $DisplayType = "block";
     								        if($i < 10) {
