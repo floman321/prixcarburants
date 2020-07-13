@@ -62,8 +62,14 @@ function addCmdToTable(_cmd) {
 
 //Trick to avoid emptying select with "onchange" during filling done by Jeedom
 var ChargementFini = "Non";
+var RemplissageFini = "Non";
 function FinChargement(){
 	ChargementFini = "Oui";
+	if(RemplissageFini == "Non") {
+		//Fill and display already filled data
+		//FillSavedSelect();
+		RemplissageFini = "Oui";
+	}
 }
 
 /*
@@ -76,7 +82,7 @@ function FinChargement(){
 function AffichageChoixStation(TypeSelect, IdSelectModif, IdNum, IdSelectAModif) {
 	if(ChargementFini == "Oui") {
 		if(document.getElementById(IdSelectModif).value != ''){
-			var selectElmt = document.getElementById('station'+IdNum+'_Dep');
+			var selectElmt = document.getElementById('SelectStation'+IdNum+'_Dep');
 			var ValeurDepartement = selectElmt.options[selectElmt.selectedIndex].value;
 			
 			var selectElmt = document.getElementById(IdSelectModif);
@@ -91,28 +97,37 @@ function AffichageChoixStation(TypeSelect, IdSelectModif, IdNum, IdSelectAModif)
 				var jsonObj = request.response;
 				var stations = jsonObj['stations'];
 				var MaListe = new Object();
+				var MaListeText = '';
 				//Create the liste of element for the select
 				MaListe["0"] = "{{Sélectionner une }}"+TypeSelect;
+				MaListeText = "<0>{{Sélectionner une }}"+TypeSelect;
 				for (var i = 0; i < stations.length; i++) {
 					if(TypeSelect == "commune") {
 						MaListe[stations[i].commune.toUpperCase()] = stations[i].commune.toUpperCase()+" ("+stations[i].cp+")";
-						document.getElementById('station'+IdNum+'_Station').options.length = 0;
-						document.getElementById('station'+IdNum+'_Station').style.display = "none";
+						MaListeText = MaListeText+"--retouralaligne--"+stations[i].commune.toUpperCase()+"<->"+stations[i].commune.toUpperCase()+" ("+stations[i].cp+")";
+						document.getElementById('Station'+IdNum+'_CommuneListe').value = MaListeText;
+						document.getElementById('SelectStation'+IdNum+'_Station').options.length = 0;
+						document.getElementById('SelectStation'+IdNum+'_Station').style.display = "none";
 					} else {
 						if(stations[i].commune.toUpperCase() == ValeurCommune) {
-							MaListe[stations[i].id.toUpperCase()] = stations[i].marque+" ; "+stations[i].nom+" ; "+stations[i].adresse;
+							MaListe[stations[i].id] = stations[i].marque+" ; "+stations[i].nom+" ; "+stations[i].adresse;
+							MaListeText = MaListeText+"--retouralaligne--"+stations[i].id+"<->"+stations[i].marque+" ; "+stations[i].nom+" ; "+stations[i].adresse;
+							document.getElementById('Station'+IdNum+'_StationListe').value = MaListeText;
 						}
 					}
 				}
+				//Register selected values on input test
+				document.getElementById('Station'+IdNum+'_Dep').value = ValeurDepartement;
+				document.getElementById('Station'+IdNum+'_Commune').value = ValeurCommune;
 				//Fill the next select
 				updateComboBox(IdSelectAModif, MaListe);
-				document.getElementById('station'+IdNum+'_AddFav').style.display = "none";
+				document.getElementById('SelectStation'+IdNum+'_AddFav').style.display = "none";
 			}
 		} else {
-			document.getElementById('station'+IdNum+'_Commune').options.length = 0;
-			document.getElementById('station'+IdNum+'_Commune').style.display = "none";
-			document.getElementById('station'+IdNum+'_Station').options.length = 0;
-			document.getElementById('station'+IdNum+'_Station').style.display = "none";
+			document.getElementById('SelectStation'+IdNum+'_Commune').options.length = 0;
+			document.getElementById('SelectStation'+IdNum+'_Commune').style.display = "none";
+			document.getElementById('SelectStation'+IdNum+'_Station').options.length = 0;
+			document.getElementById('SelectStation'+IdNum+'_Station').style.display = "none";
 		}
 	}
 }
@@ -131,13 +146,16 @@ function updateComboBox(idSelect, data) {
 	document.getElementById(idSelect).style.display = "block";
 }
 //Function to show/hide "add a favorite"
-function AffichAjoutFav(IdSelectModif, IdAModif) {
+function AffichAjoutFav(IdSelect) {
 	if(ChargementFini == "Oui") {
-		if(document.getElementById(IdSelectModif).value != ''){
-			if(document.getElementById(IdSelectModif).value != '0' && document.getElementById(IdAModif).style.display != "block") {
-				document.getElementById(IdAModif).style.display = "block";
-			} else if(document.getElementById(IdSelectModif).value == '0' && document.getElementById(IdAModif).style.display == "block") {
-				document.getElementById(IdAModif).style.display = "none";
+		if(document.getElementById('SelectStation'+IdSelect+'_Station').value != ''){
+			//Register selected value on input text
+			var selectElmt = document.getElementById('SelectStation'+IdSelect+'_Station');
+			document.getElementById('Station'+IdSelect+'_Station').value = selectElmt.options[selectElmt.selectedIndex].value;
+			if(document.getElementById('SelectStation'+IdSelect+'_Station').value != '0' && document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display != "block") {
+				document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display = "block";
+			} else if(document.getElementById('SelectStation'+IdSelect+'_Station').value == '0' && document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display == "block") {
+				document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display = "none";
 			}
 		}
 	}
@@ -146,28 +164,28 @@ function AffichAjoutFav(IdSelectModif, IdAModif) {
 //Function to show next favorite when "add a favorite" selected
 function AjouteFavoris(IdNew, IdCurrent) {
 	if(ChargementFini == "Oui") {
-		document.getElementById('station'+IdNew+'_Label').style.display = "block";
-		document.getElementById('station'+IdNew+'_Dep').style.display = "block";
-		document.getElementById('station'+IdNew+'_RemoveFav').style.display = "block";
-		document.getElementById('station'+IdCurrent+'_AddFav').style.display = "none";
-		document.getElementById('station'+IdCurrent+'_RemoveFav').style.display = "none";
+		document.getElementById('SelectStation'+IdNew+'_Label').style.display = "block";
+		document.getElementById('SelectStation'+IdNew+'_Dep').style.display = "block";
+		document.getElementById('SelectStation'+IdNew+'_RemoveFav').style.display = "block";
+		document.getElementById('SelectStation'+IdCurrent+'_AddFav').style.display = "none";
+		document.getElementById('SelectStation'+IdCurrent+'_RemoveFav').style.display = "none";
 	}
 }
 
 //Function to hide all elements of a favorite when "minus" button is selected
 function RetireFavoris(IdCurrent, IdOld) {
 	if(ChargementFini == "Oui") {
-		document.getElementById('station'+IdCurrent+'_Label').style.display = "none";
-		document.getElementById('station'+IdCurrent+'_Dep').style.display = "none";
-		document.getElementById('station'+IdCurrent+'_Dep').options[0].selected = true;
-		document.getElementById('station'+IdCurrent+'_Commune').style.display = "none";
-		document.getElementById('station'+IdCurrent+'_Station').style.display = "none";
-		document.getElementById('station'+IdCurrent+'_AddFav').style.display = "none";
-		document.getElementById('station'+IdOld+'_RemoveFav').style.display = "block";
-		if(document.getElementById('station'+IdOld+'_AddFav').value != ''){
-			document.getElementById('station'+IdOld+'_AddFav').style.display = "block";
+		document.getElementById('SelectStation'+IdCurrent+'_Label').style.display = "none";
+		document.getElementById('SelectStation'+IdCurrent+'_Dep').style.display = "none";
+		document.getElementById('SelectStation'+IdCurrent+'_Dep').options[0].selected = true;
+		document.getElementById('SelectStation'+IdCurrent+'_Commune').style.display = "none";
+		document.getElementById('SelectStation'+IdCurrent+'_Station').style.display = "none";
+		document.getElementById('SelectStation'+IdCurrent+'_AddFav').style.display = "none";
+		document.getElementById('SelectStation'+IdOld+'_RemoveFav').style.display = "block";
+		if(document.getElementById('SelectStation'+IdOld+'_AddFav').value != ''){
+			document.getElementById('SelectStation'+IdOld+'_AddFav').style.display = "block";
 		}
-		document.getElementById('station'+IdCurrent+'_RemoveFav').style.display = "none";
+		document.getElementById('SelectStation'+IdCurrent+'_RemoveFav').style.display = "none";
 	}
 }
 
@@ -175,22 +193,22 @@ function RetireFavoris(IdCurrent, IdOld) {
 function CheckBx(Type_) {
  
 	if(Type_ == "Favoris+") {
-			document.getElementById('station1_Label').style.display = "block";
-			document.getElementById('station1_Dep').style.display = "block";
+			document.getElementById('SelectStation1_Label').style.display = "block";
+			document.getElementById('SelectStation1_Dep').style.display = "block";
     }
     if(Type_ == "Favoris-") {
 			for(var i = 1; i <= 10; i++) {
-				document.getElementById('station'+i+'_Label').style.display = "none";
-				document.getElementById('station'+i+'_Dep').style.display = "none";
-				document.getElementById('station'+i+'_Dep').options[0].selected = true;
-				document.getElementById('station'+i+'_Commune').style.display = "none";
-				document.getElementById('station'+i+'_Commune').options.length = 0;
-				document.getElementById('station'+i+'_Station').style.display = "none";
-				document.getElementById('station'+i+'_Station').options.length = 0;
-				document.getElementById('station'+i+'_AddFav').style.display = "none";
-				document.getElementById('station'+i+'_RemoveFav').style.display = "none";
+				document.getElementById('SelectStation'+i+'_Label').style.display = "none";
+				document.getElementById('SelectStation'+i+'_Dep').style.display = "none";
+				document.getElementById('SelectStation'+i+'_Dep').options[0].selected = true;
+				document.getElementById('SelectStation'+i+'_Commune').style.display = "none";
+				document.getElementById('SelectStation'+i+'_Commune').options.length = 0;
+				document.getElementById('SelectStation'+i+'_Station').style.display = "none";
+				document.getElementById('SelectStation'+i+'_Station').options.length = 0;
+				document.getElementById('SelectStation'+i+'_AddFav').style.display = "none";
+				document.getElementById('SelectStation'+i+'_RemoveFav').style.display = "none";
 			}
-	}
+	} 
   
 	if(Type_ == "ViaLoca+") {
 			document.getElementById('Divloca1').style.display = "block";
@@ -203,33 +221,67 @@ function CheckBx(Type_) {
 
 }
 
+//Function to display and filled already saved data
+function FillSavedSelect() {
+	for(var i = 1; i <= 10 ; i++) {
+		if(document.getElementById('Station'+i+'_Dep').value != '' && document.getElementById('Station'+i+'_CommuneListe').value != '' && document.getElementById('Station'+i+'_Commune').value != '' && document.getElementById('Station'+i+'_StationListe').value != '' && document.getElementById('Station'+i+'_Station').value != '') {
+			//Only if all select elements was filled
+			//Show desire elements 
+			document.getElementById('SelectStation'+i+'_Label').style.display = "block";
+			document.getElementById('SelectStation'+i+'_Dep').style.display = "block";
+			document.getElementById('SelectStation'+i+'_Commune').style.display = "block";
+			document.getElementById('SelectStation'+i+'_Station').style.display = "block";
+			
+			//Prepare select list
+			PrepareList(document.getElementById('Station'+i+'_CommuneListe').value, 'SelectStation'+i+'_Commune');
+			PrepareList(document.getElementById('Station'+i+'_StationListe').value, 'SelectStation'+i+'_Station');
+			
+			//Select correct element on the list
+			document.getElementById('SelectStation'+i+'_Dep').value = OptionSelect = document.getElementById('Station'+i+'_Dep').value;
+			document.getElementById('SelectStation'+i+'_Commune').value = OptionSelect = document.getElementById('Station'+i+'_Commune').value;
+			document.getElementById('SelectStation'+i+'_Station').value = OptionSelect = document.getElementById('Station'+i+'_Station').value;
+			
+			//hide unwanted buttons
+			document.getElementById('SelectStation'+i+'_AddFav').style.display = "none";
+			document.getElementById('SelectStation'+i+'_RemoveFav').style.display = "none";
+		} else {
+			if(i > 1) {
+				var compteur = i - 1;
+				//Show hide desire elements
+				document.getElementById('SelectStation'+compteur+'_AddFav').style.display = "block";
+				document.getElementById('SelectStation'+compteur+'_RemoveFav').style.display = "block";
+				break;
+			}
+		}
+	}
+}
+
+//Function to prepare correct list
+function PrepareList(str, idSelect) {
+	var ListeSelect = str.split("--retouralaligne--");
+	var MaListe = new Object();
+	for (var key in ListeSelect) {
+		var SubListe = ListeSelect[key].split("<->");
+		MaListe[SubListe[0]] = SubListe[1];
+	}
+	updateComboBox(idSelect, MaListe);
+}
+
+//Show/Hide localisation box at equipment load
 $('.eqLogicAttr[data-l1key=configuration][data-l2key=ViaLoca]').change(function() {
     if ($('.eqLogicAttr[data-l1key=configuration][data-l2key=ViaLoca]').value() == "1") {
-    
       CheckBx('ViaLoca+');	
-      
     }else{
-      
       CheckBx('ViaLoca-');
-      
     }
 });
 
+//Show/Hide favorite box at equipment load
 $('.eqLogicAttr[data-l1key=configuration][data-l2key=Favoris]').change(function() {
     if ($('.eqLogicAttr[data-l1key=configuration][data-l2key=Favoris]').value() == "1") {
-    
-      	// show
-      //document.getElementById('Conteneur_favoris').style.display = "block";
-      CheckBx('Favoris+');
-      
-      
+		CheckBx('Favoris+');
     }
     else {
-      
-      // hide
       CheckBx('Favoris-');
-     // document.getElementById('Conteneur_favoris').style.display = "none";
-      
-      
     }
 });
