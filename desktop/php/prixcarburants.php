@@ -250,7 +250,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
     								
     								?>
     							</div>
-    							<input type="Text" class="eqLogicAttr form-control" id="FinPage" data-l1key="configuration" data-l2key="FinPage" value="fini" style="display: none;" onchange="FillSavedSelect()" /> "
+    							<input type="Text" class="eqLogicAttr form-control" id="FinPage" data-l1key="configuration" data-l2key="FinPage" value="fini" style="display:none;" onchange="FillSavedSelect()" />
 						</fieldset>
 					</form>
 				</div>
