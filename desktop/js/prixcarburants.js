@@ -223,6 +223,13 @@ function CheckBx(Type_) {
 
 //Function to display and filled already saved data
 function FillSavedSelect() {
+  
+  // Dot this only if Favorites CheckBox is cheked
+  if ($('.eqLogicAttr[data-l1key=configuration][data-l2key=Favoris]').value() == "0") {
+    return; 
+  }
+  
+  
 	for(var i = 1; i <= 10 ; i++) {
 		if(document.getElementById('Station'+i+'_Dep').value != '' && document.getElementById('Station'+i+'_CommuneListe').value != '' && document.getElementById('Station'+i+'_Commune').value != '' && document.getElementById('Station'+i+'_StationListe').value != '' && document.getElementById('Station'+i+'_Station').value != '') {
 			//Only if all select elements was filled
@@ -278,10 +285,10 @@ $('.eqLogicAttr[data-l1key=configuration][data-l2key=ViaLoca]').change(function(
 
 //Show/Hide favorite box at equipment load
 $('.eqLogicAttr[data-l1key=configuration][data-l2key=Favoris]').change(function() {
+  
     if ($('.eqLogicAttr[data-l1key=configuration][data-l2key=Favoris]').value() == "1") {
 		CheckBx('Favoris+');
-    }
-    else {
+    }else {
       CheckBx('Favoris-');
     }
 });
