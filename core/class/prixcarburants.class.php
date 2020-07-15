@@ -102,6 +102,10 @@ class prixcarburants extends eqLogic {
     			        break;
     			    }
     			}
+              
+              if ($NbFavoris == 0){
+				log::add('prixcarburants','error','Aucun favoris n\'est sélectionné dans la configuration de prix carburants : '.$nom);
+              }
 			}
 			//Get position latitude and longitude only if geolocalisation is selected
 			if ($unvehicule->getConfiguration('ViaLoca') == '1') {
