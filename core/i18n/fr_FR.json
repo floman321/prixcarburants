@@ -22,7 +22,7 @@
         "Style d'affichage :": "Style d'affichage :",
         "Format date :": "Format date :",
         "Par défaut": "Par défaut",
-        "Nombre de station affichée :": "Nombre de station affichée :",
+        "Nombre de station :": "Nombre de station :",
         "Stations :": "Stations :",
         "Type de carburants :": "Type de carburants :",
         "Gazole": "Gazole",
@@ -57,6 +57,9 @@
 		"Erreur": "Erreur",
     	"Pas de localisation sélectionnée": "Pas de localisation sélectionnée",
     	"Plus de station disponible dans le rayon sélectionné": "Plus de station disponible dans le rayon sélectionné",
-    	"Actualiser": "Actualiser"
+    	"Actualiser": "Actualiser",
+    	"Le type de carburant n'est pas renseigné dans la configuration de Prix Carburants : ": "Le type de carburant n'est pas renseigné dans la configuration de Prix Carburants : ",
+    	"Aucun favoris n'est sélectionné dans la configuration de Prix Carburants : ": "Aucun favoris n'est sélectionné dans la configuration de Prix Carburants : ",
+    	"Le nombre de station n'est pas renseigné dans la configuration de Prix Carburants : ": "Le nombre de station n'est pas renseigné dans la configuration de Prix Carburants : "
     }
 }

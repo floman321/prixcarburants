@@ -53,7 +53,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 				<li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fas fa-tachometer-alt"></i> {{Equipement}}</a></li>
 				<li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
 			</ul>
-			<div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
+			<div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;" onmouseenter="FinChargement()">
 				<div role="tabpanel" class="tab-pane active" id="eqlogictab">
 					<br/>
 					<form class="form-horizontal">
@@ -120,27 +120,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label" for="NbStation">{{Nombre de station affichée :}}</label>
-								<div class="col-sm-3">
-									<select id="NbStation" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="nbstation">
-										<option value="1">1</option>
-										<option value="2">2</option>
-										<option value="3">3</option>
-										<option value="4">4</option>
-										<option value="5">5</option>
-										<option value="6">6</option>
-										<option value="7">7</option>
-										<option value="8">8</option>
-										<option value="9">9</option>
-										<option value="10">10</option>
-									</select>
-								</div>
-							</div>
-						</fieldset>
-						
-						<fieldset>
-							<legend>{{Stations :}}</legend>
-							<div class="form-group">
 								<label class="col-sm-3 control-label" for="TypeCarburant">{{Type de carburants :}}</label>
 								<div class="col-sm-3">
 									<select id="TypeCarburant" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="typecarburant">
@@ -153,37 +132,43 @@ $eqLogics = eqLogic::byType($plugin->getId());
 										<option value="GPLc">{{GPL}}</option>
 									</select>
 								</div>
-							</div><br />
-							
+							</div>
+						</fieldset>
+						
+						<fieldset>
+							<legend>{{Stations :}}</legend>
 							<div class="Conteneur_Flex">
 								<div class="col-sm-3 control-label"> </div>
 								
 								<div class="Conteneur_localisation" style="width: 33%;">
-    								<label class="checkbox-inline" for="ViaLoca"><input id="ViaLoca" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="ViaLoca" value="ViaLocaCheck" onclick="CheckBx('ViaLoca')" />{{Via une localisation}}</label>
-    								<div class="form-group" id="Divloca1" style="display: <?php echo $DisplayType; ?>;">
+    								<label class="checkbox-inline" for="ViaLoca"><input id="ViaLoca" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="ViaLoca" onclick="CheckBx('ViaLoca')" />{{Via une localisation}}</label>
+    								<div class="form-group" id="Divloca1" style="display: none;">
         								<label class="Conteneur_Label" for="geoloc">{{Chercher autour de :}}</label>
         								<div class="Conteneur_Input">
                                             <select class="eqLogicAttr form-control" id="geoloc" data-l1key="configuration" data-l2key="geoloc">
                                                 <?php
                                                 $none = 0;
                                                 if (class_exists('geotravCmd')) {
-                                          
-                                                  foreach (eqLogic::byType('geoloc') as $moneqGeoLoc) {
-                                                    
-                                                    if ($moneqGeoLoc->getIsEnable()){
-                                                                                                    
-                                                        foreach (cmd::searchConfigurationEqLogic($moneqGeoLoc->getId(),'{"mode":"fixe"') as $geoloc) {
+                                                    //List all geotrav localisation
+                                                    foreach (eqLogic::byType('geotrav') as $geoloc) {
+                                                        if ($geoloc->getConfiguration('type') == 'location' && $geoloc->getConfiguration('coordinate') != '') {
                                                             $none++;
                                                             echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
                                                         }
-
-                                                        foreach (cmd::searchConfigurationEqLogic($moneqGeoLoc->getId(),'{"mode":"dynamic"') as $geoloc) {
-                                                            $none++;
-                                                            echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
+                                                    }
+                                                    //List all geoloc localisation
+                                                    foreach (eqLogic::byType('geoloc') as $moneqGeoLoc) {
+                                                        if ($moneqGeoLoc->getIsEnable()){
+                                                            foreach (cmd::searchConfigurationEqLogic($moneqGeoLoc->getId(),'{"mode":"fixe"') as $geoloc) {
+                                                                $none++;
+                                                                echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
+                                                            }
+                                                            foreach (cmd::searchConfigurationEqLogic($moneqGeoLoc->getId(),'{"mode":"dynamic"') as $geoloc) {
+                                                                $none++;
+                                                                echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
+                                                            }
                                                         }
-                                                      
-                                                    }											
-                                                  }                                          
+                                                    }
                                                 }
                                                 if ((config::byKey('info::latitude') != '') && (config::byKey('info::longitude') != '') ) {
                                                     echo '<option value="jeedom">{{Configuration Jeedom}}</option>';
@@ -197,21 +182,37 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                         </div>
         							</div>
         							
-                                    <div class="form-group" id="Divloca2" style="display: <?php echo $DisplayType; ?>;">
-        								<label class="Conteneur_Label" for="RayonMax">{{Rayon maxi (Km) :}}</label>
+                                    <div class="form-group" id="Divloca2" style="display: none;">
+        								<label class="Conteneur_Label" for="rayon">{{Rayon maxi (Km) :}}</label>
         								<div class="Conteneur_Input">
-        									<input type="text" id="RayonMax" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="{{Saisir un nombre de kilométre}}"/>
+        									<input type="text" id="rayon" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="{{Saisir un nombre de kilométre}}"/>
         								</div>
 									</div>
+        							<div class="form-group" id="Divloca3" style="display: none;">
+        								<label class="Conteneur_Label" for="NbStation">{{Nombre de station :}}</label>
+        								<div class="Conteneur_Input">
+        									<select id="NbStation" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="nbstation">
+        										<option value="0">0</option>
+        										<option value="1">1</option>
+        										<option value="2">2</option>
+        										<option value="3">3</option>
+        										<option value="4">4</option>
+        										<option value="5">5</option>
+        										<option value="6">6</option>
+        										<option value="7">7</option>
+        										<option value="8">8</option>
+        										<option value="9">9</option>
+        										<option value="10">10</option>
+        									</select>
+        								</div>
+        							</div>
     							</div>
     							
-    							<div class="Conteneur_favoris" style="width: 33%;" onmouseenter="FinChargement()">
+    							<div class="Conteneur_favoris" style="width: 33%;">
     								<label class="checkbox-inline" for="Favoris"><input id="Favoris" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="Favoris" onclick="CheckBx('Favoris')" />{{Via un / des favori(s)}}</label>
     								<?php 
-									
 									if ($eqLogic != null){
-									
-										//Show only elements that was fill
+										//Prepare favorite area
 										for($i=1; $i <= 10; $i++) {
 											echo '
 										<div class="form-group">
@@ -228,7 +229,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 												<input type="Text" class="eqLogicAttr form-control" id="Station'. $i .'_StationListe" data-l1key="configuration" data-l2key="station'. $i .'_StationListe" style="display: none;" />
 												<select class="eqLogicAttr form-control" id="SelectStation'. $i .'_Station" onchange="AffichAjoutFav('. $i .')" style="display: none;"></select>
 												<input type="Text" class="eqLogicAttr form-control" id="Station'. $i .'_Station" data-l1key="configuration" data-l2key="station'. $i .'_Station" style="display: none;" />';
-											//Display "add favorite" button and text
+											//prepare add/remove buttons
 											if($i < 10) {
 												$compteur = $i + 1;
 												echo '
@@ -245,12 +246,10 @@ $eqLogics = eqLogic::byType($plugin->getId());
 											</div>
 										</div><br />';
 										}
-									
 									}
-    								
     								?>
     							</div>
-    							<input type="Text" class="eqLogicAttr form-control" id="FinPage" data-l1key="configuration" data-l2key="FinPage" value="fini" style="display: none;" onchange="FillSavedSelect()" /> "
+    							<input type="Text" class="eqLogicAttr form-control" id="FinPage" data-l1key="configuration" data-l2key="FinPage" value="fini" style="display: none;" onchange="FillSavedSelect()" />
 						</fieldset>
 					</form>
 				</div>

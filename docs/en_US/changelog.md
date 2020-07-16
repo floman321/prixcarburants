@@ -3,11 +3,13 @@
 ### TODO list
 - Add coloration to highlight data that are up to date in comparison with data that has not been updated since a while
 
-## 03/07/2020
-- Mise à jour des fichiers contenant la liste des stations (JSON)
-- Améliorer la sélection de la station favoris
-- Ajout de la possibilité, sur un seul véhicule avoir le choix entre suivre une station favorite et des stations autour des coordonnées
+## 16/07/2020
+- After this update, all equipment will need to be open to update configuration. This to allow all following point to works correctly.
+- Gaz station files updates (JSON)
+- Improve favorite selection
+- Add the possibility on one equipement to follow several favorites (up to 10) and gaz stations arround a location.
 - When the first equipement is created, creation of the list of price.
+- During first install, gaz station price are collected from government website. In order to have fresh values.
 
 ## 01/07/2020
 - Show only activated geoloc

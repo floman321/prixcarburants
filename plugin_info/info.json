@@ -12,7 +12,7 @@
 	"changelog" : "https://floman321.github.io/prixcarburants/#language#/changelog",
 	"documentation" : "https://floman321.github.io/prixcarburants/#language#/",
 	"link" : {
-		"forum":"https://community.jeedom.com/t/prix-carburants/23547"
+		"forum":"https://community.jeedom.com/t/plugin-tiers-sujet-principal-prix-carburants/23547"
 	},
 	"language" : ["fr_FR","en_US"],
 	"compatibility" : ["miniplus","smart","rpi","docker","diy"]

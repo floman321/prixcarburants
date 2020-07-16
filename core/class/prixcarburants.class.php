@@ -20,20 +20,9 @@
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
 class prixcarburants extends eqLogic {
-	/*     * *************************Attributs****************************** */
-	
-
-
 	/*     * ***********************Methode static*************************** */
-
-	/*
-	* Fonction exécutée automatiquement toutes les minutes par Jeedom
-	public static function cron() {
-
-	}
-	*/
-
-
+    
+    //Function to calculate a distance between selected location and a station
 	public static function distance($lat1, $lng1, $lat2, $lng2, $unit = 'k') {
 		$earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
 		$rlo1 = deg2rad($lng1);
@@ -50,7 +39,8 @@ class prixcarburants extends eqLogic {
 	public static function custom_sort($a,$b) {
 	   return $a['prix']>$b['prix'];
 	}
-
+    
+	//Function to get The brand of a gaz station
 	public static function getMarqueStation($idstation, $DepStation) {
 	    $json = @file_get_contents(__DIR__ . '/listestations/stations' . $DepStation . '.json');
 	    if($json!==false){
@@ -67,28 +57,29 @@ class prixcarburants extends eqLogic {
 	    }
 	}
 
+	//Function list all gaz station that correspond to defined parameters on the configuration
 	public static function MAJVehicules($oneveh) {
 		
 		if ($oneveh != null){
-			log::add('prixcarburants','debug',' onlyoneveh ');
+			log::add('prixcarburants','debug','Update only one vehicle');
 			$Vehicules = array($oneveh);
 		}else{
-			log::add('prixcarburants','debug',' allveh '); 
+			log::add('prixcarburants','debug','Update all vehicle'); 
 			$Vehicules = self::byType('prixcarburants');
 		}
 		
 		foreach ($Vehicules as $unvehicule) {
 			if ($unvehicule->getIsEnable() == 0) continue;
 			
-			$reader = XMLReader::open(__DIR__.'/PrixCarburants_instantane.xml');
-			$doc = new DOMDocument;
 			$maselection = array();
+			$SelectionFav = array();
 			$idx = 0;
 			
 			$nom = $unvehicule->getName();
 			$typecarburant = $unvehicule->getConfiguration('typecarburant','');
+			if($typecarburant == '') log::add('prixcarburants','error',__('Le type de carburant n\'est pas renseigné dans la configuration de Prix Carburants : ',  __FILE__).$nom);
 			$rayon = $unvehicule->getConfiguration('rayon','30');
-			$nbstation = $unvehicule->getConfiguration('nbstation','3');
+			$nbstation = $unvehicule->getConfiguration('nbstation','0');
 			$monformatdate = $unvehicule->getConfiguration('formatdate','');
 			//Get the list of favoris selected
 			$NbFavoris = 0;
@@ -102,29 +93,37 @@ class prixcarburants extends eqLogic {
     			        break;
     			    }
     			}
-			}
-			//Get position latitude and longitude only if geolocalisation is selected
-			if ($unvehicule->getConfiguration('ViaLoca') == '1') {
-    			if ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
-    			    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
-    			    if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée',  __FILE__));
-    			    return;
-    			} elseif ($unvehicule->getConfiguration('geoloc') == "jeedom") {
-    			    $malat = config::byKey('info::latitude');
-    			    $malng = config::byKey('info::longitude');
-    			} else {
-    			    if (geotravCmd::byEqLogicIdAndLogicalId($unvehicule->getConfiguration('geoloc'),'location:coordinate') != null){
-                        $coordonnees = geotravCmd::byEqLogicIdAndLogicalId($unvehicule->getConfiguration('geoloc'),'location:coordinate')->execCmd();
-    			    }else{
-    			        $coordonnees = cmd::byId($unvehicule->getConfiguration('geoloc'))->execCmd();
-    			    }
-    			    $expcoord = explode(",",$coordonnees);
-    		        $malat = $expcoord[0];
-    		        $malng = $expcoord[1];
-    			}
+    			if($NbFavoris == 0) log::add('prixcarburants','error',__('Aucun favoris n\'est sélectionné dans la configuration de Prix Carburants : ',  __FILE__).$nom);
 			}
 			
-			//Parse XML file
+			//Get position latitude and longitude only if geolocalisation is selected
+			if ($unvehicule->getConfiguration('ViaLoca') == '1') {
+			    if($nbstation == '0') {
+			        log::add('prixcarburants','error',__('Le nombre de station n\'est pas renseigné dans la configuration de Prix Carburants : ',  __FILE__).$nom);
+			    } else {
+        			if ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
+        			    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
+        			    if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée',  __FILE__));
+        			    return;
+        			} elseif ($unvehicule->getConfiguration('geoloc') == "jeedom") {
+        			    $malat = config::byKey('info::latitude');
+        			    $malng = config::byKey('info::longitude');
+        			} else {
+        			    if (geotravCmd::byEqLogicIdAndLogicalId($unvehicule->getConfiguration('geoloc'),'location:coordinate') != null){
+                            $coordonnees = geotravCmd::byEqLogicIdAndLogicalId($unvehicule->getConfiguration('geoloc'),'location:coordinate')->execCmd();
+        			    } else {
+        			        $coordonnees = cmd::byId($unvehicule->getConfiguration('geoloc'))->execCmd();
+        			    }
+        			    $expcoord = explode(",",$coordonnees);
+        		        $malat = $expcoord[0];
+        		        $malng = $expcoord[1];
+        			}
+			    }
+			}
+			
+			//Prepare and parse XML file
+			$reader = XMLReader::open(__DIR__.'/PrixCarburants_instantane.xml');
+			$doc = new DOMDocument;
 			while($reader->read()) {
 				if ($reader->nodeType == XMLReader::ELEMENT && $reader->name == 'pdv') {
 					$lat = $reader->getAttribute('latitude')/100000;
@@ -156,21 +155,21 @@ class prixcarburants extends eqLogic {
 					//Register only station that are a favorite or on max radius
 					if($MonTest == False) continue;
 					
+					//Import and review XML file
 					$unestation = simplexml_import_dom($doc->importNode($reader->expand(), true));
-					
-					foreach ($unestation->prix as $prix){
+					foreach ($unestation->prix as $prix) {
 						if ($prix->attributes()->nom == $typecarburant){ //Filter by fuel type
 							$prixlitre = $prix->attributes()->valeur.'';
 							$maj = $prix->attributes()->maj.'';
 							$marque = prixcarburants::getMarqueStation($mastationid, $MaStationDep);
 							
-							if($EstFavoris) {
+							if($EstFavoris) { //Register favorite station
 							    $SelectionFav[$ordreFav]['adresse'] = $marque.', '.$unestation->ville;
 							    $SelectionFav[$ordreFav]['prix'] = $prixlitre;
 							    $SelectionFav[$ordreFav]['maj']  = date($monformatdate, strtotime($maj));
 							    $SelectionFav[$ordreFav]['distance'] = $dist;
 							    $SelectionFav[$ordreFav]['id'] = $mastationid;
-							} else {
+							} else { //Register station that are one the radius
 							    $maselection[$idx]['adresse'] = $marque.', '.$unestation->ville;
 							    $maselection[$idx]['prix'] = $prixlitre;
 							    $maselection[$idx]['maj']  = date($monformatdate, strtotime($maj));
@@ -184,10 +183,12 @@ class prixcarburants extends eqLogic {
 			}
 			$reader->close();
 
-			log::add('prixcarburants','debug',' step count selection '.count($maselection).' '.$nom);
-				
+			log::add('prixcarburants','debug','Step count selection: '.count($maselection).' for equipement: '.$nom);
+			
 			usort($maselection, "prixcarburants::custom_sort");
 			
+			//Register favorites then require quantity of station from localisation
+			$nbstation = $NbFavoris + $nbstation;
 			For($i = 1; $i <= $nbstation; $i++) {
 			    if($i <= $NbFavoris) {
 			        $liste[$i - 1] = $SelectionFav[$i - 1];
@@ -211,12 +212,11 @@ class prixcarburants extends eqLogic {
 			        if (is_object($macmd)) $macmd->event(__('Plus de station disponible dans le rayon sélectionné',  __FILE__));
 			    }
 			}
-			
 			$unvehicule->refreshWidget();
 		}
-
 	}
 	
+	//Function to get zip file from government website then update all values
 	Public static function updatePrixCarburant(){
 		$filenamezip = __DIR__.'/PrixCarburants.zip';
 		
@@ -230,17 +230,11 @@ class prixcarburants extends eqLogic {
     		log::add('prixcarburants','debug','prix zip ok get'.__DIR__);
     		
     		unlink(__DIR__.'/PrixCarburants.zip');
-    		
     		prixcarburants::MAJVehicules(null);
 		} else {
 		  log::add('prixcarburants','debug','prix zip nok get'.__DIR__);
 		}
 	}
-	
-	/*
-	//* Fonction exécutée automatiquement toutes les heures par Jeedom
-	public static function cronHourly() {}
-	*/
 	
 	
 	//* Fonction exécutée automatiquement tous les jours par Jeedom
@@ -261,17 +255,8 @@ class prixcarburants extends eqLogic {
 
 	/*     * *********************Méthodes d'instance************************* */
 
-	public function preInsert() {}
-
-	public function postInsert() {
-	    //Update prixcarburants file
-	    //$this->getEqLogic()->updatePrixCarburant();
-	}
-
-	public function preSave() {}
-
 	public function postSave() {
-		//Ajout de la commande pour rafraichir les données
+		//Create refresh commande
 		$prixcarburantsCmd = $this->getCmd(null, 'refresh');
 		if (!is_object($prixcarburantsCmd)) {
 			log::add('prixcarburants', 'debug', 'refresh');
@@ -282,7 +267,7 @@ class prixcarburants extends eqLogic {
 			$prixcarburantsCmd->setType('action');
 			$prixcarburantsCmd->setSubType('other');
 			$prixcarburantsCmd->setIsHistorized(0);
-			$prixcarburantsCmd->setIsVisible(0);
+			$prixcarburantsCmd->setIsVisible(1);
 			$prixcarburantsCmd->setOrder(0);
 			$prixcarburantsCmd->save();
 		}
@@ -293,36 +278,23 @@ class prixcarburants extends eqLogic {
 		}
 	}
 
-	public function preUpdate() {
-	    //Pour vieille installation ayant un mauvais nom ; Pourras être supprimé dans quelques temps (vers Septembre, ça devrait être bon)
-	    $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Rafraichir');
-	    if (!is_object($prixcarburantsCmd)) {
-	        $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'{{Rafraichir}}');
-	    }
-	    if (is_object($prixcarburantsCmd)) {
-	        $prixcarburantsCmd->remove();
-	        $prixcarburantsCmd = new prixcarburantsCmd();
-	        $prixcarburantsCmd->setName(__('Actualiser',  __FILE__));
-	        $prixcarburantsCmd->setEqLogic_id($this->getId());
-	        $prixcarburantsCmd->setLogicalId('refresh');
-	        $prixcarburantsCmd->setType('action');
-	        $prixcarburantsCmd->setSubType('other');
-	        $prixcarburantsCmd->setDisplay('showNameOndashboard',0);
-	        $prixcarburantsCmd->setIsHistorized(0);
-	        $prixcarburantsCmd->setIsVisible(0);
-	        $prixcarburantsCmd->setOrder(0);
-	        $prixcarburantsCmd->save();
-	    }
-	}
-
+    // Create corrrectly the good quantity of command on an equipement
 	public function postUpdate() {
-		//Choose correct quantity of station. Only 1 if there is a favorite selected, or if there is no location
-		$FavorisMode = $this->getConfiguration('station1','');
-		if($FavorisMode != '' or $this->getConfiguration('geoloc', 'none') == 'none'){
-		    $nbstation = 1;
-		} else {
-		    $nbstation = $this->getConfiguration('nbstation','3');
-		}
+		//Choose correct quantity of station.
+	    $nbstation = $this->getConfiguration('nbstation','3');
+	    $NbFavoris = 0;
+	    if ($this->getConfiguration('Favoris') == '1') {
+	        for($i = 1; $i <=10; $i++) {
+	            if($this->getConfiguration('station' . $i . '_Dep','') != '' && $this->getConfiguration('station' . $i . '_Station','') != '') {
+	                $StationFav[$i] = $this->getConfiguration('station' . $i . '_Station','');
+	                $DepartementFav[$i] = $this->getConfiguration('station' . $i . '_Dep','');
+	                $NbFavoris++;
+	            } else {
+	                break;
+	            }
+	        }
+	    }
+	    $nbstation = $nbstation + $NbFavoris;
 		
 		$OrdreAffichage = 1;
 		
@@ -408,44 +380,9 @@ class prixcarburants extends eqLogic {
 	public function preRemove() {}
 
 	public function postRemove() {}
-
-	/*
-	* Non obligatoire mais permet de modifier l'affichage du widget si vous en avez besoin
-	public function toHtml($_version = 'dashboard') {
-
-	}
-	*/
-
-	/*
-	* Non obligatoire mais ca permet de déclencher une action après modification de variable de configuration
-	public static function postConfig_<Variable>() {
-	}
-	*/
-
-	/*
-	* Non obligatoire mais ca permet de déclencher une action avant modification de variable de configuration
-	public static function preConfig_<Variable>() {
-	}
-	*/
-
-	/*     * **********************Getteur Setteur*************************** */
 }
 
 class prixcarburantsCmd extends cmd {
-	/*     * *************************Attributs****************************** */
-
-
-	/*     * ***********************Methode static*************************** */
-
-
-	/*     * *********************Methode d'instance************************* */
-
-	/*
-	* Non obligatoire permet de demander de ne pas supprimer les commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
-	public function dontRemoveCmd() {
-	return true;
-	}
-	*/
 
 	public function execute($_options = array()) {
 		// If 'click' on 'refresh' command
@@ -455,6 +392,4 @@ class prixcarburantsCmd extends cmd {
 		}
 		return true;
 	}
-
-	/*     * **********************Getteur Setteur*************************** */
 }

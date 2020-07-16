@@ -22,7 +22,7 @@
         "Style d'affichage :": "Display style:",
         "Format date :": "Date format:",
         "Par défaut": "Default",
-        "Nombre de station affichée :": "Number of stations displayed:",
+        "Nombre de station :": "Station quantity:",
         "Stations :": "Gaz stations:",
         "Type de carburants :": "Fuel type:",
         "Gazole": "Diesel",
@@ -57,6 +57,9 @@
 		"Erreur": "Error",
     	"Pas de localisation sélectionnée": "No location selected",
     	"Plus de station disponible dans le rayon sélectionné": "No more stations available in the selected radius",
-    	"Actualiser": "Refresh"
+    	"Actualiser": "Refresh",
+    	"Le type de carburant n'est pas renseigné dans la configuration de Prix Carburants : ": "Fuel type isn't defined on Prix Carburant configuration: ",
+    	"Aucun favoris n'est sélectionné dans la configuration de Prix Carburants : ": "No favorites are selected on Prix Carburant congiration: ",
+    	"Le nombre de station n'est pas renseigné dans la configuration de Prix Carburants : ": "Station quantity isn't indicated on Prix Carburant congiruation: "
     }
 }

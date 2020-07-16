@@ -3,11 +3,13 @@
 ### TODO list
 - mettre en avant une confiance par rapport à la date de dernière mise à jour (via des couleurs, dont les seuils peuvent être modifé par l'utilisateur)
 
-## 03/07/2020
+## 16/07/2020
+- Lors de cette mise à jour, chaque équipement devra être reconfiguré pour prendre en compte un certain nombre de modifications.
 - Mise à jour des fichiers contenant la liste des stations (JSON).
 - Améliorer la sélection de la station favoris
 - Ajout de la possibilité, sur un seul véhicule avoir le choix entre suivre une station favorite et des stations autour des coordonnées
 - Lors de la création du 1er équipement, création du fichier contenant la liste des prix. Pour avoir une liste à jour, plutôt qu'une ancienne reprise depuis le dépôt.
+- Lors de la première installation, le fichiers des stations est récupéré sur le site du gouvernement. Ceci afin d'avoir les derniers prix disponible.
 
 ## 01/07/2020
 - Affiche uniquement les lieu geoloc activés.
