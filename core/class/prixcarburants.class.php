@@ -281,6 +281,13 @@ class prixcarburants extends eqLogic {
 		    $nbstation = $this->getConfiguration('nbstation','3');
 		}
 		
+		// IF GPS SEARCH IS OFF THEN COUNT ONLY FAVORITES ELSE COUNT GPSSTATIONS + FAVORITES  
+		if ($this->getConfiguration('ViaLoca') == '0') {
+			$nbstation = $NbFavoris;
+		}else{ 
+			$nbstation = $nbstation + $NbFavoris; 
+		}
+		
 		$OrdreAffichage = 1;
 		
 		For($i = 1; $i <= 10; $i++) {
