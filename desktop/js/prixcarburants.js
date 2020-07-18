@@ -206,6 +206,11 @@ function CheckBx(Type_) {
 			document.getElementById('SelectStation'+i+'_Station').options.length = 0;
 			document.getElementById('SelectStation'+i+'_AddFav').style.display = "none";
 			document.getElementById('SelectStation'+i+'_RemoveFav').style.display = "none";
+			document.getElementById('Station'+i+'_Dep').value = "";
+			document.getElementById('Station'+i+'_CommuneListe').value = "";
+			document.getElementById('Station'+i+'_Commune').value = "";
+			document.getElementById('Station'+i+'_StationListe').value = "";
+			document.getElementById('Station'+i+'_Station').value = "";
 		}
 	} 
   
@@ -218,6 +223,8 @@ function CheckBx(Type_) {
 		document.getElementById('Divloca1').style.display = "none";
 		document.getElementById('Divloca2').style.display = "none";
 		document.getElementById('Divloca3').style.display = "none";
+		document.getElementById('rayon').value = "";
+		document.getElementById('NbStation').options[0].selected = true;
 	}
 
 }
