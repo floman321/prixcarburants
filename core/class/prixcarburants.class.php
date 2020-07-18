@@ -281,7 +281,7 @@ class prixcarburants extends eqLogic {
     // Create corrrectly the good quantity of command on an equipement
 	public function postUpdate() {
 		//Choose correct quantity of station.
-	    $nbstation = $this->getConfiguration('nbstation','3');
+	    $nbstation = $this->getConfiguration('nbstation','0');
 	    $NbFavoris = 0;
 	    if ($this->getConfiguration('Favoris') == '1') {
 	        for($i = 1; $i <=10; $i++) {
