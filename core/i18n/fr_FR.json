@@ -44,7 +44,10 @@
 	    "Max favoris ajoutable": "Max favoris ajoutable",
     	"Nom": "Nom",
     	"Paramètres": "Paramètres",
-    	"Action": "Action"
+    	"Action": "Action",
+		"Ordre d'affichage :": "Ordre d'affichage :",
+		"Par ordre de sélection": "Par ordre de sélection",
+		"Par prix": "Par prix"
     },
     "plugins\/prixcarburants\/desktop\/js\/prixcarburants.js": {
 		"Nom": "Nom",

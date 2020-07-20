@@ -45,6 +45,9 @@
         "Nom": "Name",
         "Paramètres": "Settings",
         "Action": "Action"
+		"Ordre d'affichage :": "Display order :",
+		"Par ordre de sélection": "By selection",
+		"Par prix": "By price"
     },
     "plugins\/prixcarburants\/desktop\/js\/prixcarburants.js": {
     	"Non": "Name",

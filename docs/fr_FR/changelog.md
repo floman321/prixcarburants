@@ -3,6 +3,9 @@
 ### TODO list
 - mettre en avant une confiance par rapport à la date de dernière mise à jour (via des couleurs, dont les seuils peuvent être modifé par l'utilisateur)
 
+## 20/07/2020
+- Ajout de la possibilité de choisir dans quel ordre afficher les favoris (par ordre de sélection, ou par prix)
+
 ## 16/07/2020
 - Lors de cette mise à jour, chaque équipement devra être reconfiguré pour prendre en compte un certain nombre de modifications.
 - Mise à jour des fichiers contenant la liste des stations (JSON).

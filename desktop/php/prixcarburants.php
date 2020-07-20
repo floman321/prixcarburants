@@ -210,6 +210,16 @@ $eqLogics = eqLogic::byType($plugin->getId());
     							
     							<div class="Conteneur_favoris" style="width: 33%;">
     								<label class="checkbox-inline" for="Favoris"><input id="Favoris" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="Favoris" onclick="CheckBx('Favoris')" />{{Via un / des favori(s)}}</label>
+									<div class="form-group" id="DivOrdreFavoris" style="display: none;">
+										<label class="Conteneur_Label" for="OrdreFavoris">{{Ordre d'affichage :}}</label>
+        								<div class="Conteneur_Input">
+											<select id="OrdreFavoris" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="OrdreFavoris">
+												<option value="Ordre">{{Par ordre de sélection}}</option>
+												<option value="Prix">{{Par prix}}</option>
+											</select>
+											<br />
+										</div>
+									</div>
     								<?php 
 									if ($eqLogic != null){
 										//Prepare favorite area
@@ -238,7 +248,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 												echo '
 												<a id="SelectStation'. $i .'_AddFav" style="display: none;">{{Max favoris ajoutable}}</a>';
 											}
-											($i > 2)? $compteur = $i - 1:  $compteur = $i;
+											($i >= 2)? $compteur = $i - 1:  $compteur = $i;
 											echo '
 											</div>
 											<div>

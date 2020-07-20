@@ -97,7 +97,7 @@ function AffichageChoixStation(TypeSelect, IdSelectModif, IdNum, IdSelectAModif)
 				var MaListeText = '';
 				//Create the liste of element for the select
 				MaListe["0"] = "{{Sélectionner une }}"+TypeSelect;
-				MaListeText = "<0>{{Sélectionner une }}"+TypeSelect;
+				MaListeText = "0<->{{Sélectionner une }}"+TypeSelect;
 				for (var i = 0; i < stations.length; i++) {
 					if(TypeSelect == "commune") {
 						MaListe[stations[i].commune.toUpperCase()] = stations[i].commune.toUpperCase()+" ("+stations[i].cp+")";
@@ -153,8 +153,13 @@ function AffichAjoutFav(IdSelect) {
 			document.getElementById('Station'+IdSelect+'_Station').value = selectElmt.options[selectElmt.selectedIndex].value;
 			if(document.getElementById('SelectStation'+IdSelect+'_Station').value != '0' && document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display != "block") {
 				document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display = "block";
+				if(IdSelect > 1) document.getElementById('DivOrdreFavoris').style.display = "block";
 			} else if(document.getElementById('SelectStation'+IdSelect+'_Station').value == '0' && document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display == "block") {
 				document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display = "none";
+				if(IdSelect == 2) {
+					document.getElementById('DivOrdreFavoris').style.display = "none";
+					document.getElementById('OrdreFavoris').options[0].selected = true;
+				}
 			}
 		}
 	}
@@ -181,10 +186,20 @@ function RetireFavoris(IdCurrent, IdOld) {
 		document.getElementById('SelectStation'+IdCurrent+'_Station').style.display = "none";
 		document.getElementById('SelectStation'+IdCurrent+'_AddFav').style.display = "none";
 		document.getElementById('SelectStation'+IdOld+'_RemoveFav').style.display = "block";
+		document.getElementById('Station'+IdCurrent+'_Dep').value = "";
+		document.getElementById('Station'+IdCurrent+'_CommuneListe').value = "";
+		document.getElementById('Station'+IdCurrent+'_Commune').value = "";
+		document.getElementById('Station'+IdCurrent+'_StationListe').value = "";
+		document.getElementById('Station'+IdCurrent+'_Station').value = "";
 		if(document.getElementById('SelectStation'+IdOld+'_AddFav').value != ''){
 			document.getElementById('SelectStation'+IdOld+'_AddFav').style.display = "block";
 		}
 		document.getElementById('SelectStation'+IdCurrent+'_RemoveFav').style.display = "none";
+		
+		if(IdCurrent == 2) {
+			document.getElementById('DivOrdreFavoris').style.display = "none";
+			document.getElementById('OrdreFavoris').options[0].selected = true;
+		}
 	}
 }
 
@@ -211,6 +226,8 @@ function CheckBx(Type_) {
 			document.getElementById('Station'+i+'_Commune').value = "";
 			document.getElementById('Station'+i+'_StationListe').value = "";
 			document.getElementById('Station'+i+'_Station').value = "";
+			document.getElementById('DivOrdreFavoris').style.display = "none";
+			document.getElementById('OrdreFavoris').options[0].selected = true;
 		}
 	} 
   
@@ -236,6 +253,8 @@ function FillSavedSelect() {
 		return; 
 	}
 	
+	
+	
 	for(var i = 1; i <= 10 ; i++) {
 		if(document.getElementById('Station'+i+'_Dep').value != '' && document.getElementById('Station'+i+'_CommuneListe').value != '' && document.getElementById('Station'+i+'_Commune').value != '' && document.getElementById('Station'+i+'_StationListe').value != '' && document.getElementById('Station'+i+'_Station').value != '') {
 			//Only if all select elements are filled
@@ -257,6 +276,8 @@ function FillSavedSelect() {
 			//hide unwanted buttons
 			document.getElementById('SelectStation'+i+'_AddFav').style.display = "none";
 			document.getElementById('SelectStation'+i+'_RemoveFav').style.display = "none";
+			
+			if(i > 1) document.getElementById('DivOrdreFavoris').style.display = "block";
 		} else {
 			if(i > 1) {
 				var compteur = i - 1;

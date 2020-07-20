@@ -185,7 +185,9 @@ class prixcarburants extends eqLogic {
 
 			log::add('prixcarburants','debug','Step count selection: '.count($maselection).' for equipement: '.$nom);
 			
+			//Sort by price, if needed (for favorite)
 			usort($maselection, "prixcarburants::custom_sort");
+			if($unvehicule->getConfiguration('OrdreFavoris','Ordre') == "Prix") usort($SelectionFav, "prixcarburants::custom_sort");
 			
 			//Register favorites then require quantity of station from localisation
 			$nbstation = $NbFavoris + $nbstation;
