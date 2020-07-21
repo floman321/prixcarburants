@@ -314,7 +314,7 @@ class prixcarburants extends eqLogic {
 		
 		$OrdreAffichage = 1;
 		
-		For($i = 1; $i <= 10; $i++) {
+		For($i = 1; $i <= 20; $i++) {
 		    //Show only required quantity of station
 			if($i <= $nbstation) {
 				$prixcarburantsCmd = $this->getCmd(null, 'TopID_'.$i);
