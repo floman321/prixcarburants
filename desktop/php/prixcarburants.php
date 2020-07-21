@@ -132,15 +132,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
 										<option value="GPLc">{{GPL}}</option>
 									</select>
 								</div>
-								<div class="form-group">
-								<label class="col-sm-3 control-label" for="TypeCarburant">{{Informations sur le véhicule :}}</label>
-								<div class="form-group">
-								<label class="col-sm-3 control-label" for="name">{{Réservoir :}}</label>
-								<div class="col-sm-3">
-								<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="reservoirl" placeholder="{{En litres}}"/>
-								</div>
-								</div>
-								</div>
+							</div>
+                            <div class="form-group">
+                                  <label class="col-sm-3 control-label" for="name">{{Capacité du réservoir :}}</label>
+                                 	 <div class="col-sm-3">
+                                  		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="reservoirl" placeholder="{{En litres}}"/>
+                                  	</div>
 							</div>
 						</fieldset>
 						
