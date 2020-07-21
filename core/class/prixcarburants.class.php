@@ -188,6 +188,8 @@ class prixcarburants extends eqLogic {
 			//Sort by price, if needed (for favorite)
 			usort($maselection, "prixcarburants::custom_sort");
 			if($unvehicule->getConfiguration('OrdreFavoris','Ordre') == "Prix") usort($SelectionFav, "prixcarburants::custom_sort");
+          
+          	$lreservoir = $unvehicule->getConfiguration('reservoirl');
 			
 			//Register favorites then require quantity of station from localisation
 			$nbstation = $NbFavoris + $nbstation;
@@ -209,6 +211,14 @@ class prixcarburants extends eqLogic {
     				
     				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Prix');
     				if (is_object($macmd)) $macmd->event($liste[$i - 1]['prix']);
+                  
+                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i.' Prix Plein');
+                    if (is_object($macmd)) $macmd->event(round($liste[$i - 1]['prix'] * $lreservoir,2));
+
+                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i.' Distance');
+                    if (is_object($macmd)) $macmd->event($liste[$i - 1]['distance']);
+
+                  
 			    } else {
 			        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Adresse');
 			        if (is_object($macmd)) {
@@ -226,6 +236,13 @@ class prixcarburants extends eqLogic {
     				
     				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Prix');
     				if (is_object($macmd)) $macmd->event('');
+                  
+                  	$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i.' Distance');
+                    if (is_object($macmd)) $macmd->event('');
+
+                    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i.' Prix Plein');
+                    if (is_object($macmd)) $macmd->event('');
+                  
 			    }
 			}
 			$unvehicule->refreshWidget();
@@ -374,6 +391,41 @@ class prixcarburants extends eqLogic {
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
+              
+              	$prixcarburantsCmd = $this->getCmd(null, 'PrixPlein_'.$i);
+                if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+                $prixcarburantsCmd->setName('Top ' . $i.' Prix Plein');
+                $prixcarburantsCmd->setEqLogic_id($this->getId());
+                $prixcarburantsCmd->setLogicalId('PrixPlein_'.$i);
+                $prixcarburantsCmd->setType('info');
+                $prixcarburantsCmd->setSubType('numeric');
+                $prixcarburantsCmd->setIsHistorized(0);
+                $prixcarburantsCmd->setIsVisible(0);
+                $prixcarburantsCmd->setUnite('€');
+                $prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+                $prixcarburantsCmd->setTemplate('dashboard','badge');
+                $prixcarburantsCmd->setTemplate('mobile','badge');
+                $prixcarburantsCmd->setOrder($OrdreAffichage);
+                $prixcarburantsCmd->save();
+                $OrdreAffichage++;
+
+                $prixcarburantsCmd = $this->getCmd(null, 'Distance_'.$i);
+                if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+                $prixcarburantsCmd->setName('Top ' . $i.' Distance');
+                $prixcarburantsCmd->setEqLogic_id($this->getId());
+                $prixcarburantsCmd->setLogicalId('Distance_'.$i);
+                $prixcarburantsCmd->setType('info');
+                $prixcarburantsCmd->setSubType('numeric');
+                $prixcarburantsCmd->setIsHistorized(0);
+                $prixcarburantsCmd->setIsVisible(0);
+                $prixcarburantsCmd->setUnite('Km');
+                $prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+                $prixcarburantsCmd->setTemplate('dashboard','badge');
+                $prixcarburantsCmd->setTemplate('mobile','badge');
+                $prixcarburantsCmd->setOrder($OrdreAffichage);
+                $prixcarburantsCmd->save();
+                $OrdreAffichage++;
+              
 			} else {
 			    //Remove all station to avoid having too much station when favorite is selected
 			    $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i . ' ID');
@@ -387,6 +439,12 @@ class prixcarburants extends eqLogic {
 			    
 			    $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i . ' Prix');
 			    if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
+              
+              	$prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i.' Prix Plein');
+                if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
+
+                $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i.' Distance');
+                if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
 			}
 		}
 		
