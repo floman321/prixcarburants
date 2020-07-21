@@ -99,8 +99,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 						</fieldset>
-                        
-                       
 						
 						<fieldset>
 							<legend>{{Style d'affichage :}}</legend>
@@ -135,26 +133,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									</select>
 								</div>
 							</div>
-                            
                             <div class="form-group">
-                            <legend>{{Informations sur le véhicule :}}</legend>
-                        		<div class="form-group">
-                                  <label class="col-sm-3 control-label" for="name">{{Réservoir :}}</label>
-                                  <div class="col-sm-3">
-                                      <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="reservoirl" placeholder="{{En litres}}"/>
-                                  </div>
-								</div>
-                                <div class="form-group">
-                                  <legend>{{Informations sur le véhicule :}}</legend>
-                                    <div class="form-group">
-                                      <label class="col-sm-3 control-label" for="name">{{Réservoir :}}</label>
-                                      	<div class="col-sm-3">
-                                      	<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="reservoirl" placeholder="{{En litres}}"/>
-                                      	</div>
-                                    </div>
-                                  </div>
-                            </div>
-                            
+                                  <label class="col-sm-3 control-label" for="name">{{Capacité du réservoir :}}</label>
+                                 	 <div class="col-sm-3">
+                                  		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="reservoirlitre" placeholder="{{En litres}}"/>
+                                  	</div>
+							</div>
 						</fieldset>
 						
 						<fieldset>
