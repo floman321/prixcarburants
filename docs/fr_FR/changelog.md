@@ -3,6 +3,9 @@
 ### TODO list
 - mettre en avant une confiance par rapport à la date de dernière mise à jour (via des couleurs, dont les seuils peuvent être modifé par l'utilisateur)
 
+## 21/07/2020 21h
+- Ajout critère pour mettre en évidence les dates de relevé trop anciennes.
+
 ## 21/07/2020 14h
 - Ajout prix d'un plein selon capacité du réservoir
 - Ajout distance de la station
