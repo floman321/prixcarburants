@@ -189,7 +189,7 @@ class prixcarburants extends eqLogic {
 			usort($maselection, "prixcarburants::custom_sort");
 			if($unvehicule->getConfiguration('OrdreFavoris','Ordre') == "Prix") usort($SelectionFav, "prixcarburants::custom_sort");
           
-          	$lreservoir = $unvehicule->getConfiguration('reservoirl');
+          	$lreservoir = $unvehicule->getConfiguration('reservoirlitre');
 			
 			//Register favorites then require quantity of station from localisation
 			$nbstation = $NbFavoris + $nbstation;
