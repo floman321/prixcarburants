@@ -100,9 +100,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							</div>
 						</fieldset>
                         
-                        <fieldset>
-							
-                        </fieldset>
+                       
 						
 						<fieldset>
 							<legend>{{Style d'affichage :}}</legend>
