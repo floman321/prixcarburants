@@ -134,9 +134,15 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
                             <div class="form-group">
-                                  <label class="col-sm-3 control-label" for="name">{{Capacité du réservoir :}}</label>
+                                  <label class="col-sm-3 control-label" for="name">{{Capacité du réservoir (litres) :}}</label>
                                  	 <div class="col-sm-3">
                                   		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="reservoirlitre" placeholder="{{En litres}}"/>
+                                  	</div>
+							</div>
+                            <div class="form-group">
+                                  <label class="col-sm-3 control-label" for="name">{{Considerer date relevé comme expirée (jours) :}}</label>
+                                 	 <div class="col-sm-3">
+                                  		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="dateexpire" placeholder="{{En jours}}"/>
                                   	</div>
 							</div>
 						</fieldset>
