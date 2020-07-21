@@ -1,31 +1,31 @@
 Description 
 ===
 
-Plugin permettant de r√©cup√©rer les informations des prix des carburants d'apr√®s les open data https://www.prix-carburants.gouv.fr
+Plugin permettant de rÇcupÇrer les informations des prix des carburants d'apräs les open data https://www.prix-carburants.gouv.fr
 
 Configuration
 ===
 Aucune
 
-Cr√©ation des √©quipements
+CrÇation des Çquipements
 ===
-![image](https://github.com/floman321/prixcarburants/blob/master/docs/fr_FR/Capture1.png?raw=true)
+![image](./Capture1.png?raw=true)
 
 Dans un premier temps, merci de choisir un carburant puis
 
 Vous avez 2 options : 
 - Une recherche autour d'un point gps (Domicile, Travail).
-Remplisser le champ "Rayon" (par d√©faut 30km si vide)
+Remplisser le champ "Rayon" (par dÇfaut 30km si vide)
 Remplisser le champ "Chercher autour de " : 
   - Lieus dans le plugin Geoloc
-  - Le rep√®re GPS dans la configuration de Jeedom (https://adresseipjeedom/index.php?v=d&p=administration#infotab)
+  - Le repäre GPS dans la configuration de Jeedom (https://adresseipjeedom/index.php?v=d&p=administration#infotab)
 
-![image](https://github.com/floman321/prixcarburants/blob/master/docs/fr_FR/Capture2.PNG?raw=true)
+![image](./Capture2.PNG?raw=true)
 
 - Une recherche par station favorite.
-  - Choisir dans les menus d√©roulant le d√©partement, la ville puis la station
-  - Ajouter jusqu'√† 10 stations favorites, dans l'ordre que vous voulez les afficher
+  - Choisir dans les menus dÇroulant le dÇpartement, la ville puis la station
+  - Ajouter jusqu'Ö 10 stations favorites, dans l'ordre que vous voulez les afficher
 
-![image](https://github.com/floman321/prixcarburants/blob/master/docs/fr_FR/capture3.PNG?raw=true)
+![image](./capture3.PNG?raw=true)
 
-Les 2 options peuvent se cumuler. Les stations favorites s'afficheront alors en premier (dans l'ordre rempli), puis le reste des stations affich√©es sera compl√©t√© par celles au meilleurs prix dans le rayon de la localisation s√©lectionn√©.
+Les 2 options peuvent se cumuler. Les stations favorites s'afficheront alors en premier (dans l'ordre rempli), puis le reste des stations affichÇes sera complÇtÇ par celles au meilleurs prix dans le rayon de la localisation sÇlectionnÇ.

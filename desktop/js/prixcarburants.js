@@ -151,7 +151,8 @@ function AffichAjoutFav(IdSelect) {
 			//Register selected value on input text
 			var selectElmt = document.getElementById('SelectStation'+IdSelect+'_Station');
 			document.getElementById('Station'+IdSelect+'_Station').value = selectElmt.options[selectElmt.selectedIndex].value;
-			if(document.getElementById('SelectStation'+IdSelect+'_Station').value != '0' && document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display != "block") {
+			CompteurTemp = IdSelect + 1;
+			if(document.getElementById('SelectStation'+IdSelect+'_Station').value != '0' && document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display != "block" && document.getElementById('SelectStation'+CompteurTemp+'_AddFav').style.display != "block") {
 				document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display = "block";
 				if(IdSelect > 1) document.getElementById('DivOrdreFavoris').style.display = "block";
 			} else if(document.getElementById('SelectStation'+IdSelect+'_Station').value == '0' && document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display == "block") {

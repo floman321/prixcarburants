@@ -211,7 +211,21 @@ class prixcarburants extends eqLogic {
     				if (is_object($macmd)) $macmd->event($liste[$i - 1]['prix']);
 			    } else {
 			        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Adresse');
-			        if (is_object($macmd)) $macmd->event(__('Plus de station disponible dans le rayon sélectionné',  __FILE__));
+			        if (is_object($macmd)) {
+						if($i <= $NbFavoris) {
+							$macmd->event(__('Favori pas correctement configuré',  __FILE__));
+						} else {
+							$macmd->event(__('Plus de station disponible dans le rayon sélectionné',  __FILE__));
+						}
+					}
+    				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' ID');
+    				if (is_object($macmd)) $macmd->event('');
+    				
+    				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' MAJ');
+    				if (is_object($macmd)) $macmd->event('');
+    				
+    				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Prix');
+    				if (is_object($macmd)) $macmd->event('');
 			    }
 			}
 			$unvehicule->refreshWidget();

@@ -44,7 +44,7 @@
     	"Max favoris ajoutable": "Max Favourites add-on",
         "Nom": "Name",
         "Paramètres": "Settings",
-        "Action": "Action"
+        "Action": "Action",
 		"Ordre d'affichage :": "Display order :",
 		"Par ordre de sélection": "By selection",
 		"Par prix": "By price"
@@ -63,6 +63,7 @@
     	"Actualiser": "Refresh",
     	"Le type de carburant n'est pas renseigné dans la configuration de Prix Carburants : ": "Fuel type isn't defined on Prix Carburant configuration: ",
     	"Aucun favoris n'est sélectionné dans la configuration de Prix Carburants : ": "No favorites are selected on Prix Carburant congiration: ",
-    	"Le nombre de station n'est pas renseigné dans la configuration de Prix Carburants : ": "Station quantity isn't indicated on Prix Carburant congiruation: "
+    	"Le nombre de station n'est pas renseigné dans la configuration de Prix Carburants : ": "Station quantity isn't indicated on Prix Carburant congiruation: ",
+		"Favori pas correctement configuré": "Favourite not correctly configured"
     }
 }

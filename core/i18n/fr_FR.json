@@ -63,6 +63,7 @@
     	"Actualiser": "Actualiser",
     	"Le type de carburant n'est pas renseigné dans la configuration de Prix Carburants : ": "Le type de carburant n'est pas renseigné dans la configuration de Prix Carburants : ",
     	"Aucun favoris n'est sélectionné dans la configuration de Prix Carburants : ": "Aucun favoris n'est sélectionné dans la configuration de Prix Carburants : ",
-    	"Le nombre de station n'est pas renseigné dans la configuration de Prix Carburants : ": "Le nombre de station n'est pas renseigné dans la configuration de Prix Carburants : "
+    	"Le nombre de station n'est pas renseigné dans la configuration de Prix Carburants : ": "Le nombre de station n'est pas renseigné dans la configuration de Prix Carburants : ",
+		"Favori pas correctement configuré": "Favori pas correctement configuré"
     }
 }
