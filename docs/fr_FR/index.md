@@ -9,7 +9,7 @@ Aucune
 
 Création des équipements
 ===
-![image](./Capture1.png?raw=true)
+![image](./Capture1.PNG?raw=true)
 
 Dans un premier temps, merci de choisir un carburant puis
 
