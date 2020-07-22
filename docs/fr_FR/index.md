@@ -1,34 +1,31 @@
 Description 
 ===
 
-Plugin permettant de rÃ©cupÃ©rer les informations des prix des carburants d'aprÃ¨s les open data https://www.prix-carburants.gouv.fr
+Plugin permettant de r‚cup‚rer les informations des prix des carburants d'aprŠs les open data https://www.prix-carburants.gouv.fr
 
 Configuration
 ===
 Aucune
 
-CrÃ©ation des Ã©quipements
+Cr‚ation des ‚quipements
 ===
-![image](https://raw.githubusercontent.com/floman321/prixcarburants/master/docs/fr_FR/Capture1.PNG?raw=true)
+![image](./Capture1.png?raw=true)
 
 Dans un premier temps, merci de choisir un carburant puis
 
 Vous avez 2 options : 
 - Une recherche autour d'un point gps (Domicile, Travail).
-Remplisser le champ "Rayon" (par dÃ©faut 30km si vide)
+Remplisser le champ "Rayon" (par d‚faut 30km si vide)
 Remplisser le champ "Chercher autour de " : 
   - Lieus dans le plugin Geoloc
-  - Le repÃ¨re GPS dans la configuration de Jeedom
-(https://adresseipjeedom/index.php?v=d&p=administration#infotab)
+  - Le repŠre GPS dans la configuration de Jeedom (https://adresseipjeedom/index.php?v=d&p=administration#infotab)
 
-pour renseigner ces champs, vous pouvez vous aider de ce site : https://www.torop.net/coordonnees-gps.php 
+![image](./Capture2.PNG?raw=true)
 
-![image](https://github.com/floman321/prixcarburants/blob/master/docs/fr_FR/Capture2.PNG?raw=true)
+- Une recherche par station favorite.
+  - Choisir dans les menus d‚roulant le d‚partement, la ville puis la station
+  - Ajouter jusqu'… 10 stations favorites, dans l'ordre que vous voulez les afficher
 
-- Une recherche d'une station favorite.
-Saisir ici un identifiant.
-Pour vous aider, cliquer sur le lien dans l'interface.
-Vous aurez accÃ¨s Ã  la liste de toutes les stations ! Vous pourrez rÃ©cupÃ©rer l'information "ID"
+![image](./capture3.PNG?raw=true)
 
-![image](https://github.com/floman321/prixcarburants/blob/master/docs/fr_FR/capture3.PNG?raw=true)
-
+Les 2 options peuvent se cumuler. Les stations favorites s'afficheront alors en premier (dans l'ordre rempli), puis le reste des stations affich‚es sera compl‚t‚ par celles au meilleurs prix dans le rayon de la localisation s‚lectionn‚.
