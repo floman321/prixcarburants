@@ -145,7 +145,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                   		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="dateexpire" placeholder="{{En jours}}"/>
                                      </div>
                                      <div class="col-sm-2">
-                                        <label class="checkbox-inline"><input id="ViaLoca" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="dateexpirevisible" />{{Ignorer les stations avec date périmés}}</label>
+                                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="dateexpirevisible" />{{Ignorer les stations avec date périmés}}</label>
                                   	</div>
 							</div>
 						</fieldset>
