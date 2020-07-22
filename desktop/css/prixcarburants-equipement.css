@@ -1,0 +1,21 @@
+.Conteneur_Flex{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+}
+
+.Conteneur_Label{
+	margin-bottom: 0;
+	text-align: right;
+	position: relative;
+	min-height: 1px;
+	padding-left: 1em !important;
+	padding-right: 1em !important;
+	width: 25%;
+	float: left;
+}
+
+.Conteneur_Input{
+	width: 65%;
+	float: left;
+}
