@@ -23,7 +23,9 @@ function template_install() {
 }
 
 function template_update() {
-    
+        //Message to be display after update. TO be remove for next plugin updates
+        message::add('Modification configuration plugin PrixCarburants', 'Suite à une grosse refont de la configuration du plugin PrixCarburants, merci d\'ouvrir la configuration de chaque équipement pour re-définir correctement vos besoins');
+
 }
 
 
