@@ -120,7 +120,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label" for="TypeCarburant">{{Type de carburants :}}</label>
+								<label class="col-sm-3 control-label" for="TypeCarburant">{{Type de carburant :}}</label>
 								<div class="col-sm-3">
 									<select id="TypeCarburant" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="typecarburant">
 										<option value="">{{Aucun}}</option>
@@ -140,12 +140,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                   	</div>
 							</div>
                             <div class="form-group">
-                                  <label class="col-sm-3 control-label" for="name">{{Considerer date relevé comme expirée (jours) :}}</label>
+                                  <label class="col-sm-3 control-label" for="name">{{Considérer date relevée comme expirée (jours) :}}</label>
                                  	 <div class="col-sm-1">
                                   		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="dateexpire" placeholder="{{En jours}}"/>
                                      </div>
                                      <div class="col-sm-2">
-                                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="dateexpirevisible" />{{Ignorer les stations avec date périmés}}</label>
+                                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="dateexpirevisible" />{{Ignorer les stations avec date périmée}}</label>
                                   	</div>
 							</div>
 						</fieldset>
@@ -200,11 +200,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                     <div class="form-group" id="Divloca2" style="display: none;">
         								<label class="Conteneur_Label" for="rayon">{{Rayon maxi (Km) :}}</label>
         								<div class="Conteneur_Input">
-        									<input type="text" id="rayon" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="{{Saisir un nombre de kilométre}}"/>
+        									<input type="text" id="rayon" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="{{Saisir un nombre de kilomètres}}"/>
         								</div>
 									</div>
         							<div class="form-group" id="Divloca3" style="display: none;">
-        								<label class="Conteneur_Label" for="NbStation">{{Nombre de station :}}</label>
+        								<label class="Conteneur_Label" for="NbStation">{{Nombre de stations :}}</label>
         								<div class="Conteneur_Input">
         									<select id="NbStation" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="nbstation">
         										<option value="0">0</option>
