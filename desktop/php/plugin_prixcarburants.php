@@ -3,7 +3,7 @@ if (!isConnect('admin')) {
 	throw new Exception('{{401 - Accès non autorisé}}');
 }
 
-$plugin = plugin::byId('prixcarburants');
+$plugin = plugin::byId('plugin_prixcarburants');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 
@@ -120,7 +120,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
-								<label class="col-sm-3 control-label" for="TypeCarburant">{{Type de carburants :}}</label>
+								<label class="col-sm-3 control-label" for="TypeCarburant">{{Type de carburant :}}</label>
 								<div class="col-sm-3">
 									<select id="TypeCarburant" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="typecarburant">
 										<option value="">{{Aucun}}</option>
@@ -140,12 +140,12 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                   	</div>
 							</div>
                             <div class="form-group">
-                                  <label class="col-sm-3 control-label" for="name">{{Considerer date relevé comme expirée (jours) :}}</label>
+                                  <label class="col-sm-3 control-label" for="name">{{Considérer date relevée comme expirée après (jours) :}}</label>
                                  	 <div class="col-sm-1">
                                   		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="dateexpire" placeholder="{{En jours}}"/>
                                      </div>
                                      <div class="col-sm-2">
-                                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="dateexpirevisible" />{{Ignorer les stations avec date périmés}}</label>
+                                        <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="dateexpirevisible" />{{Ignorer les stations avec date périmée}}</label>
                                   	</div>
 							</div>
 						</fieldset>
@@ -200,11 +200,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                     <div class="form-group" id="Divloca2" style="display: none;">
         								<label class="Conteneur_Label" for="rayon">{{Rayon maxi (Km) :}}</label>
         								<div class="Conteneur_Input">
-        									<input type="text" id="rayon" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="{{Saisir un nombre de kilométre}}"/>
+        									<input type="text" id="rayon" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="{{Saisir un nombre de kilométres}}"/>
         								</div>
 									</div>
         							<div class="form-group" id="Divloca3" style="display: none;">
-        								<label class="Conteneur_Label" for="NbStation">{{Nombre de station :}}</label>
+        								<label class="Conteneur_Label" for="NbStation">{{Nombre de stations :}}</label>
         								<div class="Conteneur_Input">
         									<select id="NbStation" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="nbstation">
         										<option value="0">0</option>
@@ -241,7 +241,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 										for($i=1; $i <= 10; $i++) {
 											echo '
 										<div class="form-group">
-											<label class="Conteneur_Label" id="SelectStation'. $i .'_Label" for="SelectStation'. $i .'_Dep" style="display: none;">{{station favorite n°}}'. $i .' :</label>
+											<label class="Conteneur_Label" id="SelectStation'. $i .'_Label" for="SelectStation'. $i .'_Dep" style="display: none;">{{station favorite n°}}'. $i .'&nbsp;:</label>
 											<div class="Conteneur_Input">
 												<select class="eqLogicAttr form-control" id="SelectStation'. $i .'_Dep" onchange="AffichageChoixStation(\'commune\', \'SelectStation'. $i .'_Dep\', '. $i .', \'SelectStation'. $i .'_Commune\')" style="display: none;">
 													<option value="">{{Sélectionner un département}}</option>
@@ -296,6 +296,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		</div>
 	</div>
 	
-<?php include_file('desktop', 'prixcarburants-equipement', 'css', 'prixcarburants'); ?>
-<?php include_file('desktop', 'prixcarburants', 'js', 'prixcarburants');?>
+<?php include_file('desktop', 'plugin_prixcarburants-equipement', 'css', 'plugin_prixcarburants'); ?>
+<?php include_file('desktop', 'plugin_prixcarburants', 'js', 'plugin_prixcarburants');?>
 <?php include_file('core', 'plugin.template', 'js');?>

@@ -18,18 +18,16 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
-function template_install() {
+function plugin_prixcarburants_install() {
     
 }
 
-function template_update() {
+function plugin_prixcarburants_update() {
         //Message to be display after update. TO be remove for next plugin updates
-        message::add('Modification configuration plugin PrixCarburants', 'Suite à une grosse refont de la configuration du plugin PrixCarburants, merci d\'ouvrir la configuration de chaque équipement pour re-définir correctement vos besoins');
-
 }
 
 
-function template_remove() {
+function plugin_prixcarburants_remove() {
     
 }
 
