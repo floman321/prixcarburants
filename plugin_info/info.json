@@ -1,7 +1,7 @@
 {
 	"id" : "plugin_prixcarburants",
 	"name" : "Prix Carburants",
-	"description" : "Récupère les informations des prix des carburants auprès des stations services disponible en France via le site https://www.prix-carburants.gouv.fr",
+	"description" : "Récupère les informations des prix des carburants auprès des stations services disponibles en France via le site https://www.prix-carburants.gouv.fr",
 	"licence" : "AGPL",
 	"author" : "Piug",
 	"require" : "4.0",
