@@ -3,7 +3,7 @@ if (!isConnect('admin')) {
 	throw new Exception('{{401 - Accès non autorisé}}');
 }
 
-$plugin = plugin::byId('plugin_prixcarburants');
+$plugin = plugin::byId('prixcarburants');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 
@@ -200,7 +200,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                     <div class="form-group" id="Divloca2" style="display: none;">
         								<label class="Conteneur_Label" for="rayon">{{Rayon maxi (Km) :}}</label>
         								<div class="Conteneur_Input">
-        									<input type="text" id="rayon" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="{{Saisir un nombre de kilométres}}"/>
+        									<input type="text" id="rayon" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="{{Saisir un nombre de kilomètres}}"/>
         								</div>
 									</div>
         							<div class="form-group" id="Divloca3" style="display: none;">
@@ -258,10 +258,10 @@ $eqLogics = eqLogic::byType($plugin->getId());
 											if($i < 10) {
 												$compteur = $i + 1;
 												echo '
-												<a class="fas fa-plus-circle" id="SelectStation'. $i .'_AddFav" style="display: none;" onclick="AjouteFavoris(' . $compteur . ', ' . $i . ')"> {{Ajouter un autre favoris}}</a>';
+												<a class="fas fa-plus-circle" id="SelectStation'. $i .'_AddFav" style="display: none;" onclick="AjouteFavoris(' . $compteur . ', ' . $i . ')"> {{Ajouter un autre favori}}</a>';
 											} else {
 												echo '
-												<a id="SelectStation'. $i .'_AddFav" style="display: none;">{{Max favoris ajoutable}}</a>';
+												<a id="SelectStation'. $i .'_AddFav" style="display: none;">{{Max favoris ajoutables}}</a>';
 											}
 											($i >= 2)? $compteur = $i - 1:  $compteur = $i;
 											echo '
@@ -296,6 +296,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		</div>
 	</div>
 	
-<?php include_file('desktop', 'plugin_prixcarburants-equipement', 'css', 'plugin_prixcarburants'); ?>
-<?php include_file('desktop', 'plugin_prixcarburants', 'js', 'plugin_prixcarburants');?>
+<?php include_file('desktop', 'prixcarburants-equipement', 'css', 'prixcarburants'); ?>
+<?php include_file('desktop', 'prixcarburants', 'js', 'prixcarburants');?>
 <?php include_file('core', 'plugin.template', 'js');?>

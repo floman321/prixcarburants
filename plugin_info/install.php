@@ -18,16 +18,16 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
-function plugin_prixcarburants_install() {
+function prixcarburants_install() {
     
 }
 
-function plugin_prixcarburants_update() {
+function prixcarburants_update() {
         //Message to be display after update. TO be remove for next plugin updates
 }
 
 
-function plugin_prixcarburants_remove() {
+function prixcarburants_remove() {
     
 }
 

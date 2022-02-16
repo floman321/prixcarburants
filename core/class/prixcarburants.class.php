@@ -19,7 +19,7 @@
 /* * ***************************Includes********************************* */
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
-class plugin_prixcarburants extends eqLogic {
+class prixcarburants extends eqLogic {
 	/*     * ***********************Methode static*************************** */
     
     //Function to calculate a distance between selected location and a station
@@ -93,13 +93,13 @@ class plugin_prixcarburants extends eqLogic {
     			        break;
     			    }
     			}
-    			if($NbFavoris == 0) log::add('prixcarburants','error',__('Aucun favoris n\'est sélectionné dans la configuration de Prix Carburants : ', __FILE__).$nom);
+    			if($NbFavoris == 0) log::add('prixcarburants','error',__('Aucun favori n\'est sélectionné dans la configuration de Prix Carburants : ', __FILE__).$nom);
 			}
 			
 			//Get position latitude and longitude only if geolocalisation is selected
 			if ($unvehicule->getConfiguration('ViaLoca') == '1') {
 			    if($nbstation == '0') {
-			        log::add('prixcarburants','error',__('Le nombre de station n\'est pas renseigné dans la configuration de Prix Carburants : ', __FILE__).$nom);
+			        log::add('prixcarburants','error',__('Le nombre de stations n\'est pas renseigné dans la configuration de Prix Carburants : ', __FILE__).$nom);
 			    } else {
         			if ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
         			    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
@@ -478,7 +478,7 @@ class plugin_prixcarburants extends eqLogic {
 	public function postRemove() {}
 }
 
-class plugin_prixcarburantsCmd extends cmd {
+class prixcarburantsCmd extends cmd {
 
 	public function execute($_options = array()) {
 		// If 'click' on 'refresh' command

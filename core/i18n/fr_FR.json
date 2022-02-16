@@ -1,5 +1,5 @@
 {
-  "plugins\/plugin_prixcarburants\/desktop\/php\/plugin_prixcarburants.php": {
+  "plugins\/prixcarburants\/desktop\/php\/prixcarburants.php": {
     "Gestion": "Gestion",
     "Ajouter": "Ajouter",
     "Configuration": "Configuration",
@@ -40,7 +40,7 @@
     "Configuration Jeedom": "Configuration Jeedom",
     "Pas de localisation disponible (latitude et longitude nécessaire)": "Pas de localisation disponible (latitude et longitude nécessaire)",
     "Rayon maxi (Km) :": "Rayon maxi (Km) :",
-    "Saisir un nombre de kilométres": "Saisir un nombre de kilométres",
+    "Saisir un nombre de kilomètres": "Saisir un nombre de kilomètres",
     "Nombre de stations :": "Nombre de stations :",
     "Via un / des favori(s)": "Via un / des favori(s)",
     "Ordre d'affichage :": "Ordre d'affichage :",
@@ -48,30 +48,30 @@
     "Par prix": "Par prix",
     "station favorite n°": "station favorite n°",
     "Sélectionner un département": "Sélectionner un département",
-    "Ajouter un autre favoris": "Ajouter un autre favoris",
-    "Max favoris ajoutable": "Max favoris ajoutable",
+    "Ajouter un autre favori": "Ajouter un autre favori",
+    "Max favoris ajoutables": "Max favoris ajoutables",
     "Nom": "Nom",
     "Paramètres": "Paramètres",
     "Action": "Action"
   },
-  "plugins\/plugin_prixcarburants\/desktop\/js\/plugin_prixcarburants.js": {
+  "plugins\/prixcarburants\/desktop\/js\/prixcarburants.js": {
     "Nom": "Nom",
     "Afficher": "Afficher",
     "Historiser": "Historiser",
     "Tester": "Tester",
     "Sélectionner une ": "Sélectionner une "
   },
-  "plugins\/plugin_prixcarburants\/core\/class\/plugin_prixcarburants.class.php": {
+  "plugins\/prixcarburants\/core\/class\/prixcarburants.class.php": {
     "Erreur": "Erreur",
     "Le type de carburant n'est pas renseigné dans la configuration de Prix Carburants : ": "Le type de carburant n'est pas renseigné dans la configuration de Prix Carburants : ",
-    "Aucun favoris n'est sélectionné dans la configuration de Prix Carburants : ": "Aucun favoris n'est sélectionné dans la configuration de Prix Carburants : ",
-    "Le nombre de station n'est pas renseigné dans la configuration de Prix Carburants : ": "Le nombre de station n'est pas renseigné dans la configuration de Prix Carburants : ",
+    "Aucun favori n'est sélectionné dans la configuration de Prix Carburants : ": "Aucun favori n'est sélectionné dans la configuration de Prix Carburants : ",
+    "Le nombre de stations n'est pas renseigné dans la configuration de Prix Carburants : ": "Le nombre de stations n'est pas renseigné dans la configuration de Prix Carburants : ",
     "Pas de localisation sélectionnée": "Pas de localisation sélectionnée",
     "Favori pas correctement configuré": "Favori pas correctement configuré",
     "Plus de station disponible dans le rayon sélectionné": "Plus de station disponible dans le rayon sélectionné",
     "Actualiser": "Actualiser"
   },
-  "plugins\/plugin_prixcarburants\/core\/ajax\/plugin_prixcarburants.ajax.php": {
+  "plugins\/prixcarburants\/core\/ajax\/prixcarburants.ajax.php": {
     "Aucune méthode correspondante à : ": "Aucune méthode correspondante à : "
   }
 }
