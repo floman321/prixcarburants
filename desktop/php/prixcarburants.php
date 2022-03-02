@@ -162,42 +162,21 @@ $eqLogics = eqLogic::byType($plugin->getId());
     								<div class="form-group" id="Divloca1" style="display: none;">
         								<label class="Conteneur_Label" for="geoloc">{{Chercher autour de :}}</label>
         								<div class="Conteneur_Input">
-                                            <select class="eqLogicAttr form-control" id="geoloc" data-l1key="configuration" data-l2key="geoloc">
-                                                <?php
-                                                $none = 0;
-                                                if (class_exists('geotravCmd')) {
-                                                    //List all geotrav localisation
-                                                    foreach (eqLogic::byType('geotrav') as $geoloc) {
-                                                        if ($geoloc->getConfiguration('type') == 'location' && $geoloc->getConfiguration('coordinate') != '') {
-                                                            $none++;
-                                                            echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
-                                                        }
-                                                    }
-                                                    //List all geoloc localisation
-                                                    foreach (eqLogic::byType('geoloc') as $moneqGeoLoc) {
-                                                        if ($moneqGeoLoc->getIsEnable()){
-                                                            foreach (cmd::searchConfigurationEqLogic($moneqGeoLoc->getId(),'{"mode":"fixe"') as $geoloc) {
-                                                                $none++;
-                                                                echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
-                                                            }
-                                                            foreach (cmd::searchConfigurationEqLogic($moneqGeoLoc->getId(),'{"mode":"dynamic"') as $geoloc) {
-                                                                $none++;
-                                                                echo '<option value="' . $geoloc->getId() . '">' . $geoloc->getName() . '</option>';
-                                                            }
-                                                        }
-                                                    }
-                                                }
-                                                if ((config::byKey('info::latitude') != '') && (config::byKey('info::longitude') != '') ) {
-                                                    echo '<option value="jeedom">{{Configuration Jeedom}}</option>';
-                                                    $none++;
-                                                }
-                                                if ($none == 0) {
-                                                    echo '<option value="none">{{Pas de localisation disponible (latitude et longitude nécessaire)}}</option>';
-                                                }
-                                                ?>
-                                            </select>
+                                             <input class="eqLogicAttr form-control CTA-cmd-el" data-l1key="configuration" data-l2key="geoloc" style="display:inline-block; width:90%"/> 
+                                                   <span class="input-group-btn" style="display:inline-block; width:auto"> 
+                                                   <button type="button" class="btn btn-default cursor listCmdActionMessage tooltips cmdSendSel" title="{{Rechercher une commande}}" data-input="sendCmd"><i class="fas fa-list-alt"></i></button> 
+                                                   </span> 
                                         </div>
+                                       
         							</div>
+                                     <div class="form-group" id="Divloca1Auto" style="display: none;">
+                                        	<label class="Conteneur_Label">{{Mise à jour auto :}}</label>
+                                            <input id="auto_update" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="auto_update" />
+                                        </div>
+                                       <div class="form-group" id="Divloca1Jeedom" style="display: none;">
+                                        	<label class="Conteneur_Label">{{Utiliser la localisation jeedom :}}</label>
+                                            <input id="jeedom_loc" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="jeedom_loc" />
+                                        </div>
         							
                                     <div class="form-group" id="Divloca2" style="display: none;">
         								<label class="Conteneur_Label" for="rayon">{{Rayon maxi (Km) :}}</label>
