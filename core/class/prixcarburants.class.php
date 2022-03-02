@@ -207,7 +207,6 @@ class prixcarburants extends eqLogic {
                               	
                               	if ($style != '') $maselection[$idx]['maj'] = $style . $maselection[$idx]['maj'] . '</div>';
                               	
-                              
 							    $idx++;
 							}
                           

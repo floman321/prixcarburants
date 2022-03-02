@@ -120,6 +120,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								</div>
 							</div>
 							<div class="form-group">
+
 								<label class="col-sm-3 control-label" for="TypeCarburant">{{Type de carburant :}}</label>
 								<div class="col-sm-3">
 									<select id="TypeCarburant" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="typecarburant">
@@ -135,6 +136,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 							</div>
                             <div class="form-group">
                                   <label class="col-sm-3 control-label" for="name">{{Capacité du réservoir (litres) :}}</label>
+
                                  	 <div class="col-sm-1">
                                   		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="reservoirlitre" placeholder="{{En litres}}"/>
                                   	</div>
@@ -179,6 +181,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                     <div class="form-group" id="Divloca2" style="display: none;">
         								<label class="Conteneur_Label" for="rayon">{{Rayon maxi (Km) :}}</label>
         								<div class="Conteneur_Input">
+
         									<input type="text" id="rayon" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="{{Saisir un nombre de kilomètres}}"/>
         								</div>
 									</div>
