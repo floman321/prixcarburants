@@ -85,41 +85,45 @@ function AffichageChoixStation(TypeSelect, IdSelectModif, IdNum, IdSelectAModif)
 			var selectElmt = document.getElementById(IdSelectModif);
 			var ValeurCommune = selectElmt.options[selectElmt.selectedIndex].value;
 			
-			var requestURL = '/../../../../plugins/prixcarburants/core/class/listestations/stations'+ValeurDepartement+'.json';
-			var request = new XMLHttpRequest();
-			request.open('GET', requestURL);
-			request.responseType = 'json';
-			request.send();
-			request.onload = function() {
-				var jsonObj = request.response;
-				var stations = jsonObj['stations'];
-				var MaListe = new Object();
-				var MaListeText = '';
-				//Create the liste of element for the select
-				MaListe["0"] = "{{Sélectionner une }}"+TypeSelect;
-				MaListeText = "0<->{{Sélectionner une }}"+TypeSelect;
-				for (var i = 0; i < stations.length; i++) {
-					if(TypeSelect == "commune") {
-						MaListe[stations[i].commune.toUpperCase()] = stations[i].commune.toUpperCase()+" ("+stations[i].cp+")";
-						MaListeText = MaListeText+"--retouralaligne--"+stations[i].commune.toUpperCase()+"<->"+stations[i].commune.toUpperCase()+" ("+stations[i].cp+")";
-						document.getElementById('Station'+IdNum+'_CommuneListe').value = MaListeText;
-						document.getElementById('SelectStation'+IdNum+'_Station').options.length = 0;
-						document.getElementById('SelectStation'+IdNum+'_Station').style.display = "none";
-					} else {
-						if(stations[i].commune.toUpperCase() == ValeurCommune) {
-							MaListe[stations[i].id] = stations[i].marque+" ; "+stations[i].nom+" ; "+stations[i].adresse;
-							MaListeText = MaListeText+"--retouralaligne--"+stations[i].id+"<->"+stations[i].marque+" ; "+stations[i].nom+" ; "+stations[i].adresse;
-							document.getElementById('Station'+IdNum+'_StationListe').value = MaListeText;
+			$.ajax({
+				type: 'POST',
+				url: 'plugins/prixcarburants/core/ajax/prixcarburants.ajax.php',
+				data: {
+					action: 'StationName',
+					Departement: ValeurDepartement
+				},
+				dataType: 'json',
+				success: function(data) {
+					var stations = new Object();
+					stations = data.result.stations;
+					var MaListe = new Object();
+					var MaListeText = '';
+					//Create the liste of element for the select
+					MaListe["0"] = "{{Sélectionner une }}"+TypeSelect;
+					MaListeText = "0<->{{Sélectionner une }}"+TypeSelect;
+					for (var i = 0; i < stations.length; i++) {
+						if(TypeSelect == "commune") {
+							MaListe[stations[i].commune.toUpperCase()] = stations[i].commune.toUpperCase()+" ("+stations[i].cp+")";
+							MaListeText = MaListeText+"--retouralaligne--"+stations[i].commune.toUpperCase()+"<->"+stations[i].commune.toUpperCase()+" ("+stations[i].cp+")";
+							document.getElementById('Station'+IdNum+'_CommuneListe').value = MaListeText;
+							document.getElementById('SelectStation'+IdNum+'_Station').options.length = 0;
+							document.getElementById('SelectStation'+IdNum+'_Station').style.display = "none";
+						} else {
+							if(stations[i].commune.toUpperCase() == ValeurCommune) {
+								MaListe[stations[i].id] = stations[i].marque+" ; "+stations[i].nom+" ; "+stations[i].adresse;
+								MaListeText = MaListeText+"--retouralaligne--"+stations[i].id+"<->"+stations[i].marque+" ; "+stations[i].nom+" ; "+stations[i].adresse;
+								document.getElementById('Station'+IdNum+'_StationListe').value = MaListeText;
+							}
 						}
 					}
+					//Register selected values on input test
+					document.getElementById('Station'+IdNum+'_Dep').value = ValeurDepartement;
+					document.getElementById('Station'+IdNum+'_Commune').value = ValeurCommune;
+					//Fill the next select
+					updateComboBox(IdSelectAModif, MaListe);
+					document.getElementById('SelectStation'+IdNum+'_AddFav').style.display = "none";
 				}
-				//Register selected values on input test
-				document.getElementById('Station'+IdNum+'_Dep').value = ValeurDepartement;
-				document.getElementById('Station'+IdNum+'_Commune').value = ValeurCommune;
-				//Fill the next select
-				updateComboBox(IdSelectAModif, MaListe);
-				document.getElementById('SelectStation'+IdNum+'_AddFav').style.display = "none";
-			}
+			})
 		} else {
 			//Hide next select elements
 			document.getElementById('SelectStation'+IdNum+'_Commune').options.length = 0;

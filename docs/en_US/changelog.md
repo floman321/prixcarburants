@@ -3,6 +3,9 @@
 ### TODO list
 - Add coloration to highlight data that are up to date in comparison with data that has not been updated since a while
 
+## 03/02/2022
+- Update to be compatible with Jeedom v4.2
+
 ## 07/21/2020
 - Fixed a bug that kept the old top price, even if there was no value to display
 

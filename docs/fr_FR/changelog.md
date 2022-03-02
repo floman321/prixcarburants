@@ -2,6 +2,9 @@
 
 ### TODO list
 
+## 02/03/2022
+- Modification pour être compatible Jeedom v4.2
+
 ## 21/07/2020 
 - Ajout critère pour mettre en évidence les dates de relevé trop anciennes et option pour les supprimer des résultats.
 - Ajout prix d'un plein selon capacité du réservoir.
