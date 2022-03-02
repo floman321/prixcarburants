@@ -112,13 +112,13 @@ class prixcarburants extends eqLogic {
 			    if($nbstation == '0') {
 			        log::add('prixcarburants','error',__('Le nombre de station n\'est pas renseigné dans la configuration de Prix Carburants : ',  __FILE__).$nom);
 			    } else {
-        			if ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
+        			if ($unvehicule->getConfiguration('jeedom_loc') == 1) {
+        			    $malat = config::byKey('info::latitude');
+        			    $malng = config::byKey('info::longitude');						
+        			} elseif ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
         			    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
         			    if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée',  __FILE__));
         			    return;
-        			} elseif ($unvehicule->getConfiguration('jeedom_loc') == 1) {
-        			    $malat = config::byKey('info::latitude');
-        			    $malng = config::byKey('info::longitude');
         			} else {
                       $cmd=cmd::byId(str_replace('#','',$unvehicule->getConfiguration('geoloc')));
         			    if ($cmd!= null){
