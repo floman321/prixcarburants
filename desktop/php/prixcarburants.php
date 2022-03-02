@@ -140,7 +140,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                   	</div>
 							</div>
                             <div class="form-group">
-                                  <label class="col-sm-3 control-label" for="name">{{Considérer date relevée comme expirée (jours) :}}</label>
+                                  <label class="col-sm-3 control-label" for="name">{{Considérer date relevée comme expirée après (jours) :}}</label>
                                  	 <div class="col-sm-1">
                                   		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="dateexpire" placeholder="{{En jours}}"/>
                                      </div>
@@ -241,7 +241,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 										for($i=1; $i <= 10; $i++) {
 											echo '
 										<div class="form-group">
-											<label class="Conteneur_Label" id="SelectStation'. $i .'_Label" for="SelectStation'. $i .'_Dep" style="display: none;">{{station favorite n°}}'. $i .' :</label>
+											<label class="Conteneur_Label" id="SelectStation'. $i .'_Label" for="SelectStation'. $i .'_Dep" style="display: none;">{{station favorite n°}}'. $i .'&nbsp;:</label>
 											<div class="Conteneur_Input">
 												<select class="eqLogicAttr form-control" id="SelectStation'. $i .'_Dep" onchange="AffichageChoixStation(\'commune\', \'SelectStation'. $i .'_Dep\', '. $i .', \'SelectStation'. $i .'_Commune\')" style="display: none;">
 													<option value="">{{Sélectionner un département}}</option>
@@ -258,10 +258,10 @@ $eqLogics = eqLogic::byType($plugin->getId());
 											if($i < 10) {
 												$compteur = $i + 1;
 												echo '
-												<a class="fas fa-plus-circle" id="SelectStation'. $i .'_AddFav" style="display: none;" onclick="AjouteFavoris(' . $compteur . ', ' . $i . ')"> {{Ajouter un autre favoris}}</a>';
+												<a class="fas fa-plus-circle" id="SelectStation'. $i .'_AddFav" style="display: none;" onclick="AjouteFavoris(' . $compteur . ', ' . $i . ')"> {{Ajouter un autre favori}}</a>';
 											} else {
 												echo '
-												<a id="SelectStation'. $i .'_AddFav" style="display: none;">{{Max favoris ajoutable}}</a>';
+												<a id="SelectStation'. $i .'_AddFav" style="display: none;">{{Max favoris ajoutables}}</a>';
 											}
 											($i >= 2)? $compteur = $i - 1:  $compteur = $i;
 											echo '
