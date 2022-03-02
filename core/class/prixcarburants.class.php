@@ -156,6 +156,7 @@ class prixcarburants extends eqLogic {
 					//Register only station that are a favorite or on max radius
 					if($MonTest == False) continue;
                   
+                  	$should_ignore = $unvehicule->getConfiguration('dateexpirevisible');
                   	$daysminus = $unvehicule->getConfiguration('dateexpire');
                   	$dminus5 = strtotime("-".$daysminus." days");
 					
@@ -163,16 +164,21 @@ class prixcarburants extends eqLogic {
 					$unestation = simplexml_import_dom($doc->importNode($reader->expand(), true));
 					foreach ($unestation->prix as $prix) {
 						if ($prix->attributes()->nom == $typecarburant){ //Filter by fuel type
+                          
 							$prixlitre = $prix->attributes()->valeur.'';
 							$maj = $prix->attributes()->maj.'';
 							$marque = prixcarburants::getMarqueStation($mastationid, $MaStationDep);
+                          	
+                          	$style = '';
+                          	if ($dminus5 >= strtotime($maj)) {
+                              if ($should_ignore) continue;
+                              $style = "<div style='color:red;'>";
+                            }
 							
 							if($EstFavoris) { //Register favorite station
 							    $SelectionFav[$ordreFav]['adresse'] = $marque.', '.$unestation->ville;
 							    $SelectionFav[$ordreFav]['prix'] = $prixlitre;
 							    $SelectionFav[$ordreFav]['maj']  = date($monformatdate, strtotime($maj));
-                              	if ($dminus5 >= strtotime($maj)) $SelectionFav[$ordreFav]['maj'] = "<div style='color:red;'>".$SelectionFav[$ordreFav]['maj'].'</div>';
-                              
 							    $SelectionFav[$ordreFav]['distance'] = $dist;
 							    $SelectionFav[$ordreFav]['id'] = $mastationid;
 							} else { //Register station that are one the radius
@@ -183,6 +189,9 @@ class prixcarburants extends eqLogic {
                               
 							    $maselection[$idx]['distance'] = $dist;
 							    $maselection[$idx]['id'] = $mastationid;
+                              
+                              	if ($style != '') $maselection[$idx]['maj'] = $style . $maselection[$idx]['maj'] . '</div>';
+                              	
 							    $idx++;
 							}
                           
@@ -200,7 +209,7 @@ class prixcarburants extends eqLogic {
 			usort($maselection, "prixcarburants::custom_sort");
 			if($unvehicule->getConfiguration('OrdreFavoris','Ordre') == "Prix") usort($SelectionFav, "prixcarburants::custom_sort");
           
-          	$lreservoir = $unvehicule->getConfiguration('reservoirlitre');
+          	$lreservoir = $unvehicule->getConfiguration('reservoirlitre', 0);
 			
 			//Register favorites then require quantity of station from localisation
 			$nbstation = $NbFavoris + $nbstation;
