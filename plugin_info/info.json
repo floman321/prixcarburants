@@ -1,19 +1,19 @@
 {
 	"id" : "prixcarburants",
 	"name" : "Prix Carburants",
-	"description" : "Récupère les informations des prix des carburants auprès des stations services disponibles en France via le site https://www.prix-carburants.gouv.fr",
+	"description" : "Récupère les informations des prix des carburants via https://www.prix-carburants.gouv.fr",
 	"licence" : "AGPL",
-	"author" : "Piug",
-	"require" : "4.0",
+	"author" : "Florian G.",
+	"require" : "3.2",
 	"category" : "organization",
 	"hasDependency" : false,
 	"hasOwnDeamon" : false,
 	"maxDependancyInstallTime" : 0,
-	"changelog" : "TBD",
-	"documentation" : "TBD",
+	"changelog" : "https://floman321.github.io/prixcarburants/#language#/changelog",
+	"documentation" : "https://floman321.github.io/prixcarburants/#language#/",
 	"link" : {
-		"forum":"TBD"
+		"forum":"https://community.jeedom.com/t/plugin-tiers-sujet-principal-prix-carburants/23547"
 	},
 	"language" : ["fr_FR","en_US"],
-	"compatibility" : ["miniplus","smart","rpi","docker","diy","atlas"]
+	"compatibility" : ["miniplus","smart","rpi","docker","diy"]
 }

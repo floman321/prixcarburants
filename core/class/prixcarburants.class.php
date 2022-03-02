@@ -53,7 +53,7 @@ class prixcarburants extends eqLogic {
     		}
 	    } else {
 	        log::add('prixcarburants','debug','JSON file : /listestations/stations' . $DepStation . '.json not available');
-	        return __('Erreur', __FILE__);
+	        return __('Erreur',  __FILE__);
 	    }
 	}
 	// ========== Manage listener update
@@ -88,7 +88,7 @@ class prixcarburants extends eqLogic {
 			
 			$nom = $unvehicule->getName();
 			$typecarburant = $unvehicule->getConfiguration('typecarburant','');
-			if($typecarburant == '') log::add('prixcarburants','error',__('Le type de carburant n\'est pas renseigné dans la configuration de Prix Carburants : ', __FILE__).$nom);
+			if($typecarburant == '') log::add('prixcarburants','error',__('Le type de carburant n\'est pas renseigné dans la configuration de Prix Carburants : ',  __FILE__).$nom);
 			$rayon = $unvehicule->getConfiguration('rayon','30');
 			$nbstation = $unvehicule->getConfiguration('nbstation','0');
 			$monformatdate = $unvehicule->getConfiguration('formatdate','');
@@ -104,17 +104,17 @@ class prixcarburants extends eqLogic {
     			        break;
     			    }
     			}
-    			if($NbFavoris == 0) log::add('prixcarburants','error',__('Aucun favori n\'est sélectionné dans la configuration de Prix Carburants : ', __FILE__).$nom);
+    			if($NbFavoris == 0) log::add('prixcarburants','error',__('Aucun favoris n\'est sélectionné dans la configuration de Prix Carburants : ',  __FILE__).$nom);
 			}
 			
 			//Get position latitude and longitude only if geolocalisation is selected
 			if ($unvehicule->getConfiguration('ViaLoca') == '1') {
 			    if($nbstation == '0') {
-			        log::add('prixcarburants','error',__('Le nombre de stations n\'est pas renseigné dans la configuration de Prix Carburants : ', __FILE__).$nom);
+			        log::add('prixcarburants','error',__('Le nombre de station n\'est pas renseigné dans la configuration de Prix Carburants : ',  __FILE__).$nom);
 			    } else {
         			if ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
         			    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
-        			    if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée', __FILE__));
+        			    if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée',  __FILE__));
         			    return;
         			} elseif ($unvehicule->getConfiguration('jeedom_loc') == 1) {
         			    $malat = config::byKey('info::latitude');
@@ -263,9 +263,9 @@ class prixcarburants extends eqLogic {
 			        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Adresse');
 			        if (is_object($macmd)) {
 						if($i <= $NbFavoris) {
-							$macmd->event(__('Favori pas correctement configuré', __FILE__));
+							$macmd->event(__('Favori pas correctement configuré',  __FILE__));
 						} else {
-							$macmd->event(__('Plus de station disponible dans le rayon sélectionné', __FILE__));
+							$macmd->event(__('Plus de station disponible dans le rayon sélectionné',  __FILE__));
 						}
 					}
     				$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' ID');
@@ -338,7 +338,7 @@ class prixcarburants extends eqLogic {
 		if (!is_object($prixcarburantsCmd)) {
 			log::add('prixcarburants', 'debug', 'refresh');
 			$prixcarburantsCmd = new prixcarburantsCmd();
-			$prixcarburantsCmd->setName(__('Actualiser', __FILE__));
+			$prixcarburantsCmd->setName(__('Actualiser',  __FILE__));
 			$prixcarburantsCmd->setEqLogic_id($this->getId());
 			$prixcarburantsCmd->setLogicalId('refresh');
 			$prixcarburantsCmd->setType('action');
