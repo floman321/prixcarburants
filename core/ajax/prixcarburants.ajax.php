@@ -25,6 +25,11 @@ try {
     }
     
     ajax::init();
+    $action = init('action');
+    if($action = 'StationName') {
+        $json = file_get_contents('../class/listestations/stations'.init('Departement').'.json');
+        ajax::success(json_decode($json));
+    }
 
 
 
@@ -33,4 +38,3 @@ try {
 } catch (Exception $e) {
     ajax::error(displayException($e), $e->getCode());
 }
-
