@@ -22,3 +22,40 @@ if (!isConnect()) {
     die();
 }
 ?>
+  <form class="form-horizontal">
+  <fieldset>
+     
+      <div class="form-group mgh-actu-type">
+              <label class="col-md-4 control-label">{{Fréquence de mise à jour des prix}}
+              </label>
+              <div class="col-sm-3">
+                  <select id="sel_object" class="configKey form-control" data-l1key="freq">
+                    <option value="prog">{{Programmé}}</option>
+                    <!-- <option value="* * * * *">{{Cron minute}}</option>
+                    <option value="*/10 * * * *">{{Cron 10 minutes}}</option> -->
+                    <option value="*/30 * * * *">{{Cron 30 minutes}}</option>
+                    <option value="7 * * * *">{{Cron heure}}</option>
+                    <option value="7 */6 * * *">{{Cron 6 heure}}</option>
+                    <option value="7 */12 * * *">{{Cron 12 heure}}</option>
+                    <option value="7 2 * * *">{{Cron Jour}}</option>
+                  </select>
+               </div>
+        </div>
+		<div class="form-group mgh-actu-auto">
+                <label class="col-md-4 control-label">{{Auto-actualisation}}
+				</label>
+              <div class="col-sm-3">
+                <div class="input-group">
+                  <input type="text" class="configKey form-control roundedLeft" data-l1key="autorefresh" placeholder="{{Cliquer sur ? pour afficher l'assistant cron}}"/>
+                  <span class="input-group-btn">
+                    <a class="btn btn-default cursor jeeHelper roundedRight" data-helper="cron" title="Assistant cron">
+                    	<i class="fas fa-question-circle"></i>
+                    </a>
+                  </span>
+                </div>
+              </div>
+        </div>
+   
+  </fieldset>
+</form>
+<?php include_file('desktop', 'prixcarburants_conf', 'js', 'prixcarburants');?>

@@ -20,6 +20,9 @@
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
 class prixcarburants extends eqLogic {
+
+	const DEFAULT_CRON = '7 2 * * *';// cron by default if not set 
+
 	/*     * ***********************Methode static*************************** */
     
     //Function to calculate a distance between selected location and a station
@@ -63,7 +66,6 @@ class prixcarburants extends eqLogic {
 		$eqLogic = self::byId($_option['id']);
 		if (is_object($eqLogic) && $eqLogic->getIsEnable() == 1) {
           	self::MAJVehicules($eqLogic);
-			//$eqLogic->checkCondition();
 		}
       log::add(__CLASS__,'debug', "╚═════════════════════════════════════════ END Trigger ");
 		
@@ -306,27 +308,46 @@ class prixcarburants extends eqLogic {
     		log::add('prixcarburants','debug','prix zip ok get'.__DIR__);
     		
     		unlink(__DIR__.'/PrixCarburants.zip');
-    		prixcarburants::MAJVehicules(null);
+    		//prixcarburants::MAJVehicules(null);
 		} else {
 		  log::add('prixcarburants','debug','prix zip nok get'.__DIR__);
 		}
 	}
 	
 	
-	//* Fonction exécutée automatiquement tous les jours par Jeedom
-	public static function cronDaily() {
-		// Call command 'refresh', to update values
-		foreach (self::byType('prixcarburants') as $prixcarburants) {
-			if ($prixcarburants->getIsEnable() == 1) {
-				$cmd = $prixcarburants->getCmd(null, 'refresh');
-				if (!is_object($cmd)) {
-					continue;
-				}
-				$cmd->execCmd();
-			}
-		}
-	}
+	//* Cron management from Configuration
+	public static function setUpdateCron(){// called by ajax in config
+		log::add(__CLASS__,'debug', "update cron called");
 
+		// get frequency from config
+		$freq=config::byKey('freq','prixcarburants');
+		if($freq=='prog')$freq=config::byKey('autorefresh','prixcarburants');
+
+		if ($freq == '' || is_null($freq)){// set default if not set
+			log::add(__CLASS__, 'debug', __('Aucun Cron Défini pour la mise à jour, passage au défaut :', __FILE__).self::DEFAULT_CRON);
+			$freq=self::DEFAULT_CRON;
+		}
+		log::add(__CLASS__,'debug', "Add cron to freq : $freq ");
+		// update cron
+		$cron = cron::byClassAndFunction(__CLASS__, 'udpateAllData');
+		if (!is_object($cron)) {
+			$cron = new cron();
+			$cron->setClass(__CLASS__);
+			$cron->setFunction('udpateAllData');
+		}
+		$cron->setEnable(1);
+		$cron->setDeamon(0);
+		$cron->setSchedule($freq);
+		$cron->save();
+
+		return true;
+	}
+	// function called by cron triggering
+	public static function udpateAllData(){
+		log::add(__CLASS__,'debug', '------ Cron Triggering');
+		self::updatePrixCarburant();//update only xml
+		self::MAJVehicules(null);// update all equipement
+	}
 
 
 	/*     * *********************Méthodes d'instance************************* */

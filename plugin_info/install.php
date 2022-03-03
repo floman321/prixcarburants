@@ -17,10 +17,20 @@
  */
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
+require_once dirname(__FILE__) . '/../class/prixcarburants.class.php';
+
+function prixcarburants_checkCron(){
+  // update du cron ocazou
+  if(config::byKey('freq','prixcarburants')==null || config::byKey('freq','prixcarburants') == ''){
+    config::save('freq',prixcarburants::DEFAULT_CRON,'prixcarburants');//dayly
+  }
+  prixcarburants::setUpdateCron();// mise en place du cron selon la config ou par défaut
+}
 
 function prixcarburants_install() {
   log::add('prixcarburants','debug', '======= installation de '.$eqLogic->getHumanName());
-  
+  prixcarburants_checkCron();
+
 }
 
 function prixcarburants_update() {
@@ -57,13 +67,19 @@ function prixcarburants_update() {
         }
 		$eqLogic->save();
  }
+ // check cron 
+ prixcarburants_checkCron();
  log::add('prixcarburants','debug','=============  fin de mise à jour');
 
 }
 
 
-function template_remove() {
-    
+function prixcarburants_remove() {
+  // remove of cron job
+  $cron = cron::byClassAndFunction('prixcarburants', 'udpateAllData');
+  if (is_object($cron)) {
+      $cron->remove();
+  }
 }
 
 ?>
