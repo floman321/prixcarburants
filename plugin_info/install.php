@@ -21,7 +21,10 @@ require_once dirname(__FILE__) . '/../class/prixcarburants.class.php';
 
 function prixcarburants_checkCron(){
   // update du cron ocazou
-  if(config::byKey('freq','prixcarburants')==null || config::byKey('freq','prixcarburants') == ''){
+  $freq = config::byKey('freq','prixcarburants');
+  $perso= config::byKey('autorefresh','prixcarburants');
+  log::add('prixcarburants','debug', 'la valeur de config est : '.config::byKey('freq','prixcarburants'));
+  if(($freq==null || $freq== '') || ($freq=='prog' && ($perso==null || $perso == ''))){
     config::save('freq',prixcarburants::DEFAULT_CRON,'prixcarburants');//dayly
   }
   prixcarburants::setUpdateCron();// mise en place du cron selon la config ou par défaut
