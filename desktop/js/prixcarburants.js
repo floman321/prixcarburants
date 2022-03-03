@@ -238,11 +238,15 @@ function CheckBx(Type_) {
   
 	if(Type_ == "ViaLoca+") {
 		document.getElementById('Divloca1').style.display = "block";
+      document.getElementById('Divloca1Auto').style.display = "block";
+      document.getElementById('Divloca1Jeedom').style.display = "block";
 		document.getElementById('Divloca2').style.display = "block";
 		document.getElementById('Divloca3').style.display = "block";
     }
     if(Type_ == "ViaLoca-") {
 		document.getElementById('Divloca1').style.display = "none";
+      document.getElementById('Divloca1Auto').style.display = "none";
+      document.getElementById('Divloca1Jeedom').style.display = "none";
 		document.getElementById('Divloca2').style.display = "none";
 		document.getElementById('Divloca3').style.display = "none";
 		document.getElementById('rayon').value = "";
@@ -334,4 +338,14 @@ $('.eqLogicAttr[data-l1key=configuration][data-l2key=Favoris]').change(function(
 	} else {
 		CheckBx('Favoris-');
 	}
+});
+
+$(".cmdSendSel").on('click', function () {
+   
+ var el = $(this);
+  jeedom.cmd.getSelectModal({cmd:{type:'info'}}, function(result) {
+       var calcul = el.closest('div').find('.eqLogicAttr[data-l1key=configuration][data-l2key=geoloc]');
+       calcul.val('');
+       calcul.atCaret('insert', result.human);
+     });
 });

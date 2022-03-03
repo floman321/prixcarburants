@@ -56,7 +56,18 @@ class prixcarburants extends eqLogic {
 	        return __('Erreur',  __FILE__);
 	    }
 	}
+	// ========== Manage listener update
+  public static function trigger($_option) {
+		log::add(__CLASS__, 'debug', '╔═══════════════════════  Trigger sur id :'.$_option['id']);
 
+		$eqLogic = self::byId($_option['id']);
+		if (is_object($eqLogic) && $eqLogic->getIsEnable() == 1) {
+          	self::MAJVehicules($eqLogic);
+			//$eqLogic->checkCondition();
+		}
+      log::add(__CLASS__,'debug', "╚═════════════════════════════════════════ END Trigger ");
+		
+	}
 	//Function list all gaz station that correspond to defined parameters on the configuration
 	public static function MAJVehicules($oneveh) {
 		
@@ -101,18 +112,19 @@ class prixcarburants extends eqLogic {
 			    if($nbstation == '0') {
 			        log::add('prixcarburants','error',__('Le nombre de station n\'est pas renseigné dans la configuration de Prix Carburants : ',  __FILE__).$nom);
 			    } else {
-        			if ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
+        			if ($unvehicule->getConfiguration('jeedom_loc') == 1) {
+        			    $malat = config::byKey('info::latitude');
+        			    $malng = config::byKey('info::longitude');						
+        			} elseif ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
         			    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
         			    if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée',  __FILE__));
         			    return;
-        			} elseif ($unvehicule->getConfiguration('geoloc') == "jeedom") {
-        			    $malat = config::byKey('info::latitude');
-        			    $malng = config::byKey('info::longitude');
         			} else {
-        			    if (geotravCmd::byEqLogicIdAndLogicalId($unvehicule->getConfiguration('geoloc'),'location:coordinate') != null){
-                            $coordonnees = geotravCmd::byEqLogicIdAndLogicalId($unvehicule->getConfiguration('geoloc'),'location:coordinate')->execCmd();
+                      $cmd=cmd::byId(str_replace('#','',$unvehicule->getConfiguration('geoloc')));
+        			    if ($cmd!= null){
+                            $coordonnees = $cmd->execCmd();
         			    } else {
-        			        $coordonnees = cmd::byId($unvehicule->getConfiguration('geoloc'))->execCmd();
+        			        log::add(__CLASS__,'error',__('commande de localisation non trouvée ',  __FILE__).$nom);
         			    }
         			    $expcoord = explode(",",$coordonnees);
         		        $malat = $expcoord[0];
@@ -181,6 +193,8 @@ class prixcarburants extends eqLogic {
 							    $SelectionFav[$ordreFav]['maj']  = date($monformatdate, strtotime($maj));
 							    $SelectionFav[$ordreFav]['distance'] = $dist;
 							    $SelectionFav[$ordreFav]['id'] = $mastationid;
+                               	$SelectionFav[$ordreFav]['coord'] = $lat .",". $lng;
+                              
 							} else { //Register station that are one the radius
 							    $maselection[$idx]['adresse'] = $marque.', '.$unestation->ville;
 							    $maselection[$idx]['prix'] = $prixlitre;
@@ -189,10 +203,10 @@ class prixcarburants extends eqLogic {
                               
 							    $maselection[$idx]['distance'] = $dist;
 							    $maselection[$idx]['id'] = $mastationid;
-                              
+                              	$maselection[$idx]['coord'] = $lat .",". $lng;
+                              	
                               	if ($style != '') $maselection[$idx]['maj'] = $style . $maselection[$idx]['maj'] . '</div>';
                               	
-                              
 							    $idx++;
 							}
                           
@@ -215,6 +229,7 @@ class prixcarburants extends eqLogic {
 			//Register favorites then require quantity of station from localisation
 			$nbstation = $NbFavoris + $nbstation;
 			For($i = 1; $i <= $nbstation; $i++) {
+              	
 			    if($i <= $NbFavoris) {
 			        $liste[$i - 1] = $SelectionFav[$i - 1];
 			    } else {
@@ -238,7 +253,10 @@ class prixcarburants extends eqLogic {
 
                     $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i.' Distance');
                     if (is_object($macmd)) $macmd->event($liste[$i - 1]['distance']);
-
+                  
+                  $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i.' Coord');
+                    if (is_object($macmd)) $macmd->event($liste[$i - 1]['coord']);
+					
                   
 			    } else {
 			        $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i . ' Adresse');
@@ -263,6 +281,10 @@ class prixcarburants extends eqLogic {
 
                     $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i.' Prix Plein');
                     if (is_object($macmd)) $macmd->event('');
+                  
+                  $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top ' . $i.' Coord');
+                    if (is_object($macmd)) $macmd->event($liste[$i - 1]['coord']);
+
                   
 			    }
 			}
@@ -329,6 +351,73 @@ class prixcarburants extends eqLogic {
 		//Create file with fuel price if it doesn't exist (first creation)
 		if (!file_exists(__DIR__.'/PrixCarburants_instantane.xml')) {
 		  $prixcarburantsCmd->getEqLogic()->updatePrixCarburant();
+		}
+      
+      	// manage listener if needed
+       $this->setListener();
+	}
+  // Listener manager function
+   private function getListener() {
+		return listener::byClassAndFunction(__CLASS__, 'trigger', array('id' => $this->getId()));
+	}
+  private function removeListener() {
+      log::add(__CLASS__, 'debug', ' Suppression des Ecouteurs de '.$this->getHumanName());
+		$listener = $this->getListener();
+		if (is_object($listener)) {
+			$listener->remove();
+		}
+	}
+  
+  private function setListener() {
+		log::add(__CLASS__, 'debug', ' Recording listeners');
+
+		$glCmd = $this->getConfiguration('geoloc', '');
+      
+      	log::add(__CLASS__, 'debug', 'Geoloc command : '.$glCmd);
+
+		if ($this->getIsEnable() == 0 || $glCmd==='' || !$this->getConfiguration('ViaLoca', false) || !$this->getConfiguration('auto_update', false) ) {
+			$this->removeListener();
+			return;
+		}
+
+		$pregResult = preg_match_all("/#([0-9]*)#/", $glCmd, $matches);
+      
+		if ($pregResult===false) {
+			log::add(__CLASS__, 'error', __('Erreur regExp Expression', __FILE__) . ': '.  $expression);
+			$this->removeListener();
+			return;
+		}
+
+		if ($pregResult<1) {
+			log::add(__CLASS__, 'debug', 'Pas de Commandes trouvés dans les listeners');
+			$this->removeListener();
+			return;
+		}
+
+		$listener = $this->getListener();
+		if (!is_object($listener)) {
+          	
+			$listener = new listener();
+			$listener->setClass(__CLASS__);
+			$listener->setFunction('trigger');
+			$listener->setOption(array('id' => $this->getId()));
+		}
+		$listener->emptyEvent();
+
+		$eventAdded = false;
+		foreach ($matches[1] as $cmd_id) {
+			if (!is_numeric($cmd_id)) continue;
+          
+			$cmd = cmd::byId($cmd_id);
+          log::add(__CLASS__, 'debug', 'Ajout listener pour la commande :'.$cmd->getHumanName());
+			if (!is_object($cmd)) continue;
+			$listener->addEvent($cmd->getId());
+			$eventAdded = true;
+		}
+		if ($eventAdded) {
+			$listener->save();
+		} else {
+			$listener->remove();
 		}
 	}
 
@@ -447,6 +536,24 @@ class prixcarburants extends eqLogic {
                 $prixcarburantsCmd->save();
                 $OrdreAffichage++;
               
+              $prixcarburantsCmd = $this->getCmd(null, 'Coord_'.$i);
+                if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+                $prixcarburantsCmd->setName('Top ' . $i.' Coord');
+                $prixcarburantsCmd->setEqLogic_id($this->getId());
+                $prixcarburantsCmd->setLogicalId('Coord_'.$i);
+                $prixcarburantsCmd->setType('info');
+                $prixcarburantsCmd->setSubType('other');
+                $prixcarburantsCmd->setIsHistorized(0);
+                $prixcarburantsCmd->setIsVisible(0);
+                $prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+                $prixcarburantsCmd->setTemplate('dashboard','badge');
+                $prixcarburantsCmd->setTemplate('mobile','badge');
+                $prixcarburantsCmd->setOrder($OrdreAffichage);
+                $prixcarburantsCmd->save();
+                $OrdreAffichage++;
+              
+              
+              
               
 			} else {
 			    //Remove all station to avoid having too much station when favorite is selected
@@ -467,13 +574,18 @@ class prixcarburants extends eqLogic {
 
                 $prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i.' Distance');
                 if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
+              
+              	$prixcarburantsCmd = cmd::byEqLogicIdCmdName($this->getId(),'Top ' . $i.' Coord');
+                if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
 			}
 		}
 		
 		prixcarburants::MAJVehicules($this);
 	}
 
-	public function preRemove() {}
+	public function preRemove() {
+        $this->removeListener();
+    }
 
 	public function postRemove() {}
 }
