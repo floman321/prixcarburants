@@ -154,77 +154,89 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						
 						<fieldset>
 							<legend>{{Stations :}}</legend>
-							<div class="Conteneur_Flex">
-								<div class="col-sm-3 control-label"> </div>
-								
-								<div class="Conteneur_localisation" style="width: 33%;">
-    								<label class="checkbox-inline" for="ViaLoca"><input id="ViaLoca" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="ViaLoca" onclick="CheckBx('ViaLoca')" />{{Via une localisation}}</label>
-    								<div class="form-group" id="Divloca1" style="display: none;">
-        								<label class="Conteneur_Label" for="geoloc">{{Chercher autour de :}}</label>
-        								<div class="Conteneur_Input">
-                                             <input class="eqLogicAttr form-control CTA-cmd-el" data-l1key="configuration" data-l2key="geoloc" style="display:inline-block; width:90%"/> 
-                                                   <span class="input-group-btn" style="display:inline-block; width:auto"> 
-                                                   <button type="button" class="btn btn-default cursor listCmdActionMessage tooltips cmdSendSel" title="{{Rechercher une commande}}" data-input="sendCmd"><i class="fas fa-list-alt"></i></button> 
-                                                   </span> 
-                                        </div>
-                                       
-        							</div>
-                                     <div class="form-group" id="Divloca1Auto" style="display: none;">
-                                        	<label class="Conteneur_Label">{{Mise à jour auto :}}</label>
-                                            <input id="auto_update" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="auto_update" />
-                                        </div>
-                                       <div class="form-group" id="Divloca1Jeedom" style="display: none;">
-                                        	<label class="Conteneur_Label">{{Utiliser la localisation jeedom :}}</label>
-                                            <input id="jeedom_loc" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="jeedom_loc" />
-                                        </div>
-        							
-                                    <div class="form-group" id="Divloca2" style="display: none;">
-        								<label class="Conteneur_Label" for="rayon">{{Rayon maxi (Km) :}}</label>
-        								<div class="Conteneur_Input">
-
-        									<input type="text" id="rayon" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="rayon" placeholder="{{Saisir un nombre de kilomètres}}"/>
-        								</div>
+							<div class="form-group">
+								 <label class="col-sm-3 control-label help">{{Via une localisation}}</label>
+								 <div class="col-sm-7">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="ViaLoca"/>
+								 </div>
+							  </div>
+							<div id="vialoca_jeeAdd_wrapper">
+								<div class="form-group">
+									<label class="Conteneur_Label">{{Utiliser la localisation jeedom :}}</label>
+									<div class="col-sm-7">
+										<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="jeedom_loc"/>
 									</div>
-        							<div class="form-group" id="Divloca3" style="display: none;">
-        								<label class="Conteneur_Label" for="NbStation">{{Nombre de stations :}}</label>
-        								<div class="Conteneur_Input">
-        									<select id="NbStation" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="nbstation">
-        										<option value="0">0</option>
-        										<option value="1">1</option>
-        										<option value="2">2</option>
-        										<option value="3">3</option>
-        										<option value="4">4</option>
-        										<option value="5">5</option>
-        										<option value="6">6</option>
-        										<option value="7">7</option>
-        										<option value="8">8</option>
-        										<option value="9">9</option>
-        										<option value="10">10</option>
-        									</select>
-        								</div>
-        							</div>
-    							</div>
-    							
-    							<div class="Conteneur_favoris" style="width: 33%;">
-    								<label class="checkbox-inline" for="Favoris"><input id="Favoris" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="Favoris" onclick="CheckBx('Favoris')" />{{Via un / des favori(s)}}</label>
-									<div class="form-group" id="DivOrdreFavoris" style="display: none;">
-										<label class="Conteneur_Label" for="OrdreFavoris">{{Ordre d'affichage :}}</label>
-        								<div class="Conteneur_Input">
-											<select id="OrdreFavoris" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="OrdreFavoris">
-												<option value="Ordre">{{Par ordre de sélection}}</option>
-												<option value="Prix">{{Par prix}}</option>
-											</select>
-											<br />
+								</div>
+								<div id="vialoca_cmd_wrapper">
+									<div class="form-group">
+										<label class="Conteneur_Label">{{Chercher autour de :}}</label>
+										<div class="col-sm-3">
+												<input class="eqLogicAttr form-control CTA-cmd-el" data-l1key="configuration" data-l2key="geoloc" style="display:inline-block; width:90%"/> 
+												<span class="input-group-btn" style="display:inline-block; width:auto"> 
+													<button type="button" class="btn btn-default cursor listCmdActionMessage tooltips cmdSendSel" title="{{Rechercher une commande}}" data-input="sendCmd"><i class="fas fa-list-alt"></i></button> 
+												</span> 
 										</div>
 									</div>
-    								<?php 
+									<div class="form-group">
+										<label class="Conteneur_Label">{{Mise à jour auto :}}</label>
+										<div class="col-sm-7">
+											<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="auto_update"/>
+										</div>
+									</div>
+
+								</div><!-- /vialoca_cmd_wrapper -->
+								<div class="form-group">
+									<label class="Conteneur_Label">{{Rayon maxi (Km) :}}</label>
+									<div class="col-sm-1">
+										<input type="text" class="eqLogicAttr" data-l1key="configuration" data-l2key="rayon" placeholder="{{Saisir un nombre de kilomètres}}"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="Conteneur_Label">{{Nombre de stations :}}</label>
+									<div class="col-sm-1">
+										<select id="NbStation" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="nbstation">
+											<option value="0">0</option>
+											<option value="1">1</option>
+											<option value="2">2</option>
+											<option value="3">3</option>
+											<option value="4">4</option>
+											<option value="5">5</option>
+											<option value="6">6</option>
+											<option value="7">7</option>
+											<option value="8">8</option>
+											<option value="9">9</option>
+											<option value="10">10</option>
+										</select>
+									</div>
+								</div>
+							</div><!-- /vialoca_jeeAdd_wrapper -->
+						</fieldset>
+						<fieldset>
+							<legend>  </legend>
+							<div class="form-group">
+								 <label class="col-sm-3 control-label help">{{Via un / des favori(s)}}</label>
+								 <div class="col-sm-7">
+									<input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="Favoris"/>
+								 </div>
+							</div>
+							<div id="favoris_wrapper">
+								<div class="form-group">
+									<label class="col-sm-3 control-label help">{{Ordre d'affichage :}}</label>
+									<div class="col-sm-3">
+										<select id="OrdreFavoris" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="OrdreFavoris">
+											<option value="Ordre">{{Par ordre de sélection}}</option>
+											<option value="Prix">{{Par prix}}</option>
+										</select>	
+									</div>
+								</div>
+								<?php 
 									if ($eqLogic != null){
 										//Prepare favorite area
 										for($i=1; $i <= 10; $i++) {
 											echo '
 										<div class="form-group">
-											<label class="Conteneur_Label" id="SelectStation'. $i .'_Label" for="SelectStation'. $i .'_Dep" style="display: none;">{{station favorite n°}}'. $i .' :</label>
-											<div class="Conteneur_Input">
+											<label class="col-sm-3 Conteneur_Label" id="SelectStation'. $i .'_Label" for="SelectStation'. $i .'_Dep" style="display: none;">{{station favorite n°}}'. $i .' :</label>
+											<div class="Conteneur_Input col-sm-3">
 												<select class="eqLogicAttr form-control" id="SelectStation'. $i .'_Dep" onchange="AffichageChoixStation(\'commune\', \'SelectStation'. $i .'_Dep\', '. $i .', \'SelectStation'. $i .'_Commune\')" style="display: none;">
 													<option value="">{{Sélectionner un département}}</option>
 													<option value="1" >01 - Ain</option>   <option value="2" >02 - Aisne</option>   <option value="3" >03 - Allier</option>   <option value="4" >04 - Alpes-de-Haute-Provence</option>   <option value="5" >05 - Hautes-Alpes</option>   <option value="6" >06 - Alpes-Maritimes</option>   <option value="7" >07 - Ardèche</option>   <option value="8" >08 - Ardennes</option>   <option value="9" >09 - Ariège</option>   <option value="10" >10 - Aube</option>   <option value="11" >11 - Aude</option>   <option value="12" >12 - Aveyron</option>   <option value="13" >13 - Bouches-du-Rhône</option>   <option value="14" >14 - Calvados</option>   <option value="15" >15 - Cantal</option>   <option value="16" >16 - Charente</option>   <option value="17" >17 - Charente-Maritime</option>   <option value="18" >18 - Cher</option>   <option value="19" >19 - Corrèze</option>   <option value="2A" >2A - Corse-du-Sud</option>   <option value="2B" >2B - Haute-Corse</option>   <option value="21" >21 - Côte d&#039;Or</option>   <option value="22" >22 - Côtes d&#039;Armor</option>   <option value="23" >23 - Creuse</option>   <option value="24" >24 - Dordogne</option>   <option value="25" >25 - Doubs</option>   <option value="26" >26 - Drôme</option>   <option value="27" >27 - Eure</option>   <option value="28" >28 - Eure-et-Loir</option>   <option value="29" >29 - Finistère</option>   <option value="30" >30 - Gard</option>   <option value="31" >31 - Haute-Garonne</option>   <option value="32" >32 - Gers</option>   <option value="33" >33 - Gironde</option>   <option value="34" >34 - Hérault</option>   <option value="35" >35 - Ille-et-Vilaine</option>   <option value="36" >36 - Indre</option>   <option value="37" >37 - Indre-et-Loire</option>   <option value="38" >38 - Isère</option>   <option value="39" >39 - Jura</option>   <option value="40" >40 - Landes</option>   <option value="41" >41 - Loir-et-Cher</option>   <option value="42" >42 - Loire</option>   <option value="43" >43 - Haute-Loire</option>   <option value="44" >44 - Loire-Atlantique</option>   <option value="45" >45 - Loiret</option>   <option value="46" >46 - Lot</option>   <option value="47" >47 - Lot-et-Garonne</option>   <option value="48" >48 - Lozère</option>   <option value="49" >49 - Maine-et-Loire</option>   <option value="50" >50 - Manche</option>   <option value="51" >51 - Marne</option>   <option value="52" >52 - Haute-Marne</option>   <option value="53" >53 - Mayenne</option>   <option value="54" >54 - Meurthe-et-Moselle</option>   <option value="55" >55 - Meuse</option>   <option value="56" >56 - Morbihan</option>   <option value="57" >57 - Moselle</option>   <option value="58" >58 - Nièvre</option>   <option value="59" >59 - Nord</option>   <option value="60" >60 - Oise</option>   <option value="61" >61 - Orne</option>   <option value="62" >62 - Pas-de-Calais</option>   <option value="63" >63 - Puy-de-Dôme</option>   <option value="64" >64 - Pyrénées-Atlantiques</option>   <option value="65" >65 - Hautes-Pyrénées</option>   <option value="66" >66 - Pyrénées-Orientales</option>   <option value="67" >67 - Bas-Rhin</option>   <option value="68" >68 - Haut-Rhin</option>   <option value="69" >69 - Rhône</option>   <option value="70" >70 - Haute-Saône</option>   <option value="71" >71 - Saône-et-Loire</option>   <option value="72" >72 - Sarthe</option>   <option value="73" >73 - Savoie</option>   <option value="74" >74 - Haute-Savoie</option>   <option value="75" >75 - Paris</option>   <option value="76" >76 - Seine-Maritime</option>   <option value="77" >77 - Seine-et-Marne</option>   <option value="78" >78 - Yvelines</option>   <option value="79" >79 - Deux-Sèvres</option>   <option value="80" >80 - Somme</option>   <option value="81" >81 - Tarn</option>   <option value="82" >82 - Tarn-et-Garonne</option>   <option value="83" >83 - Var</option>   <option value="84" >84 - Vaucluse</option>   <option value="85" >85 - Vendée</option>   <option value="86" >86 - Vienne</option>   <option value="87" >87 - Haute-Vienne</option>   <option value="88" >88 - Vosges</option>   <option value="89" >89 - Yonne</option>   <option value="90" >90 - Territoire-de-Belfort</option>   <option value="91" >91 - Essonne</option>   <option value="92" >92 - Hauts-de-Seine</option>   <option value="93" >93 - Seine-Saint-Denis</option>   <option value="94" >94 - Val-de-Marne</option>   <option value="95" >95 - Val-d&#039;Oise</option>
@@ -251,13 +263,15 @@ $eqLogics = eqLogic::byType($plugin->getId());
 											<div>
 												<a class="fas fa-minus-circle" id="SelectStation'. $i .'_RemoveFav" onclick="RetireFavoris('. $i .', '. $compteur .')" style="display: none;"></a>
 											</div>
-										</div><br />';
+										</div>';
 										}
 									}
     								?>
-    							</div>
-    							<input type="Text" class="eqLogicAttr form-control" id="FinPage" data-l1key="configuration" data-l2key="FinPage" value="fini" style="display: none;" onchange="FillSavedSelect()" />
+								</div><!-- /favoris_wrapper -->
+								<input type="Text" class="eqLogicAttr form-control" id="FinPage" data-l1key="configuration" data-l2key="FinPage" value="fini" style="display: none;" onchange="FillSavedSelect()" />
+							
 						</fieldset>
+							
 					</form>
 				</div>
 				<div role="tabpanel" class="tab-pane" id="commandtab">
