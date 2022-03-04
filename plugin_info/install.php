@@ -27,6 +27,9 @@ function prixcarburants_checkCron(){
   if(($freq==null || $freq== '') || ($freq=='prog' && ($perso==null || $perso == ''))){
     config::save('freq',prixcarburants::DEFAULT_CRON,'prixcarburants');//dayly
   }
+  if(config::byKey('freq_geo','prixcarburants')==null){
+    config::save('freq_geo','event','prixcarburants');
+  }
   prixcarburants::setUpdateCron();// mise en place du cron selon la config ou par défaut
 }
 
@@ -83,6 +86,10 @@ function prixcarburants_remove() {
   if (is_object($cron)) {
       $cron->remove();
   }
+  $cron = cron::byClassAndFunction(__CLASS__, 'pullGeoCmd');
+  if (is_object($cron)) {
+    $cron->remove();
+}
 }
 
 ?>
