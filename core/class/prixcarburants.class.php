@@ -138,7 +138,7 @@ class prixcarburants extends eqLogic {
 						if ($cmd!= null){
 							$coordonnees = $cmd->execCmd();
 						} else {
-							log::add(__CLASS__,'error',__('commande de localisation non trouvée ',  __FILE__).$nom);
+							log::add(__CLASS__,'error',__('commande de localisation non trouvée ',  __FILE__));
 						}
 						$expcoord = explode(",",$coordonnees);
 						$malat = $expcoord[0];
