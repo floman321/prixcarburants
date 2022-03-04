@@ -45,8 +45,9 @@ class prixcarburants extends eqLogic {
     
 	//Function to get The brand of a gaz station
 	public static function getMarqueStation($idstation, $DepStation) {
-	    $json = @file_get_contents(__DIR__ . '/listestations/stations' . $DepStation . '.json');
+	    $json = @file_get_contents('../../plugins/'.__CLASS__.'/data/listestations/stations' . $DepStation . '.json');
 	    if($json!==false){
+			log::add(__CLASS__,'debug','JSON file : plugins/'.__CLASS__.'/data/listestations/stations' . $DepStation . '.json available');
     		$parsed_json = json_decode($json, true);
     		foreach($parsed_json['stations'] as $row) {
     			if($row['id'] == $idstation) {
@@ -55,7 +56,7 @@ class prixcarburants extends eqLogic {
     			}
     		}
 	    } else {
-	        log::add('prixcarburants','debug','JSON file : /listestations/stations' . $DepStation . '.json not available');
+			log::add(__CLASS__,'debug','JSON file : plugins/'.__CLASS__.'/data/listestations/stations' . $DepStation . '.json not available');
 	        return __('Erreur',  __FILE__);
 	    }
 	}
@@ -148,7 +149,7 @@ class prixcarburants extends eqLogic {
 			}
 			
 			//Prepare and parse XML file
-			$reader = XMLReader::open(__DIR__.'/PrixCarburants_instantane.xml');
+			$reader = XMLReader::open('plugins/'.__CLASS__.'/data/PrixCarburants_instantane.xml');
 			$doc = new DOMDocument;
 			$urlMap = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&origin=';;
 			$urlWaze = 'https://waze.com/ul?';
@@ -338,21 +339,20 @@ class prixcarburants extends eqLogic {
 	
 	//Function to get zip file from government website then update all values
 	Public static function updatePrixCarburant(){
-		$filenamezip = __DIR__.'/PrixCarburants.zip';
-		
+		$filenamezip = '../../plugins/'.__CLASS__.'/data/PrixCarburants.zip';
 		$current = file_get_contents("https://donnees.roulez-eco.fr/opendata/instantane");
 		file_put_contents($filenamezip, $current);
 		
 		$zip = new ZipArchive;
 		if ($zip->open($filenamezip) === TRUE) {
-    		$zip->extractTo(__DIR__);
+			$zip->extractTo('../../plugins/'.__CLASS__.'/data');
     		$zip->close();
-    		log::add('prixcarburants','debug','prix zip ok get'.__DIR__);
-    		
-    		unlink(__DIR__.'/PrixCarburants.zip');
+			log::add(__CLASS__,'debug','prix zip OK get :'.$filenamezip);
+			unlink($filenamezip);
+			
     		//prixcarburants::MAJVehicules(null);
 		} else {
-		  log::add('prixcarburants','debug','prix zip nok get'.__DIR__);
+			log::add(__CLASS__,'debug','prix zip NOK get :'.$filenamezip);
 		}
 	}
 	
@@ -460,8 +460,10 @@ class prixcarburants extends eqLogic {
 		}
 		
 		//Create file with fuel price if it doesn't exist (first creation)
-		if (!file_exists(__DIR__.'/PrixCarburants_instantane.xml')) {
-		  $prixcarburantsCmd->getEqLogic()->updatePrixCarburant();
+		if (!file_exists('../../data/PrixCarburants_instantane.xml')) {
+			log::add(__CLASS__,'debug','XML file doesn\'t exist, yet.');
+			$prixcarburantsCmd->getEqLogic()->updatePrixCarburant();
+			log::add(__CLASS__,'debug','XML file created.');
 		}
       
       	// manage listener if needed
