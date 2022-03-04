@@ -3,7 +3,7 @@
 ### TODO list
 
 ## 04/03/2022 - BETA :
-- ajout définition fréquence dans la config de l'équipement
+- ajout définition fréquence de mise à jour de la liste de prix dans la config de l'équipement
 - modification du layout de l'affichage dans les équipements
 - ajout commande de géolocalisation pour le calcul des top station.
 - ajout option de mise à jour automatiquement des tops stations avec la mise à jour de la commande de géolocalisation
