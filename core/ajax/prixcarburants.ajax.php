@@ -29,7 +29,7 @@ try {
     ajax::init();
     $action = init('action');
     if($action == 'StationName') {
-        $json = file_get_contents('../class/listestations/stations'.init('Departement').'.json');
+        $json = file_get_contents('../../data/listestations/stations'.init('Departement').'.json');
         ajax::success(json_decode($json));
     }
     if($action == 'UpdateCron') {
