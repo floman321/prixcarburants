@@ -463,7 +463,7 @@ class prixcarburants extends eqLogic {
 		$pregResult = preg_match_all("/#([0-9]*)#/", $glCmd, $matches);
       
 		if ($pregResult===false) {
-			log::add(__CLASS__, 'error', __('Erreur regExp Expression', __FILE__) . ': '.  $expression);
+			log::add(__CLASS__, 'error', __('Erreur regExp Expression', __FILE__));
 			$this->removeListener();
 			return;
 		}
