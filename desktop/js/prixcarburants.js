@@ -233,7 +233,12 @@ $(".eqLogicAttr[data-l2key='ViaLoca']").on('change click update', function () {
 	  $("#SelectStation1_Dep").show();
 	}
   });
-
+function printEqLogic(_mem) {
+  	$(".eqLogicAttr[data-l2key='ViaLoca']").trigger('change');
+  	$(".eqLogicAttr[data-l2key='jeedom_loc']").trigger('change');
+   $(".eqLogicAttr[data-l2key='Favoris']").trigger('change');
+  
+}
 
 //Function to display and filled already saved data
 function FillSavedSelect() {
@@ -298,3 +303,14 @@ $(".cmdSendSel").on('click', function () {
        calcul.atCaret('insert', result.human);
      });
 });
+
+
+
+// function called after eqLogic is loaded
+// use here to trigger change on checkboxes for new equipement
+function printEqLogic(_mem) {
+  	$(".eqLogicAttr[data-l2key='ViaLoca']").trigger('change');
+  	$(".eqLogicAttr[data-l2key='jeedom_loc']").trigger('change');
+   $(".eqLogicAttr[data-l2key='Favoris']").trigger('change');
+  
+}
