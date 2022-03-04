@@ -34,10 +34,14 @@ function prixcarburants_postSaveConfiguration() {
       handleAjaxError(request, status, error);
   },
     success: function(data) {
-      console.log(data);
-
-      if(data.result == true){
+      //console.log(data);
+      //console.log(data.state);
+      if(data.state == 'ok'){
         $('#div_alert').showAlert({message: '{{Cron mis à jour!}}', level: 'success'});
+        // mise à jour des prev et next date
+        $(".dueDateShow").show();
+        $(".configInfo[data-key='prevDate']").text(data.result.prevDate);
+        $(".configInfo[data-key='nextDate']").text(data.result.nextDate);
       }else{
         $('#div_alert').showAlert({message: '{{Erreur Mise à jour cron}}', level: 'error'});
       }

@@ -33,8 +33,8 @@ try {
         ajax::success(json_decode($json));
     }
     if($action == 'UpdateCron') {
-        $isOk = prixcarburants::setUpdateCron();
-        ajax::success($isOk);
+        $calculatedDate = prixcarburants::setUpdateCron();
+        ajax::success($calculatedDate);
     }
 
 

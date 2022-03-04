@@ -337,11 +337,32 @@ class prixcarburants extends eqLogic {
 		}
 		$cron->setEnable(1);
 		$cron->setDeamon(0);
-		$cron->setSchedule($freq);
+		$cron->setSchedule(checkAndFixCron($freq));
 		$cron->save();
-
-		return true;
+      
+      	
+		return self::getDueDateStr($freq);
 	}
+ 
+  public static function getDueDate(){
+    	$freq=config::byKey('freq','prixcarburants');
+		if($freq=='prog')$freq=config::byKey('autorefresh','prixcarburants');
+
+		if ($freq == '' || is_null($freq)){// set default if not set
+			log::add(__CLASS__, 'debug', __('Aucun Cron Défini pour la mise à jour, passage au défaut :', __FILE__).self::DEFAULT_CRON);
+			$freq=self::DEFAULT_CRON;
+		}
+    	return self::getDueDateStr($freq);
+    
+  }
+   // utils function to get due date from frequency
+  public static function getDueDateStr($freq){
+    	$c = new Cron\CronExpression(checkAndFixCron($freq), new Cron\FieldFactory);
+		$calculatedDate = array('prevDate' => '', 'nextDate' => '');
+        $calculatedDate['prevDate'] = $c->getPreviousRunDate()->format('Y-m-d H:i:s');
+        $calculatedDate['nextDate'] = $c->getNextRunDate()->format('Y-m-d H:i:s');
+    	return $calculatedDate;
+  }
 	// function called by cron triggering
 	public static function udpateAllData(){
 		log::add(__CLASS__,'debug', '------ Cron Triggering');

@@ -55,6 +55,19 @@ if (!isConnect()) {
                 </div>
               </div>
         </div>
+        <?php
+        $dates = prixcarburants::getDueDate();
+          echo '<div class="form-group dueDateShow"  >
+              <label class="col-md-4 control-label">{{dates de mise à jour :}}</label>
+              <div class="col-xs-7">
+                  <label class="control-label">{{Précédent : }}</label>
+                  
+                  <span class="configInfo label label-primary" data-key="prevDate">'.$dates['prevDate'].'</span>
+                  <label class="control-label">{{Prochain : }}</label>
+                  <span class="configInfo label label-success" data-key="nextDate">'.$dates['nextDate'].'</span>
+               </div>
+        </div>'
+          ?>
    
   </fieldset>
 </form>
