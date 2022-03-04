@@ -35,6 +35,7 @@ function prixcarburants_checkCron(){
 
 function prixcarburants_install() {
   log::add('prixcarburants','debug', '======= installation');
+  prixcarburants::updatePrixCarburant();
   prixcarburants_checkCron();
 
 }
