@@ -59,7 +59,7 @@ class prixcarburants extends eqLogic {
 	        return __('Erreur',  __FILE__);
 	    }
 	}
-	// ========== Manage listener update
+	// ========== Manage listener update & pull
   public static function trigger($_option) {
 		log::add(__CLASS__, 'debug', '╔═══════════════════════  Trigger sur id :'.$_option['id']);
 
@@ -68,6 +68,17 @@ class prixcarburants extends eqLogic {
           	self::MAJVehicules($eqLogic);
 		}
       log::add(__CLASS__,'debug', "╚═════════════════════════════════════════ END Trigger ");
+		
+	}
+	public static function pullGeoCmd(){
+		log::add(__CLASS__, 'debug', '╔═══════════════════════  PULL geoloc cmd sur id :');
+		$eqLogics = self::byType('prixcarburants');
+        foreach ($eqLogics as $eqLogic) {
+			if($eqLogic->getConfiguration('ViaLoca') == '1' && $eqLogic->getConfiguration('jeedom_loc') != 1 && $eqLogic->getConfiguration('geoloc', 'none') != 'none' && $eqLogic->getConfiguration('auto_update', false)==1){
+				log::add(__CLASS__, 'debug', '--update eqLogic  :'.$eqLogic->getHumanName());
+				self::MAJVehicules($eqLogic);
+			}
+        }
 		
 	}
 	//Function list all gaz station that correspond to defined parameters on the configuration
@@ -339,8 +350,35 @@ class prixcarburants extends eqLogic {
 		$cron->setDeamon(0);
 		$cron->setSchedule(checkAndFixCron($freq));
 		$cron->save();
-      
-      	
+
+		// gestion de la mise à jour des commande de geoloc
+		$freq_geo=config::byKey('freq_geo','prixcarburants');
+
+		$eqLogics = self::byType('prixcarburants');
+        foreach ($eqLogics as $eqLogic) {
+			if($freq_geo == 'event'){
+				$eqLogic->setListener();
+			}else{
+				$eqLogic->removeListener();
+			}
+        }
+		$cron = cron::byClassAndFunction(__CLASS__, 'pullGeoCmd');
+		if($freq_geo != 'event'){
+			log::add(__CLASS__,'debug', "Add cron to freq for CMD update: $freq_geo ");
+			if (!is_object($cron)) {
+				$cron = new cron();
+				$cron->setClass(__CLASS__);
+				$cron->setFunction('pullGeoCmd');
+			}
+			$cron->setEnable(1);
+			$cron->setDeamon(0);
+			$cron->setSchedule(checkAndFixCron($freq_geo));
+			$cron->save();
+		}elseif(is_object($cron)){
+			log::add(__CLASS__,'debug', "Remove cron to freq for CMD update ");
+			$cron->remove();
+		}
+
 		return self::getDueDateStr($freq);
 	}
  
@@ -399,10 +437,10 @@ class prixcarburants extends eqLogic {
        $this->setListener();
 	}
   // Listener manager function
-   private function getListener() {
+   public function getListener() {
 		return listener::byClassAndFunction(__CLASS__, 'trigger', array('id' => $this->getId()));
 	}
-  private function removeListener() {
+  public function removeListener() {
       log::add(__CLASS__, 'debug', ' Suppression des Ecouteurs de '.$this->getHumanName());
 		$listener = $this->getListener();
 		if (is_object($listener)) {
@@ -410,14 +448,14 @@ class prixcarburants extends eqLogic {
 		}
 	}
   
-  private function setListener() {
+  public function setListener() {
 		log::add(__CLASS__, 'debug', ' Recording listeners');
 
 		$glCmd = $this->getConfiguration('geoloc', '');
       
       	log::add(__CLASS__, 'debug', 'Geoloc command : '.$glCmd);
 
-		if ($this->getIsEnable() == 0 || $glCmd==='' || !$this->getConfiguration('ViaLoca', false) || !$this->getConfiguration('auto_update', false) ) {
+		if ($this->getIsEnable() == 0 || $glCmd==='' || !$this->getConfiguration('ViaLoca', false) || !$this->getConfiguration('auto_update', false) || config::byKey('freq_geo','prixcarburants')!= 'event') {
 			$this->removeListener();
 			return;
 		}
