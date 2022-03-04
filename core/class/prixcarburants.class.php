@@ -139,7 +139,7 @@ class prixcarburants extends eqLogic {
         			    if ($cmd!= null){
                             $coordonnees = $cmd->execCmd();
         			    } else {
-        			        log::add(__CLASS__,'error',__('commande de localisation non trouvée ',  __FILE__).$nom);
+        			        log::add(__CLASS__,'error',__('commande de localisation non trouvée ',  __FILE__));
         			    }
         			    $expcoord = explode(",",$coordonnees);
         		        $malat = $expcoord[0];
@@ -149,7 +149,8 @@ class prixcarburants extends eqLogic {
 			}
 			
 			//Prepare and parse XML file
-			$reader = XMLReader::open('plugins/'.__CLASS__.'/data/PrixCarburants_instantane.xml');
+			
+			$reader = XMLReader::open('../../plugins/'.__CLASS__.'/data/PrixCarburants_instantane.xml');
 			$doc = new DOMDocument;
 			$urlMap = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&origin=';;
 			$urlWaze = 'https://waze.com/ul?';
