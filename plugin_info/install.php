@@ -31,7 +31,7 @@ function prixcarburants_checkCron(){
 }
 
 function prixcarburants_install() {
-  log::add('prixcarburants','debug', '======= installation de '.$eqLogic->getHumanName());
+  log::add('prixcarburants','debug', '======= installation');
   prixcarburants_checkCron();
 
 }
@@ -39,7 +39,7 @@ function prixcarburants_install() {
 function prixcarburants_update() {
   $plugin = plugin::byId('prixcarburants');
   foreach (eqLogic::byType($plugin->getId()) as $eqLogic) {
-      log::add('prixcarburants','debug', '!!======= mise à jour de '.$eqLogic->getHumanName());
+      log::add('prixcarburants','debug', '!!======= mise à jour plugin ');
       
       
       // geoloc parameter to fit previous config
