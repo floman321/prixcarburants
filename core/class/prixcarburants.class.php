@@ -22,6 +22,7 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
 class prixcarburants extends eqLogic {
 
 	const DEFAULT_CRON = '7 2 * * *';// cron by default if not set 
+	const ZIP_PATH = '/var/www/html/plugins/prixcarburants/data';// '/var/www/html/plugins/prixcarburants/core/class';//'../../plugins/'.__CLASS__.'/data';// file path for zip file, data and so on
 
 	/*     * ***********************Methode static*************************** */
 
@@ -63,13 +64,13 @@ class prixcarburants extends eqLogic {
 
 	// ========== Manage listener update & pull
 	public static function trigger($_option) {
-	log::add(__CLASS__, 'debug', '╔═══════════════════════  Trigger sur id :'.$_option['id']);
+		log::add(__CLASS__, 'debug', '╔═══════════════════════  Trigger sur id :'.$_option['id']);
 
-	$eqLogic = self::byId($_option['id']);
-	if (is_object($eqLogic) && $eqLogic->getIsEnable() == 1) {
-		self::MAJVehicules($eqLogic);
-	}
-	log::add(__CLASS__,'debug', "╚═════════════════════════════════════════ END Trigger ");
+		$eqLogic = self::byId($_option['id']);
+		if (is_object($eqLogic) && $eqLogic->getIsEnable() == 1) {
+			self::MAJVehicules($eqLogic);
+		}
+		log::add(__CLASS__,'debug', "╚═════════════════════════════════════════ END Trigger ");
 	}
 
 	public static function pullGeoCmd(){
@@ -148,7 +149,8 @@ class prixcarburants extends eqLogic {
 			}
 
 			//Prepare and parse XML file
-			$reader = XMLReader::open('../../plugins/'.__CLASS__.'/data/PrixCarburants_instantane.xml');
+			log::add(__CLASS__,'debug','path :'.realpath(self::ZIP_PATH.'/PrixCarburants_instantane.xml'));
+			$reader = XMLReader::open(self::ZIP_PATH.'/PrixCarburants_instantane.xml');
 			$doc = new DOMDocument;
 			$urlMap = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&origin=';;
 			$urlWaze = 'https://waze.com/ul?';
@@ -338,20 +340,21 @@ class prixcarburants extends eqLogic {
 
 	//Function to get zip file from government website then update all values
 	Public static function updatePrixCarburant(){
-		$filenamezip = '../../plugins/'.__CLASS__.'/data/PrixCarburants.zip';
+		log::add(__CLASS__,'debug','zip path : '.realpath(self::ZIP_PATH));
+		$filenamezip = self::ZIP_PATH.'/PrixCarburants.zip';
 		$current = file_get_contents("https://donnees.roulez-eco.fr/opendata/instantane");
 		file_put_contents($filenamezip, $current);
-
 		$zip = new ZipArchive;
 		if ($zip->open($filenamezip) === TRUE) {
-			$zip->extractTo('../../plugins/'.__CLASS__.'/data');
+			$zip->extractTo(self::ZIP_PATH);
 			$zip->close();
 			log::add(__CLASS__,'debug','prix zip OK get :'.$filenamezip);
 			unlink($filenamezip);
-
+			return true;
 			//prixcarburants::MAJVehicules(null);
 		} else {
 			log::add(__CLASS__,'debug','prix zip NOK get :'.$filenamezip);
+			return false;
 		}
 	}
 
@@ -434,8 +437,12 @@ class prixcarburants extends eqLogic {
 	// function called by cron triggering
 	public static function udpateAllData(){
 		log::add(__CLASS__,'debug', '------ Cron Triggering');
-		self::updatePrixCarburant();//update only xml
-		self::MAJVehicules(null);// update all equipement
+		$ISoK = self::updatePrixCarburant();//update only xml
+		if($ISoK ){
+			self::MAJVehicules(null);// update all equipement
+		}else{
+			log::add(__CLASS__,'debug', 'Error Zip File, vehicule not updated');
+		}
 	}
 
 
@@ -459,7 +466,7 @@ class prixcarburants extends eqLogic {
 		}
 
 		//Create file with fuel price if it doesn't exist (first creation)
-		if (!file_exists('../../plugins/'.__CLASS__.'/data/PrixCarburants_instantane.xml')) {
+		if (!file_exists(self::ZIP_PATH.'/PrixCarburants_instantane.xml')) {
 			log::add(__CLASS__,'debug','XML file doesn\'t exist, yet.');
 			$prixcarburantsCmd->getEqLogic()->updatePrixCarburant();
 			log::add(__CLASS__,'debug','XML file created.');
