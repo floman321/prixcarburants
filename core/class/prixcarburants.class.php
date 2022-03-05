@@ -123,28 +123,28 @@ class prixcarburants extends eqLogic {
 
 			//Get position latitude and longitude only if geolocalisation is selected
 			if ($unvehicule->getConfiguration('ViaLoca') == '1') {
-				if($nbstation == '0') {
-					log::add('prixcarburants','error',__('Le nombre de station n\'est pas renseigné dans la configuration de Prix Carburants : ',  __FILE__).$nom);
-				} else {
-					if ($unvehicule->getConfiguration('jeedom_loc') == 1) {
-						$malat = config::byKey('info::latitude');
-						$malng = config::byKey('info::longitude');						
-					} elseif ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
-						$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
-						if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée',  __FILE__));
-						return;
-					} else {
-						$cmd=cmd::byId(str_replace('#','',$unvehicule->getConfiguration('geoloc')));
-						if ($cmd!= null){
-							$coordonnees = $cmd->execCmd();
-						} else {
-							log::add(__CLASS__,'error',__('commande de localisation non trouvée ',  __FILE__));
-						}
-						$expcoord = explode(",",$coordonnees);
-						$malat = $expcoord[0];
-						$malng = $expcoord[1];
-					}
-				}
+			    if($nbstation == '0') {
+			        log::add('prixcarburants','error',__('Le nombre de station n\'est pas renseigné dans la configuration de Prix Carburants : ',  __FILE__).$nom);
+			    } else {
+        			if ($unvehicule->getConfiguration('jeedom_loc') == 1) {
+        			    $malat = config::byKey('info::latitude');
+        			    $malng = config::byKey('info::longitude');						
+        			} elseif ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
+        			    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
+        			    if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée',  __FILE__));
+        			    return;
+        			} else {
+                      $cmd=cmd::byId(str_replace('#','',$unvehicule->getConfiguration('geoloc')));
+        			    if ($cmd!= null){
+                            $coordonnees = $cmd->execCmd();
+        			    } else {
+        			        log::add(__CLASS__,'error',__('commande de localisation non trouvée ',  __FILE__));
+        			    }
+        			    $expcoord = explode(",",$coordonnees);
+        		        $malat = $expcoord[0];
+        		        $malng = $expcoord[1];
+        			}
+			    }
 			}
 
 			//Prepare and parse XML file
