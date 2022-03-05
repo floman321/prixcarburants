@@ -200,7 +200,7 @@ class prixcarburants extends eqLogic {
 							$maj = $prix->attributes()->maj.'';
 							$marque = prixcarburants::getMarqueStation($mastationid, $MaStationDep);
 
-							$PathToLogo = '../../plugins/'.__CLASS__.'/data/logo/';
+							$PathToLogo = self::ZIP_PATH.'/logo/';
 							$LogoName = strtoupper(str_replace(' ', '', $marque));
 							if(file_exists($PathToLogo.$LogoName.'.png')) {
 								$logo = $PathToLogo.$LogoName.'.png';
