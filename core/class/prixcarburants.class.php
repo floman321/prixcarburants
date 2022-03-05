@@ -46,9 +46,9 @@ class prixcarburants extends eqLogic {
 
 	//Function to get The brand of a gaz station
 	public static function getMarqueStation($idstation, $DepStation) {
-		$json = @file_get_contents('../../plugins/'.__CLASS__.'/data/listestations/stations' . $DepStation . '.json');
+		$json = @file_get_contents(self::ZIP_PATH.'/listestations/stations' . $DepStation . '.json');
 		if($json!==false){
-			log::add(__CLASS__,'debug','JSON file : plugins/'.__CLASS__.'/data/listestations/stations' . $DepStation . '.json available');
+			log::add(__CLASS__,'debug','JSON file : '.self::ZIP_PATH.'/data/listestations/stations' . $DepStation . '.json available');
 			$parsed_json = json_decode($json, true);
 			foreach($parsed_json['stations'] as $row) {
 				if($row['id'] == $idstation) {
@@ -57,7 +57,7 @@ class prixcarburants extends eqLogic {
 				}
 			}
 		} else {
-			log::add(__CLASS__,'debug','JSON file : plugins/'.__CLASS__.'/data/listestations/stations' . $DepStation . '.json not available');
+			log::add(__CLASS__,'debug','JSON file : '.self::ZIP_PATH.'/listestations/stations' . $DepStation . '.json not available');
 			return __('Erreur',  __FILE__);
 		}
 	}
