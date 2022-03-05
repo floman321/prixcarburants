@@ -22,7 +22,7 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
 class prixcarburants extends eqLogic {
 
 	const DEFAULT_CRON = '7 2 * * *';// cron by default if not set 
-	const ZIP_PATH = '/var/www/html/plugins/prixcarburants/data';// '/var/www/html/plugins/prixcarburants/core/class';//'../../plugins/'.__CLASS__.'/data';// file path for zip file, data and so on
+	const ZIP_PATH = __DIR__.'/../../data';//'/var/www/html/plugins/prixcarburants/data';// '/var/www/html/plugins/prixcarburants/core/class';//'../../plugins/'.__CLASS__.'/data';// file path for zip file, data and so on
 
 	/*     * ***********************Methode static*************************** */
 
