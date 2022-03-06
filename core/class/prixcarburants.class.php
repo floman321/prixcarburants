@@ -200,7 +200,7 @@ class prixcarburants extends eqLogic {
 							$maj = $prix->attributes()->maj.'';
 							$marque = prixcarburants::getMarqueStation($mastationid, $MaStationDep);
 
-							$PathToLogo = self::ZIP_PATH.'/logo/';
+							$PathToLogo = '../../plugins/'.__CLASS__.'/data/logo/';
 							$LogoName = strtoupper(str_replace(' ', '', $marque));
 							if(file_exists($PathToLogo.$LogoName.'.png')) {
 								$logo = $PathToLogo.$LogoName.'.png';
@@ -773,6 +773,50 @@ class prixcarburants extends eqLogic {
 	}
 
 	public function postRemove() {}
+
+	/** Collect data to design the widget */
+	public function toHtml($_version = 'dashboard') {
+		$replace = $this->preToHtml($_version);
+		if (!is_array($replace)) {
+		  return $replace;
+		}
+		$version = jeedom::versionAlias($_version);
+	
+		// Gaz station template
+		$GazStation_html = '';
+		$GazStation_template = getTemplate('core', $version, 'gazstation.template', 'prixcarburants');
+		$GazStation_Qtty = 0;
+	
+		for($i = 1; $i <= 20; $i++) {
+		  //$TopAdresse_i = $this->getCmd(null, 'TopAdresse_'.$i);
+		  if(is_object($this->getCmd(null, 'TopAdresse_'.$i))) {
+			$TopAdresse = $this->getCmd(null, 'TopAdresse_'.$i);
+			$replace['#TopAdresse#'] = is_object($TopAdresse) ? $TopAdresse->execCmd() : '';
+	
+			$PrixStation = $this->getCmd(null, 'TopPrix_'.$i);
+			$replace['#TopPrix#'] = is_object($PrixStation) ? $PrixStation->execCmd() : '';
+		
+			$DateRecover = $this->getCmd(null, 'TopMaJ_'.$i);
+			$replace['#TopMaJ#'] = is_object($DateRecover) ? $DateRecover->execCmd() : '';
+		
+			$LogoStation = $this->getCmd(null, 'TopLogo_'.$i);
+			$replace['#LogoStation#'] = is_object($LogoStation) ? $LogoStation->execCmd() : '';
+	
+			$GazStation_html .= template_replace($replace, $GazStation_template);
+			$GazStation_Qtty++;
+		  }
+		}
+	
+		$replace['#GazStation#'] = $GazStation_html;
+		$replace['#TemplateHeight#'] = 80 * $GazStation_Qtty;
+	
+		$replace['#PrixCarburants#'] = $this->getName();
+	
+		$refresh = $this->getCmd(null, 'refresh');
+		$replace['#refresh#'] = is_object($refresh) ? $refresh->getId() : '';
+	
+		return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'prixcarburants.template', 'prixcarburants')));
+	  }
 }
 
 class prixcarburantsCmd extends cmd {
