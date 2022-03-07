@@ -75,6 +75,7 @@ function prixcarburants_update() {
 		$eqLogic->save();
  }
  // check cron 
+ prixcarburants::updatePrixCarburant();
  prixcarburants_checkCron();
  log::add('prixcarburants','debug','=============  fin de mise à jour');
 
