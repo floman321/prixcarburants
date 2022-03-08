@@ -1,4 +1,20 @@
 {
+  	 "plugins\/prixcarburants\/plugin_info\/configuration.php": {
+       "Liste Prix" : "Price List",
+       "Fréquence de mise à jour des prix" : "Price Update Frequency",
+       "dates de mise à jour" : "Update Dates",
+       "Commande Géolocalisation" : "Geolocation command",
+       "Mise à jour des commande de géolocalisation" : "Geolocation command update",
+       "Programm" : "Programmed",
+      "Cron minute" : "Minute Cron",
+       "Cron 10 minutes" : "10 minutes Cron",
+      "Cron 30 minutes" : "30 minutes Cron",
+      "Cron heure" : "Hour Cron",
+      "Cron 6 heure" : "6 Hours cron",
+      "Cron 12 heure" : "12 hours cron",
+      "Cron Jour" : "Daily cron",
+      "Immédiatement" : "Instant"
+     },
     "plugins\/prixcarburants\/desktop\/php\/prixcarburants.php": {
         "Gestion": "Management",
         "Ajouter": "Add",
@@ -22,9 +38,9 @@
         "Style d'affichage :": "Display style:",
         "Format date :": "Date format:",
         "Par défaut": "Default",
-        "Nombre de station :": "Station quantity:",
+        "Nombre de stations :": "Station quantity:",
         "Stations :": "Gaz stations:",
-        "Type de carburants :": "Fuel type:",
+        "Type de carburant :": "Fuel type:",
         "Gazole": "Diesel",
         "SP95-E10": "SP95-E10",
         "SP95": "SP95",
@@ -47,7 +63,12 @@
         "Action": "Action",
 		"Ordre d'affichage :": "Display order :",
 		"Par ordre de sélection": "By selection",
-		"Par prix": "By price"
+		"Par prix": "By price",
+      	"Utiliser la localisation jeedom :": "Use Jeedom location",
+      	"Mise à jour auto :": "auto update",
+      	"Capacité du réservoir (litres) :": "Fuel tank volume (liters):",
+      	"Considérer date relevée comme expirée (jours) :" : "consider out of date if older than (days):",
+      	"Ignorer les stations avec date périmée": "Ignore station with outdated update date"
     },
     "plugins\/prixcarburants\/desktop\/js\/prixcarburants.js": {
     	"Non": "Name",
