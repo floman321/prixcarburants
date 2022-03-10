@@ -544,8 +544,7 @@ class prixcarburants extends eqLogic {
 
 	// Create corrrectly the good quantity of command on an equipement
 	public function postUpdate() {
-		//Choose correct quantity of station.
-		$nbstation = $this->getConfiguration('nbstation','0');
+		$nbstation = $this->getConfiguration('ViaLoca')==1?$this->getConfiguration('nbstation','0'):0;
 		$NbFavoris = 0;
 		if ($this->getConfiguration('Favoris') == '1') {
 			for($i = 1; $i <=10; $i++) {
@@ -566,166 +565,188 @@ class prixcarburants extends eqLogic {
 			//Show only required quantity of station
 			if($i <= $nbstation) {
 				$prixcarburantsCmd = $this->getCmd(null, 'TopID_'.$i);
-				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				if (!is_object($prixcarburantsCmd)){
+					$prixcarburantsCmd = new prixcarburantsCmd();
+					$prixcarburantsCmd->setEqLogic_id($this->getId());
+					$prixcarburantsCmd->setType('info');
+					$prixcarburantsCmd->setSubType('string');
+					$prixcarburantsCmd->setIsHistorized(0);
+					$prixcarburantsCmd->setIsVisible(0);
+				} 
 				$prixcarburantsCmd->setName('Top ' . $i . ' ID');
-				$prixcarburantsCmd->setEqLogic_id($this->getId());
 				$prixcarburantsCmd->setLogicalId('TopID_'.$i);
-				$prixcarburantsCmd->setType('info');
-				$prixcarburantsCmd->setSubType('string');
-				$prixcarburantsCmd->setIsHistorized(0);
-				$prixcarburantsCmd->setIsVisible(0);
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
 
 				$prixcarburantsCmd = $this->getCmd(null, 'TopAdresse_'.$i);
-				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				if (!is_object($prixcarburantsCmd)){ 
+					$prixcarburantsCmd = new prixcarburantsCmd();
+					$prixcarburantsCmd->setEqLogic_id($this->getId());
+					$prixcarburantsCmd->setType('info');
+					$prixcarburantsCmd->setSubType('string');
+					$prixcarburantsCmd->setIsHistorized(0);
+					$prixcarburantsCmd->setIsVisible(1);
+					$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+					$prixcarburantsCmd->setLogicalId('TopAdresse_'.$i);
+				}
 				$prixcarburantsCmd->setName('Top ' . $i . ' Adresse');
-				$prixcarburantsCmd->setEqLogic_id($this->getId());
-				$prixcarburantsCmd->setLogicalId('TopAdresse_'.$i);
-				$prixcarburantsCmd->setType('info');
-				$prixcarburantsCmd->setSubType('string');
-				$prixcarburantsCmd->setIsHistorized(0);
-				$prixcarburantsCmd->setIsVisible(1);
-				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
 
 				$prixcarburantsCmd = $this->getCmd(null, 'TopAdresseCompl_'.$i);
-				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				if (!is_object($prixcarburantsCmd)) {
+					$prixcarburantsCmd = new prixcarburantsCmd();
+					$prixcarburantsCmd->setEqLogic_id($this->getId());
+					$prixcarburantsCmd->setType('info');
+					$prixcarburantsCmd->setSubType('string');
+					$prixcarburantsCmd->setIsHistorized(0);
+					$prixcarburantsCmd->setIsVisible(0);
+					$prixcarburantsCmd->setLogicalId('TopAdresseCompl_'.$i);
+					$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+				}
 				$prixcarburantsCmd->setName('Top ' . $i . ' Adresse complète');
-				$prixcarburantsCmd->setEqLogic_id($this->getId());
-				$prixcarburantsCmd->setLogicalId('TopAdresseCompl_'.$i);
-				$prixcarburantsCmd->setType('info');
-				$prixcarburantsCmd->setSubType('string');
-				$prixcarburantsCmd->setIsHistorized(0);
-				$prixcarburantsCmd->setIsVisible(0);
-				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
 
 				$prixcarburantsCmd = $this->getCmd(null, 'TopMaJ_'.$i);
-				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				if (!is_object($prixcarburantsCmd)) {
+					$prixcarburantsCmd = new prixcarburantsCmd();
+					$prixcarburantsCmd->setEqLogic_id($this->getId());
+					$prixcarburantsCmd->setLogicalId('TopMaJ_'.$i);
+					$prixcarburantsCmd->setType('info');
+					$prixcarburantsCmd->setSubType('string');
+					$prixcarburantsCmd->setIsHistorized(0);
+					$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+					$prixcarburantsCmd->setIsVisible(1);
+				}
 				$prixcarburantsCmd->setName('Top ' . $i . ' MAJ');
-				$prixcarburantsCmd->setEqLogic_id($this->getId());
-				$prixcarburantsCmd->setLogicalId('TopMaJ_'.$i);
-				$prixcarburantsCmd->setType('info');
-				$prixcarburantsCmd->setSubType('string');
-				$prixcarburantsCmd->setIsHistorized(0);
-				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
-				$prixcarburantsCmd->setIsVisible(1);
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
 
 				$prixcarburantsCmd = $this->getCmd(null, 'TopPrix_'.$i);
-				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				if (!is_object($prixcarburantsCmd)) {
+					$prixcarburantsCmd = new prixcarburantsCmd();
+					$prixcarburantsCmd->setEqLogic_id($this->getId());
+					$prixcarburantsCmd->setLogicalId('TopPrix_'.$i);
+					$prixcarburantsCmd->setType('info');
+					$prixcarburantsCmd->setSubType('numeric');
+					$prixcarburantsCmd->setIsHistorized(0);
+					$prixcarburantsCmd->setIsVisible(1);
+					$prixcarburantsCmd->setUnite('€/L');
+					$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+					$prixcarburantsCmd->setTemplate('dashboard','badge');
+					$prixcarburantsCmd->setTemplate('mobile','badge');
+
+				}
 				$prixcarburantsCmd->setName('Top ' . $i . ' Prix');
-				$prixcarburantsCmd->setEqLogic_id($this->getId());
-				$prixcarburantsCmd->setLogicalId('TopPrix_'.$i);
-				$prixcarburantsCmd->setType('info');
-				$prixcarburantsCmd->setSubType('numeric');
-				$prixcarburantsCmd->setIsHistorized(0);
-				$prixcarburantsCmd->setIsVisible(1);
-				$prixcarburantsCmd->setUnite('€/L');
-				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
-				$prixcarburantsCmd->setTemplate('dashboard','badge');
-				$prixcarburantsCmd->setTemplate('mobile','badge');
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
 
 				$prixcarburantsCmd = $this->getCmd(null, 'PrixPlein_'.$i);
-				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				if (!is_object($prixcarburantsCmd)) {
+					$prixcarburantsCmd = new prixcarburantsCmd();
+					$prixcarburantsCmd->setEqLogic_id($this->getId());
+					$prixcarburantsCmd->setLogicalId('PrixPlein_'.$i);
+					$prixcarburantsCmd->setType('info');
+					$prixcarburantsCmd->setSubType('numeric');
+					$prixcarburantsCmd->setIsHistorized(0);
+					$prixcarburantsCmd->setIsVisible(0);
+					$prixcarburantsCmd->setUnite('€');
+					$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+					$prixcarburantsCmd->setTemplate('dashboard','badge');
+					$prixcarburantsCmd->setTemplate('mobile','badge');
+				}
 				$prixcarburantsCmd->setName('Top ' . $i.' Prix Plein');
-				$prixcarburantsCmd->setEqLogic_id($this->getId());
-				$prixcarburantsCmd->setLogicalId('PrixPlein_'.$i);
-				$prixcarburantsCmd->setType('info');
-				$prixcarburantsCmd->setSubType('numeric');
-				$prixcarburantsCmd->setIsHistorized(0);
-				$prixcarburantsCmd->setIsVisible(0);
-				$prixcarburantsCmd->setUnite('€');
-				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
-				$prixcarburantsCmd->setTemplate('dashboard','badge');
-				$prixcarburantsCmd->setTemplate('mobile','badge');
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
 
 				$prixcarburantsCmd = $this->getCmd(null, 'Distance_'.$i);
-				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				if (!is_object($prixcarburantsCmd)) {
+					$prixcarburantsCmd = new prixcarburantsCmd();
+					$prixcarburantsCmd->setEqLogic_id($this->getId());
+					$prixcarburantsCmd->setLogicalId('Distance_'.$i);
+					$prixcarburantsCmd->setType('info');
+					$prixcarburantsCmd->setSubType('numeric');
+					$prixcarburantsCmd->setIsHistorized(0);
+					$prixcarburantsCmd->setIsVisible(0);
+					$prixcarburantsCmd->setUnite('Km');
+					$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+					$prixcarburantsCmd->setTemplate('dashboard','badge');
+					$prixcarburantsCmd->setTemplate('mobile','badge');
+				}
 				$prixcarburantsCmd->setName('Top ' . $i.' Distance');
-				$prixcarburantsCmd->setEqLogic_id($this->getId());
-				$prixcarburantsCmd->setLogicalId('Distance_'.$i);
-				$prixcarburantsCmd->setType('info');
-				$prixcarburantsCmd->setSubType('numeric');
-				$prixcarburantsCmd->setIsHistorized(0);
-				$prixcarburantsCmd->setIsVisible(0);
-				$prixcarburantsCmd->setUnite('Km');
-				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
-				$prixcarburantsCmd->setTemplate('dashboard','badge');
-				$prixcarburantsCmd->setTemplate('mobile','badge');
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
 
 				$prixcarburantsCmd = $this->getCmd(null, 'Coord_'.$i);
-				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				if (!is_object($prixcarburantsCmd)) {
+					$prixcarburantsCmd = new prixcarburantsCmd();
+					$prixcarburantsCmd->setEqLogic_id($this->getId());
+					$prixcarburantsCmd->setLogicalId('Coord_'.$i);
+					$prixcarburantsCmd->setType('info');
+					$prixcarburantsCmd->setSubType('other');
+					$prixcarburantsCmd->setIsHistorized(0);
+					$prixcarburantsCmd->setIsVisible(0);
+					$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+					$prixcarburantsCmd->setTemplate('dashboard','badge');
+					$prixcarburantsCmd->setTemplate('mobile','badge');
+				}
 				$prixcarburantsCmd->setName('Top ' . $i.' Coord');
-				$prixcarburantsCmd->setEqLogic_id($this->getId());
-				$prixcarburantsCmd->setLogicalId('Coord_'.$i);
-				$prixcarburantsCmd->setType('info');
-				$prixcarburantsCmd->setSubType('other');
-				$prixcarburantsCmd->setIsHistorized(0);
-				$prixcarburantsCmd->setIsVisible(0);
-				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
-				$prixcarburantsCmd->setTemplate('dashboard','badge');
-				$prixcarburantsCmd->setTemplate('mobile','badge');
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
 
 				$prixcarburantsCmd = $this->getCmd(null, 'TopWaze_'.$i);
-				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				if (!is_object($prixcarburantsCmd)) {
+					$prixcarburantsCmd = new prixcarburantsCmd();
+					$prixcarburantsCmd->setEqLogic_id($this->getId());
+					$prixcarburantsCmd->setLogicalId('TopWaze_'.$i);
+					$prixcarburantsCmd->setType('info');
+					$prixcarburantsCmd->setSubType('string');
+					$prixcarburantsCmd->setIsHistorized(0);
+					$prixcarburantsCmd->setIsVisible(0);
+					$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+				}
 				$prixcarburantsCmd->setName('Top ' . $i . ' Waze');
-				$prixcarburantsCmd->setEqLogic_id($this->getId());
-				$prixcarburantsCmd->setLogicalId('TopWaze_'.$i);
-				$prixcarburantsCmd->setType('info');
-				$prixcarburantsCmd->setSubType('string');
-				$prixcarburantsCmd->setIsHistorized(0);
-				$prixcarburantsCmd->setIsVisible(0);
-				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
-				$prixcarburantsCmd = $this->getCmd(null, 'TopMaJ_'.$i);
 
 				$prixcarburantsCmd = $this->getCmd(null, 'TopGoogleMap_'.$i);
-				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				if (!is_object($prixcarburantsCmd)) {
+					$prixcarburantsCmd = new prixcarburantsCmd();
+					$prixcarburantsCmd->setEqLogic_id($this->getId());
+					$prixcarburantsCmd->setLogicalId('TopGoogleMap_'.$i);
+					$prixcarburantsCmd->setType('info');
+					$prixcarburantsCmd->setSubType('string');
+					$prixcarburantsCmd->setIsHistorized(0);
+					$prixcarburantsCmd->setIsVisible(0);
+					$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+				}
 				$prixcarburantsCmd->setName('Top ' . $i . ' Google maps');
-				$prixcarburantsCmd->setEqLogic_id($this->getId());
-				$prixcarburantsCmd->setLogicalId('TopGoogleMap_'.$i);
-				$prixcarburantsCmd->setType('info');
-				$prixcarburantsCmd->setSubType('string');
-				$prixcarburantsCmd->setIsHistorized(0);
-				$prixcarburantsCmd->setIsVisible(0);
-				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
 
 				$prixcarburantsCmd = $this->getCmd(null, 'TopLogo_'.$i);
-				if (!is_object($prixcarburantsCmd)) $prixcarburantsCmd = new prixcarburantsCmd();
+				if (!is_object($prixcarburantsCmd)) {
+					$prixcarburantsCmd = new prixcarburantsCmd();
+					$prixcarburantsCmd->setEqLogic_id($this->getId());
+					$prixcarburantsCmd->setLogicalId('TopLogo_'.$i);
+					$prixcarburantsCmd->setType('info');
+					$prixcarburantsCmd->setSubType('string');
+					$prixcarburantsCmd->setIsHistorized(0);
+					$prixcarburantsCmd->setIsVisible(1);
+					$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
+				}
 				$prixcarburantsCmd->setName('Top ' . $i . ' Logo');
-				$prixcarburantsCmd->setEqLogic_id($this->getId());
-				$prixcarburantsCmd->setLogicalId('TopLogo_'.$i);
-				$prixcarburantsCmd->setType('info');
-				$prixcarburantsCmd->setSubType('string');
-				$prixcarburantsCmd->setIsHistorized(0);
-				$prixcarburantsCmd->setIsVisible(1);
-				$prixcarburantsCmd->setDisplay('showNameOndashboard',0);
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
 				$prixcarburantsCmd->save();
 				$OrdreAffichage++;
@@ -765,8 +786,8 @@ class prixcarburants extends eqLogic {
 				if (is_object($prixcarburantsCmd)) $prixcarburantsCmd->remove();
 			}
 		}
-
 		prixcarburants::MAJVehicules($this);
+		
 	}
 
 	public function preRemove() {
