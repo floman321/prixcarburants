@@ -202,17 +202,14 @@ class prixcarburants extends eqLogic {
 
 							$PathToLogo = '../../plugins/'.__CLASS__.'/data/logo/';
 							$LogoName = strtoupper(str_replace(' ', '', $marque));
-							//log::add(__CLASS__,'debug', 'logo for :'.$marque.'/ is : '.$LogoName.' / exist : '.file_exists($PathToLogo.$LogoName.'.png'));
 							if(file_exists(self::ZIP_PATH.'/logo/'.$LogoName.'.png')) {
 								$logo = $PathToLogo.$LogoName.'.png';
 							} else {
 								$logo = $PathToLogo.'AUCUNE.png';
 							}
 
-							$style = '';
 							if ($dminus5 >= strtotime($maj)) {
 								if ($should_ignore) continue;
-								$style = "<div style='color:red;'>";
 							}
 
 							if($EstFavoris) { //Register favorite station
