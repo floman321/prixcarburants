@@ -202,17 +202,14 @@ class prixcarburants extends eqLogic {
 
 							$PathToLogo = '../../plugins/'.__CLASS__.'/data/logo/';
 							$LogoName = strtoupper(str_replace(' ', '', $marque));
-							//log::add(__CLASS__,'debug', 'logo for :'.$marque.'/ is : '.$LogoName.' / exist : '.file_exists($PathToLogo.$LogoName.'.png'));
 							if(file_exists(self::ZIP_PATH.'/logo/'.$LogoName.'.png')) {
 								$logo = $PathToLogo.$LogoName.'.png';
 							} else {
 								$logo = $PathToLogo.'AUCUNE.png';
 							}
 
-							$style = '';
 							if ($dminus5 >= strtotime($maj)) {
 								if ($should_ignore) continue;
-								$style = "<div style='color:red;'>";
 							}
 
 							if($EstFavoris) { //Register favorite station
@@ -226,7 +223,7 @@ class prixcarburants extends eqLogic {
 								$SelectionFav[$ordreFav]['waze'] = $urlWaze.'to=ll.'.urlencode($lat.','.$lng).'&from=ll.'. urlencode($malat.','.$malng). '&navigate=yes';
 								$SelectionFav[$ordreFav]['googleMap'] = $urlMap . urlencode($malat.','.$malng).'&destination='.urlencode($lat.','.$lng);
 								$SelectionFav[$ordreFav]['logo'] = $logo;
-							} else { //Register station that are one the radius
+							} else { //Register station that are on the radius
 								$maselection[$idx]['adresse'] = $marque.', '.$unestation->ville;
 								$maselection[$idx]['adressecompl'] = $unestation->adresse.", ".$reader->getAttribute('cp').' '.$unestation->ville;
 								$maselection[$idx]['prix'] = $prixlitre;
@@ -813,7 +810,8 @@ class prixcarburants extends eqLogic {
 		  //$TopAdresse_i = $this->getCmd(null, 'TopAdresse_'.$i);
 		  if(is_object($this->getCmd(null, 'TopAdresse_'.$i))) {
 			$TopAdresse = $this->getCmd(null, 'TopAdresse_'.$i);
-			$replace['#TopAdresse#'] = is_object($TopAdresse) ? $TopAdresse->execCmd() : '';
+			$replace['#TopMarque#'] = is_object($TopAdresse) ? explode(",", $TopAdresse->execCmd())[0] : '';
+			$replace['#TopVille#'] = is_object($TopAdresse) ? explode(",", $TopAdresse->execCmd())[1] : '';
 	
 			$PrixStation = $this->getCmd(null, 'TopPrix_'.$i);
 			$replace['#TopPrix#'] = is_object($PrixStation) ? $PrixStation->execCmd() : '';
