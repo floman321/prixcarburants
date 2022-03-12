@@ -101,7 +101,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
 						</fieldset>
 						
 						<fieldset>
-							<legend>{{Style d'affichage :}}</legend>
+							<legend>{{Paramètres d'affichage :}}</legend>
 							<div class="form-group">
 								<label class="col-sm-3 control-label" for="FormatDate">{{Format date :}}</label>
 								<div class="col-sm-3">
