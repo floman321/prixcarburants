@@ -77,9 +77,10 @@ function prixcarburants_update() {
   log::add('prixcarburants', 'debug', '=============  fin de mise à jour');
 
   //Remove unused files
-  if (file_exists("/../core/class/stations.json")) unlink("/../core/class/stations.json");
-  if (file_exists("/../core/class/PrixCarburants_instantane.xml")) unlink("/../core/class/PrixCarburants_instantane.xml");
-  if (file_exists("/../core/class/listestations")) deleteTree("/../core/class/listestations");
+  log::add(__CLASS__,'debug','File to be removed, real path : '.realpath("../core/class/listestations"));
+  if (file_exists("../core/class/stations.json")) unlink("../core/class/stations.json");
+  if (file_exists("../core/class/PrixCarburants_instantane.xml")) unlink("../core/class/PrixCarburants_instantane.xml");
+  if (file_exists("../core/class/listestations")) deleteTree("../core/class/listestations");
 }
 
 
