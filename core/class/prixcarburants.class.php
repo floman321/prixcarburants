@@ -123,13 +123,14 @@ class prixcarburants extends eqLogic {
 			}
 
 			//Get position latitude and longitude only if geolocalisation is selected
+			$malat = $malng = 0;
 			if ($unvehicule->getConfiguration('ViaLoca') == '1') {
 			    if($nbstation == '0') {
 			        log::add('prixcarburants','error',__('Le nombre de station n\'est pas renseigné dans la configuration de Prix Carburants : ', __FILE__).$nom);
 			    } else {
         			if ($unvehicule->getConfiguration('jeedom_loc') == 1) {
         			    $malat = config::byKey('info::latitude');
-        			    $malng = config::byKey('info::longitude');						
+        			    $malng = config::byKey('info::longitude');
         			} elseif ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
         			    $macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(),'Top 1 Adresse');
         			    if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée', __FILE__));
@@ -160,11 +161,12 @@ class prixcarburants extends eqLogic {
 					$lng = $reader->getAttribute('longitude')/100000;
 					$mastationid = $reader->getAttribute('id');
 					$MaStationDep = intval(substr($reader->getAttribute('cp'), 0, 2));
-					$dist = 0;
 					$MonTest = False;
 					$EstFavoris = False;
 
-					$dist = prixcarburants::distance($malat,$malng,$lat,$lng);
+					//Distance only when localisation define
+					$dist = 0;
+					if($malat != 0 && $malng != 0) $dist = prixcarburants::distance($malat,$malng,$lat,$lng);
 
 					//Check if this station is a favorite
 					$ordreFav = 0;
