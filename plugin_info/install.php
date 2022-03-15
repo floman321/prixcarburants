@@ -77,10 +77,10 @@ function prixcarburants_update() {
   log::add('prixcarburants', 'debug', '=============  fin de mise à jour');
 
   //Remove unused files
-  log::add('prixcarburants','debug','File to be removed, real path : '.realpath("../core/class/listestations"));
-  if (file_exists("../core/class/stations.json")) unlink("../core/class/stations.json");
-  if (file_exists("../core/class/PrixCarburants_instantane.xml")) unlink("../core/class/PrixCarburants_instantane.xml");
-  if (file_exists("../core/class/listestations")) deleteTree("../core/class/listestations");
+  log::add('prixcarburants','debug','File to be removed, real path : '.realpath(getRootPath()."plugins/prixcarburants/core/class/listestations"));
+  if (file_exists(getRootPath()."plugins/prixcarburants/core/class/stations.json")) rrmdir(getRootPath()."plugins/prixcarburants/core/class/stations.json");
+  if (file_exists(getRootPath()."plugins/prixcarburants/core/class/PrixCarburants_instantane.xml")) rrmdir(getRootPath()."plugins/prixcarburants/core/class/PrixCarburants_instantane.xml");
+  if (file_exists(getRootPath()."plugins/prixcarburants/core/class/listestations")) rrmdir(getRootPath()."plugins/prixcarburants/core/class/listestations");
 }
 
 
@@ -93,17 +93,5 @@ function prixcarburants_remove() {
   $cron = cron::byClassAndFunction('prixcarburants', 'pullGeoCmd');
   if (is_object($cron)) {
     $cron->remove();
-  }
-}
-
-/** Function to delete files and folders */
-function deleteTree($dir) {
-  foreach (glob($dir . "/*") as $element) {
-    if (is_dir($element)) {
-      deleteTree($element);
-      rmdir($element);
-    } else {
-      unlink($element);
-    }
   }
 }
