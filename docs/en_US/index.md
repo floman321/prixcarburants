@@ -54,6 +54,13 @@ In addition to the values displayed in the widgets, the equipment contains the f
 - Google maps : Link to be guided to the station via the Google maps application.
 - Logo: path to the station's branded logo.
 
+
+List of stations:
+===
+The list of stations, selectable in a bookmark and for the search in a radius, is from JSON files saved in this plugin. This means that it is not continuously updated according to the updates of the government site.  
+The files are generated using [python code available here](https://github.com/DuchkPy/fr.prix-carburants). Therefore, if you discover an error in a station, we encourage you to run the python script and submit the updated JSON file on the [Github of this plugin](https://github.com/floman321/prixcarburants).
+
+
 Contribute:
 ===
 You detect a bug, you want to propose an improvement, do not hesitate to say it on the forum. You can also directly make a PR on [the repository of this plugin](https://github.com/floman321/prixcarburants)

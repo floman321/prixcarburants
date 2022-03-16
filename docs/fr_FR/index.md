@@ -54,6 +54,11 @@ Outre les valeurs affichées dans les widgets, l'équipement contient les comman
 - Google maps : Lien pour être guidé vers la station via l'application Google maps.
 - Logo : chemin vers le logo de la marque de la station.
 
+Liste des stations :
+===
+La liste des stations, sélectionnable dans un favoris et pour la recherche dans un rayon, est issus de fichiers JSON enregistré dans ce plugin. Ce qui signifie que ce n'est pas mis à jour en continue en fonction des mises à jour du site du gouvernement.  
+Les fichiers sont généré en utilisant le [code python disponible ici](https://github.com/DuchkPy/fr.prix-carburants). De ce fait, si vous découvrez une erreur dans une station, nous vous encorageons à lancer le script python et à nous soumettre la mise à jour du fichier JSON sur le [Github de ce plugin](https://github.com/floman321/prixcarburants).
+
 Contribuer :
 ===
 Vous déceler un bug, vous voulez proposer une amélioration, n'hésitez pas à le dire sur le forum. Vous pouvez aussi directement faire un PR sur [le dépôt de ce plugin](https://github.com/floman321/prixcarburants)
