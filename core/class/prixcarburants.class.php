@@ -819,7 +819,7 @@ class prixcarburants extends eqLogic {
 			$replace['#TopPrix#'] = is_object($PrixStation) ? $PrixStation->execCmd() : '';
 		
 			$DateRecover = $this->getCmd(null, 'TopMaJ_'.$i);
-			$replace['#TopMaJ#'] = is_object($DateRecover) ? $DateRecover->execCmd() : '';
+			$replace['#TopMaJ#'] = is_object($DateRecover) ? __('le ', __FILE__).$DateRecover->execCmd() : '';
 		
 			$LogoStation = $this->getCmd(null, 'TopLogo_'.$i);
 			$replace['#LogoStation#'] = is_object($LogoStation) ? $LogoStation->execCmd() : '';

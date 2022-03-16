@@ -77,7 +77,8 @@
     "Plus de station disponible dans le rayon sélectionné": "Plus de station disponible dans le rayon sélectionné",
     "Aucun Cron Défini pour la mise à jour, passage au défaut :": "Aucun Cron Défini pour la mise à jour, passage au défaut :",
     "Actualiser": "Actualiser",
-    "Erreur regExp Expression": "Erreur regExp Expression"
+    "Erreur regExp Expression": "Erreur regExp Expression",
+    "le ": "on "
   },
   "plugins\/prixcarburants\/plugin_info\/configuration.php": {
     "Liste Prix": "Liste Prix",
