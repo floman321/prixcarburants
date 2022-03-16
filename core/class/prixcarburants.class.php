@@ -150,8 +150,13 @@ class prixcarburants extends eqLogic {
 			}
 
 			//Prepare and parse XML file
-			log::add(__CLASS__,'debug','path :'.realpath(self::ZIP_PATH.'/PrixCarburants_instantane.xml'));
-			$reader = XMLReader::open(self::ZIP_PATH.'/PrixCarburants_instantane.xml');
+			
+          	//check price list existance.
+          $xmlPath = self::ZIP_PATH.'/PrixCarburants_instantane.xml';
+          log::add(__CLASS__,'debug','path :'.realpath($xmlPath));
+			$reader = XMLReader::open($xmlPath);
+          	
+          
 			$doc = new DOMDocument;
 			$urlMap = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&origin=';;
 			$urlWaze = 'https://waze.com/ul?';
@@ -447,7 +452,14 @@ class prixcarburants extends eqLogic {
 
 
 	/*     * *********************Méthodes d'instance************************* */
-
+    public function preSave() {
+      	//Create file with fuel price if it doesn't exist (first creation)
+		if (!file_exists(self::ZIP_PATH.'/PrixCarburants_instantane.xml')) {
+			log::add(__CLASS__,'debug','XML file doesn\'t exist, yet.');
+			$this->updatePrixCarburant();
+			log::add(__CLASS__,'debug','XML file created.');
+		}
+    }
 	public function postSave() {
 		//Create refresh commande
 		$prixcarburantsCmd = $this->getCmd(null, 'refresh');
@@ -465,12 +477,7 @@ class prixcarburants extends eqLogic {
 			$prixcarburantsCmd->save();
 		}
 
-		//Create file with fuel price if it doesn't exist (first creation)
-		if (!file_exists(self::ZIP_PATH.'/PrixCarburants_instantane.xml')) {
-			log::add(__CLASS__,'debug','XML file doesn\'t exist, yet.');
-			$prixcarburantsCmd->getEqLogic()->updatePrixCarburant();
-			log::add(__CLASS__,'debug','XML file created.');
-		}
+		
 
 		// manage listener if needed
 		$this->setListener();

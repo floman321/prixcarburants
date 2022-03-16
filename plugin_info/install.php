@@ -40,20 +40,25 @@ function prixcarburants_install() {
 }
 
 function prixcarburants_update() {
+   log::add('prixcarburants', 'debug', '!!======= mise à jour plugin ');
+  	log::add('prixcarburants', 'debug', 'Update Price List ');
+  	prixcarburants::updatePrixCarburant();
+  
   $plugin = plugin::byId('prixcarburants');
   foreach (eqLogic::byType($plugin->getId()) as $eqLogic) {
-    log::add('prixcarburants', 'debug', '!!======= mise à jour plugin ');
-
+   log::add('prixcarburants', 'debug', 'update eqL : '.$eqLogic->getHumanName());
+	
 
     // geoloc parameter to fit previous config
-    $geoloc = $eqLogic->getConfiguration('geoloc', 'none');
+    $geoloc = $eqLogic->getConfiguration('geoloc', null);
     log::add('prixcarburants', 'debug', 'current geoloc :' . $geoloc);
 
     if ($geoloc == 'jeedom') { // si jeedom 
+      log::add('prixcarburants', 'debug', 'ajout de la localisation jeedom ');
       $eqLogic->setConfiguration('jeedom_loc', true);
       $eqLogic->setConfiguration('geoloc', null);
       $eqLogic->setConfiguration('auto_update', false);
-      log::add('prixcarburants', 'debug', 'ajout de la localisation jeedom ');
+      
     } elseif (is_numeric($geoloc) && !is_null($geoloc)) { // si cmd id
       $eqLogic->setConfiguration('jeedom_loc', false);
       $locationcmd = cmd::byEqLogicIdAndLogicalId($geoloc, 'location:coordinate');
@@ -62,17 +67,18 @@ function prixcarburants_update() {
         $locationcmd = cmd::byId($geoloc);
       }
       if (is_object($locationcmd)) {
+        log::add('prixcarburants', 'debug', 'transformation de la commande localisation : ' . $locationcmd->getHumanName());
         $eqLogic->setConfiguration('geoloc', "#" . $locationcmd->getId() . "#");
         $eqLogic->setConfiguration('auto_update', false);
-        log::add('prixcarburants', 'debug', 'transformation de la commande localisation : ' . $locationcmd->getHumanName());
+        
       } else {
         log::add('prixcarburants', 'debug', 'commande localisation non trouvée');
       }
     }
     $eqLogic->save();
   }
+  
   // check cron 
-  prixcarburants::updatePrixCarburant();
   prixcarburants_checkCron();
   log::add('prixcarburants', 'debug', '=============  fin de mise à jour');
 
