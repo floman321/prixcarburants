@@ -63,6 +63,8 @@ class prixcarburants extends eqLogic {
 	}
 
 	// ========== Manage listener update & pull
+  	/** Function trigger : called when a geolocation command event is triggered
+    update top list and distance of the correponding eqLogic */
 	public static function trigger($_option) {
 		log::add(__CLASS__, 'debug', '╔═══════════════════════  Trigger sur id :'.$_option['id']);
 
@@ -72,7 +74,8 @@ class prixcarburants extends eqLogic {
 		}
 		log::add(__CLASS__,'debug', "╚═════════════════════════════════════════ END Trigger ");
 	}
-
+	/** Function pullGeoCmd : called on cron (see config) to update top and distance from geolocation command
+    update top list and distance of the correponding eqLogic */
 	public static function pullGeoCmd(){
 		log::add(__CLASS__, 'debug', '╔═══════════════════════  PULL geoloc cmd sur id :');
 		$eqLogics = self::byType('prixcarburants');
@@ -365,6 +368,8 @@ class prixcarburants extends eqLogic {
 
 
 	//* Cron management from Configuration
+  /** Function setUpdateCron : called when by ajax on configuraiton save
+    update both cron job (update price list and update rop from geoloc cmd) */
 	public static function setUpdateCron(){// called by ajax in config
 		log::add(__CLASS__,'debug', "update cron called");
 
@@ -419,7 +424,7 @@ class prixcarburants extends eqLogic {
 
 		return self::getDueDateStr($freq);
 	}
-
+	/** Function getDueDate : called when by ajax on configuration save to update due date of cron job in config panel */
 	public static function getDueDate(){
 		$freq=config::byKey('freq','prixcarburants');
 		if($freq=='prog') $freq=config::byKey('autorefresh','prixcarburants');
@@ -432,6 +437,7 @@ class prixcarburants extends eqLogic {
 	}
 
 	// utils function to get due date from frequency
+  /** Function getDueDateStr : called when by getDueDate (ajax on configuration save) to get string from due date of cron job */
 	public static function getDueDateStr($freq){
 		$c = new Cron\CronExpression(checkAndFixCron($freq), new Cron\FieldFactory);
 		$calculatedDate = array('prevDate' => '', 'nextDate' => '');
@@ -440,6 +446,7 @@ class prixcarburants extends eqLogic {
 		return $calculatedDate;
 	}
 	// function called by cron triggering
+  /** Function udpateAllData : called on cron to update price list and tops */
 	public static function udpateAllData(){
 		log::add(__CLASS__,'debug', '------ Cron Triggering');
 		$ISoK = self::updatePrixCarburant();//update only xml
@@ -484,10 +491,11 @@ class prixcarburants extends eqLogic {
 	}
 
 	// Listener manager function
+  	 /** Function getListener : return listener list on geolocation command (depends on configuration) */
 	public function getListener() {
 		return listener::byClassAndFunction(__CLASS__, 'trigger', array('id' => $this->getId()));
 	}
-
+	 /** Function removeListener : remove listeners on geolocation command */
 	public function removeListener() {
 		log::add(__CLASS__, 'debug', ' Suppression des Ecouteurs de '.$this->getHumanName());
 		$listener = $this->getListener();
@@ -495,7 +503,7 @@ class prixcarburants extends eqLogic {
 			$listener->remove();
 		}
 	}
-
+	 /** Function setListener : add listeners on geolocation command (depends on configuration) to call funciton 'trigger' on geoloc command event*/
 	public function setListener() {
 		log::add(__CLASS__, 'debug', ' Recording listeners');
 
