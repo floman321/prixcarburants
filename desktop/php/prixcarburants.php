@@ -146,16 +146,16 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                    
 								</div>
 							</div>
-                             <div id = "format_date_perso_wrapper">
-                             	
-                             	<div class="form-group">
-                                		<label class="col-sm-3 control-label" >{{Format date personnalisé :}}</label>
-                                        <div class="col-sm-3">
-                                    		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="formatdate_perso" placeholder="{{format personnalisé-norme php}}"/>
-                                         </div>
-                                        
-                                    </div>
-                              </div>
+						     	<div id = "format_date_perso_wrapper">
+
+								<div class="form-group">
+									<label class="col-sm-3 control-label" >{{Format date personnalisé :}}</label>
+									<div class="col-sm-3">
+										<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="formatdate_perso" placeholder="{{format personnalisé-norme php}}"/>
+								 	</div>
+
+							   	 </div>
+						      	</div>
 							<div class="form-group">
 
 								<label class="col-sm-3 control-label" for="TypeCarburant">{{Type de carburant :}}</label>
@@ -171,14 +171,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									</select>
 								</div>
 							</div>
-                            <div class="form-group">
-                                  <label class="col-sm-3 control-label" for="name">{{Capacité du réservoir (litres) :}}</label>
-
-                                 	 <div class="col-sm-1">
-                                  		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="reservoirlitre" placeholder="{{En litres}}"/>
-                                  	</div>
+						   	<div class="form-group">
+							  	<label class="col-sm-3 control-label" for="name">{{Capacité du réservoir (litres) :}}</label>
+								 <div class="col-sm-1">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="reservoirlitre" placeholder="{{En litres}}"/>
+								</div>
 							</div>
-                            <div class="form-group">
+						    <div class="form-group">
                                   <label class="col-sm-3 control-label" for="name">{{Considérer date relevée comme expirée (jours) :}}</label>
                                  	 <div class="col-sm-1">
                                   		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="dateexpire" placeholder="{{En jours}}"/>
