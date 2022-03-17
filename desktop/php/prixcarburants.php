@@ -51,7 +51,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
                           }
                           $numStation = $eqLogic->getConfiguration('nbstation');
                           if($numStation)echo ' | {{nombre de stations}} : <b>'.$numStation.'</b>';
-                        }elseif($eqLogic->getConfiguration('Favoris')==true){
+                        }
+                  		if($eqLogic->getConfiguration('Favoris')==true){
                          	echo ' | <b>{{Favoris}}</b>';
                           $numStation = $eqLogic->getFavNumber();
                           if($numStation)echo ', {{nombre de stations}} : <b>'.$numStation.'</b>';
