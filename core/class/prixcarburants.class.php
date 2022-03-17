@@ -883,8 +883,17 @@ class prixcarburants extends eqLogic
 
 		return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'prixcarburants.template', 'prixcarburants')));
 	}
+  	/** Function to get the number of favorites selected */
+    public function getFavNumber(){
+		if($this->getConfiguration('Favoris')==false)return 0;
+      	for($i = 1; $i<=10;$i++){
+          $currSt = $this->getConfiguration('station'.$i.'_Commune', null);
+          if($currSt == null)return $i-1;        	
+        }
+      	return false;
+      
+  	}
 }
-
 class prixcarburantsCmd extends cmd
 {
 	/** Execute plugin command */

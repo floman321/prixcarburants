@@ -24,7 +24,14 @@ $eqLogics = eqLogic::byType($plugin->getId());
 				</div>
 			</div>
 			<legend><i class="fas fa-table"></i> {{Mes Véhicules}}</legend>
-			<input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
+			 <div class="input-group" style="margin-bottom:5px;">
+                <input class="form-control roundedLeft" placeholder="{{Rechercher}}" id="in_searchEqlogic"/>
+                <div class="input-group-btn">
+                  <a id="bt_resetSearch" class="btn" style="width:30px"><i class="fas fa-times"></i>
+                  </a><a class="btn roundedRight hidden" id="bt_pluginDisplayAsTable" data-coreSupport="1" data-state="0"><i class="fas fa-grip-lines"></i></a>
+                </div>
+             </div>
+  			
 			<div class="eqLogicThumbnailContainer">
 				<?php
 				foreach ($eqLogics as $eqLogic) {
@@ -33,6 +40,23 @@ $eqLogics = eqLogic::byType($plugin->getId());
 					echo '<img src="' . $plugin->getPathImgIcon() . '"/>';
 					echo '<br>';
 					echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
+                      echo '<span class="hidden hiddenAsCard displayTableRight"><b>'.$eqLogic->getConfiguration('typecarburant').'</b>';
+						if($eqLogic->getConfiguration('ViaLoca')==true){
+                          echo ' | Localisation ';
+                          if($eqLogic->getConfiguration('jeedom_loc')==true){
+                            echo ' : <b>jeedom loc</b>';
+                          }else{
+                          	$cmd = cmd::byId(str_replace("#","",$eqLogic->getConfiguration('geoloc')));
+                      		if(is_object($cmd))echo ' : <b>'.$cmd->getHumanName().'</b>';
+                          }
+                          $numStation = $eqLogic->getConfiguration('nbstation');
+                          if($numStation)echo ' | {{nombre de stations}} : <b>'.$numStation.'</b>';
+                        }elseif($eqLogic->getConfiguration('Favoris')==true){
+                         	echo ' | <b>{{Favoris}}</b>';
+                          $numStation = $eqLogic->getFavNumber();
+                          if($numStation)echo ', {{nombre de stations}} : <b>'.$numStation.'</b>';
+                        }
+                      echo '</span>';
 					echo '</div>';
 				}
 				?>

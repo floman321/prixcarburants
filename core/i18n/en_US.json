@@ -53,7 +53,9 @@
     "Max favoris ajoutable": "Max Favourites add-on",
     "Nom": "Name",
     "Paramètres": "Settings",
-    "Action": "Action"
+    "Action": "Action",
+    "nombre de stations" : "stations count",
+    "Favoris" : "Favorite"
   },
   "plugins\/prixcarburants\/desktop\/js\/prixcarburants_conf.js": {
     "Cron mis à jour!": "Cron updated!",
