@@ -304,7 +304,13 @@ $(".cmdSendSel").on('click', function () {
      });
 });
 
-
+$(".eqLogicAttr[data-l2key='formatdate']").on('change click update', function () {
+	if($(this).val()=='perso'){
+	  $("#format_date_perso_wrapper").show();
+	}else{
+	  $("#format_date_perso_wrapper").hide();
+	}
+  });
 
 // function called after eqLogic is loaded
 // use here to trigger change on checkboxes for new equipement

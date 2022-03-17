@@ -53,6 +53,8 @@ class prixcarburants extends eqLogic
 			$rayon = $unvehicule->getConfiguration('rayon', '30');
 			$nbstation = $unvehicule->getConfiguration('nbstation', '0');
 			$monformatdate = $unvehicule->getConfiguration('formatdate', '');
+          	if($monformatdate =='perso')$monformatdate = $unvehicule->getConfiguration('formatdate_perso', '');
+          	log::add(__CLASS__,'debug', 'date format : '.$monformatdate);
 			//Get the list of favoris selected
 			$NbFavoris = 0;
 			if ($unvehicule->getConfiguration('Favoris') == '1') {

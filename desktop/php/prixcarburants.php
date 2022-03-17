@@ -141,9 +141,21 @@ $eqLogics = eqLogic::byType($plugin->getId());
 										<option value="Y-m-j à G:i:s"><?php echo date("Y-m-j à G:i:s"); ?></option>
 										<option value="Y-m-j à G:i"><?php echo date("Y-m-j à G:i"); ?></option>
 										<option value="Y-m-j"><?php echo date("Y-m-j"); ?></option>
+                                        <option value="perso">{{Personnalisé}}</option>
 									</select>
+                                   
 								</div>
 							</div>
+                             <div id = "format_date_perso_wrapper">
+                             	
+                             	<div class="form-group">
+                                		<label class="col-sm-3 control-label" >{{Format date personnalisé :}}</label>
+                                        <div class="col-sm-3">
+                                    		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="formatdate_perso" placeholder="{{format personnalisé-norme php}}"/>
+                                         </div>
+                                        
+                                    </div>
+                              </div>
 							<div class="form-group">
 
 								<label class="col-sm-3 control-label" for="TypeCarburant">{{Type de carburant :}}</label>
