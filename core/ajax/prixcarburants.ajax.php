@@ -18,7 +18,9 @@
 
 try {
     require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
+    require_once dirname(__FILE__) . '/../class/prixcarburants.class.php';
     include_file('core', 'authentification', 'php');
+    
 
     if (!isConnect('admin')) {
         throw new Exception(__('401 - Accès non autorisé', __FILE__));
@@ -26,9 +28,13 @@ try {
     
     ajax::init();
     $action = init('action');
-    if($action = 'StationName') {
-        $json = file_get_contents('../class/listestations/stations'.init('Departement').'.json');
+    if($action == 'StationName') {
+        $json = file_get_contents('../../data/listestations/stations'.init('Departement').'.json');
         ajax::success(json_decode($json));
+    }
+    if($action == 'UpdateCron') {
+        $calculatedDate = prixcarburants::setUpdateCron();
+        ajax::success($calculatedDate);
     }
 
 

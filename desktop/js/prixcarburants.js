@@ -158,7 +158,7 @@ function AffichAjoutFav(IdSelect) {
 			CompteurTemp = IdSelect + 1;
 			if(document.getElementById('SelectStation'+IdSelect+'_Station').value != '0' && document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display != "block" && document.getElementById('SelectStation'+CompteurTemp+'_AddFav').style.display != "block") {
 				document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display = "block";
-				if(IdSelect > 1) document.getElementById('DivOrdreFavoris').style.display = "block";
+				//if(IdSelect > 1) document.getElementById('DivOrdreFavoris').style.display = "block";
 			} else if(document.getElementById('SelectStation'+IdSelect+'_Station').value == '0' && document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display == "block") {
 				document.getElementById('SelectStation'+IdSelect+'_AddFav').style.display = "none";
 				if(IdSelect == 2) {
@@ -202,68 +202,50 @@ function RetireFavoris(IdCurrent, IdOld) {
 		document.getElementById('SelectStation'+IdCurrent+'_RemoveFav').style.display = "none";
 		
 		if(IdCurrent == 2) {
-			document.getElementById('DivOrdreFavoris').style.display = "none";
+			//document.getElementById('DivOrdreFavoris').style.display = "none";
 			document.getElementById('OrdreFavoris').options[0].selected = true;
 		}
 	}
 }
 
 //Function to show/hide elements bellow checkbox "geoloc" or "favorite"
-function CheckBx(Type_) {
- 
-	if(Type_ == "Favoris+") {
-		document.getElementById('SelectStation1_Label').style.display = "block";
-		document.getElementById('SelectStation1_Dep').style.display = "block";
-    }
-    if(Type_ == "Favoris-") {
-		for(var i = 1; i <= 10; i++) {
-			document.getElementById('SelectStation'+i+'_Label').style.display = "none";
-			document.getElementById('SelectStation'+i+'_Dep').style.display = "none";
-			document.getElementById('SelectStation'+i+'_Dep').options[0].selected = true;
-			document.getElementById('SelectStation'+i+'_Commune').style.display = "none";
-			document.getElementById('SelectStation'+i+'_Commune').options.length = 0;
-			document.getElementById('SelectStation'+i+'_Station').style.display = "none";
-			document.getElementById('SelectStation'+i+'_Station').options.length = 0;
-			document.getElementById('SelectStation'+i+'_AddFav').style.display = "none";
-			document.getElementById('SelectStation'+i+'_RemoveFav').style.display = "none";
-			document.getElementById('Station'+i+'_Dep').value = "";
-			document.getElementById('Station'+i+'_CommuneListe').value = "";
-			document.getElementById('Station'+i+'_Commune').value = "";
-			document.getElementById('Station'+i+'_StationListe').value = "";
-			document.getElementById('Station'+i+'_Station').value = "";
-			document.getElementById('DivOrdreFavoris').style.display = "none";
-			document.getElementById('OrdreFavoris').options[0].selected = true;
-		}
-	} 
-  
-	if(Type_ == "ViaLoca+") {
-		document.getElementById('Divloca1').style.display = "block";
-      document.getElementById('Divloca1Auto').style.display = "block";
-      document.getElementById('Divloca1Jeedom').style.display = "block";
-		document.getElementById('Divloca2').style.display = "block";
-		document.getElementById('Divloca3').style.display = "block";
-    }
-    if(Type_ == "ViaLoca-") {
-		document.getElementById('Divloca1').style.display = "none";
-      document.getElementById('Divloca1Auto').style.display = "none";
-      document.getElementById('Divloca1Jeedom').style.display = "none";
-		document.getElementById('Divloca2').style.display = "none";
-		document.getElementById('Divloca3').style.display = "none";
-		document.getElementById('rayon').value = "";
-		document.getElementById('NbStation').options[0].selected = true;
+$(".eqLogicAttr[data-l2key='ViaLoca']").on('change click update', function () {
+	if(!this.checked){
+	  $("#vialoca_jeeAdd_wrapper").hide();
+	}else{
+	  $("#vialoca_jeeAdd_wrapper").show();
 	}
+  });
+  $(".eqLogicAttr[data-l2key='jeedom_loc']").on('change click update', function () {
+	if(this.checked){
+	  $("#vialoca_cmd_wrapper").hide();
+	}else{
+	  $("#vialoca_cmd_wrapper").show();
+	}
+  });
 
+  $(".eqLogicAttr[data-l2key='Favoris']").on('change click update', function () {
+	if(!this.checked){
+	  $("#favoris_wrapper").hide();
+	}else{
+	  $("#favoris_wrapper").show();
+	  $("#SelectStation1_Label").show();
+	  $("#SelectStation1_Dep").show();
+	}
+  });
+function printEqLogic(_mem) {
+  	$(".eqLogicAttr[data-l2key='ViaLoca']").trigger('change');
+  	$(".eqLogicAttr[data-l2key='jeedom_loc']").trigger('change');
+   $(".eqLogicAttr[data-l2key='Favoris']").trigger('change');
+  
 }
 
 //Function to display and filled already saved data
 function FillSavedSelect() {
 	// Do this only if Favorites CheckBox is cheked
-	if ($('.eqLogicAttr[data-l1key=configuration][data-l2key=Favoris]').value() == "0") {
+	if (!$('.eqLogicAttr[data-l1key=configuration][data-l2key=Favoris]').value()==1) {
 		return; 
-	}
-	
-	
-	
+	}	
 	for(var i = 1; i <= 10 ; i++) {
 		if(document.getElementById('Station'+i+'_Dep').value != '' && document.getElementById('Station'+i+'_CommuneListe').value != '' && document.getElementById('Station'+i+'_Commune').value != '' && document.getElementById('Station'+i+'_StationListe').value != '' && document.getElementById('Station'+i+'_Station').value != '') {
 			//Only if all select elements are filled
@@ -286,7 +268,7 @@ function FillSavedSelect() {
 			document.getElementById('SelectStation'+i+'_AddFav').style.display = "none";
 			document.getElementById('SelectStation'+i+'_RemoveFav').style.display = "none";
 			
-			if(i > 1) document.getElementById('DivOrdreFavoris').style.display = "block";
+			//if(i > 1) document.getElementById('DivOrdreFavoris').style.display = "block";
 		} else {
 			if(i > 1) {
 				var compteur = i - 1;
@@ -310,35 +292,7 @@ function PrepareList(str, idSelect) {
 	updateComboBox(idSelect, MaListe);
 }
 
-// Show/hide localisation and favorite box at equipement load
-$('.eqLogicAttr[data-l1key=configuration][data-l2key=FinPage]').change(function() {
-	if(document.getElementById('rayon').value == '') {
-		document.getElementById('ViaLoca').checked = false;
-		CheckBx('ViaLoca-');
-	}
-	if(document.getElementById('Station1_Station').value == '') {
-		document.getElementById('Favoris').checked = false;
-		CheckBx('Favoris-');
-	}
-	
-});
-//Show/Hide localisation box
-$('.eqLogicAttr[data-l1key=configuration][data-l2key=ViaLoca]').change(function() {
-	if ($('.eqLogicAttr[data-l1key=configuration][data-l2key=ViaLoca]').value() == "1") {
-		CheckBx('ViaLoca+');
-	} else {
-		CheckBx('ViaLoca-');
-	}
-});
 
-//Show/Hide favorite box
-$('.eqLogicAttr[data-l1key=configuration][data-l2key=Favoris]').change(function() {
-	if ($('.eqLogicAttr[data-l1key=configuration][data-l2key=Favoris]').value() == "1") {
-		CheckBx('Favoris+');
-	} else {
-		CheckBx('Favoris-');
-	}
-});
 
 $(".cmdSendSel").on('click', function () {
    
@@ -349,3 +303,14 @@ $(".cmdSendSel").on('click', function () {
        calcul.atCaret('insert', result.human);
      });
 });
+
+
+
+// function called after eqLogic is loaded
+// use here to trigger change on checkboxes for new equipement
+function printEqLogic(_mem) {
+  	$(".eqLogicAttr[data-l2key='ViaLoca']").trigger('change');
+  	$(".eqLogicAttr[data-l2key='jeedom_loc']").trigger('change');
+   $(".eqLogicAttr[data-l2key='Favoris']").trigger('change');
+  
+}

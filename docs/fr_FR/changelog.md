@@ -2,6 +2,15 @@
 
 ### TODO list
 
+## 14/03/2022 - BETA :
+- Ajout de widgets mobile et desktop avec vu du logo de la station (liste des logos à compléter)
+- Distance de la station est égale à 0 s'il n'y a pas de localisation de renseignée.
+
+## 04/03/2022 - BETA :
+- ajout définition fréquence de mise à jour de la liste de prix dans la config de l'équipement
+- modification du layout de l'affichage dans les équipements
+- ajout commande de géolocalisation pour le calcul des top station.
+- ajout option de mise à jour automatiquement des tops stations avec la mise à jour de la commande de géolocalisation
 
 ## 02/03/2022
 - Modification pour être compatible Jeedom v4.2

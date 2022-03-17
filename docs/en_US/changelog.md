@@ -3,6 +3,16 @@
 ### TODO list
 - Add coloration to highlight data that are up to date in comparison with data that has not been updated since a while
 
+## 03/14/2022 - BETA :
+- Add mobile and desktop widgets with station logo view (list of logos to be completed)
+- Distance to gaz station is egal to 0km if ther isn't any localisation define yet.
+
+## 03/04/2022 - BETA :
+- added definition of price list update frequency in the equipment config
+- modification of the display layout in the equipment
+- added geolocation command for top station calculation.
+- added option to update automatically the top stations with the update of the geolocation command
+
 ## 03/02/2022
 - Update to be compatible with Jeedom v4.2
 
