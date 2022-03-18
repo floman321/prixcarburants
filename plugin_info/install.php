@@ -75,6 +75,10 @@ function prixcarburants_update() {
         log::add('prixcarburants', 'debug', 'commande localisation non trouvée');
       }
     }
+
+    // test config  templatewidget
+    if($eqLogic->getConfiguration('templatewidget'))$eqLogic->setConfiguration('templatewidget', 'logos');
+    //save eqLogic
     $eqLogic->save();
   }
   
