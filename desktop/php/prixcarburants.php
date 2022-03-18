@@ -167,8 +167,8 @@ require_once dirname(__FILE__).'/../../core/class/'.$plugin->getId().'.class.php
                              <div id = "format_date_perso_wrapper">
                              	
                              	<div class="form-group">
-                                		<label class="col-sm-3 control-label" >{{Format date personnalisé :}}</label>
-										<sup><i class="fas fa-question-circle tooltipstered" tooltip="{{Format standard php, voir}} https://www.php.net/manual/fr/datetime.format.php"></i></sup>
+                                		<label class="col-sm-3 control-label" >{{Format date personnalisé :}}
+										<sup><i class="fas fa-question-circle tooltips" title="{{Format standard php, voir}} https://www.php.net/manual/fr/datetime.format.php"></i></sup></label>
                                         <div class="col-sm-3">
                                     		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="formatdate_perso" placeholder="{{format personnalisé-norme php}}"/>
                                          </div>
