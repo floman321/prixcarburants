@@ -551,6 +551,10 @@ class prixcarburants extends eqLogic
 
 	/*     * ********************* Méthodes d'instance ************************* */
 
+  	public function preInsert(){
+      	$this->setConfiguration('templatewidget','logos');
+    	
+    }
 	/** Method called before saving (creation and update therefore) of your */
 	public function preSave()
 	{
@@ -848,6 +852,12 @@ class prixcarburants extends eqLogic
 			return $replace;
 		}
 		$version = jeedom::versionAlias($_version);
+      
+      $template = $this->getConfiguration('templatewidget');
+      if ($template == "default")
+    	{
+    		return parent::toHtml($_version);
+    	}
 
 		// Gaz station template
 		$GazStation_html = '';

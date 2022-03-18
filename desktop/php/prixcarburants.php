@@ -156,6 +156,16 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                         
                                     </div>
                               </div>
+                              <div class="form-group">
+                              		<label class="col-sm-3 control-label" for="TypeCarburant">{{Template du Widget :}}</label>
+                                    <div class="col-sm-3">
+									<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="templatewidget">
+										<option value="default">{{Par défaut}}</option>
+										<option value="logos">{{Avec Logos}}</option>
+									</select>
+                                   
+								</div>
+                              </div>
 							<div class="form-group">
 
 								<label class="col-sm-3 control-label" for="TypeCarburant">{{Type de carburant :}}</label>
