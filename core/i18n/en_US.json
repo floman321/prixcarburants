@@ -22,6 +22,12 @@
     "Paramètres d'affichage :": "Display style:",
     "Format date :": "Date format:",
     "Par défaut": "Default",
+    "Personnalisé": "Personnalisé",
+    "Format date personnalisé :": "Custom date format:",
+    "Format standard php, voir": "Standard php format, see",
+    "format personnalisé-norme php" : "custom format php standard",
+    "Template du Widget :": "Widget template:",
+    "Avec Logos": "With Logos",
     "Type de carburant :": "Fuel type:",
     "Gazole": "Diesel",
     "SP95-E10": "SP95-E10",
@@ -55,8 +61,7 @@
     "Paramètres": "Settings",
     "Action": "Action",
     "nombre de stations" : "stations count",
-    "Favoris" : "Favorite",
-    "Format date personnalisé :" : "Custom date format :"
+    "Favoris" : "Favorite"
   },
   "plugins\/prixcarburants\/desktop\/js\/prixcarburants_conf.js": {
     "Cron mis à jour!": "Cron updated!",

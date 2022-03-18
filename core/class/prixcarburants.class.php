@@ -17,6 +17,9 @@
 */
 
 /* * ***************************Includes********************************* */
+
+use PhpParser\Node\Stmt\Switch_;
+
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
 class prixcarburants extends eqLogic
@@ -53,8 +56,8 @@ class prixcarburants extends eqLogic
 			$rayon = $unvehicule->getConfiguration('rayon', '30');
 			$nbstation = $unvehicule->getConfiguration('nbstation', '0');
 			$monformatdate = $unvehicule->getConfiguration('formatdate', '');
-          		if($monformatdate =='perso')$monformatdate = $unvehicule->getConfiguration('formatdate_perso', '');
-          		log::add(__CLASS__,'debug', 'date format : '.$monformatdate);
+			if($monformatdate =='perso') $monformatdate = $unvehicule->getConfiguration('formatdate_perso', '');
+			log::add(__CLASS__,'debug', 'date format : '.$monformatdate);
 			//Get the list of favoris selected
 			$NbFavoris = 0;
 			if ($unvehicule->getConfiguration('Favoris') == '1') {
@@ -171,7 +174,7 @@ class prixcarburants extends eqLogic
 								$SelectionFav[$ordreFav]['adresse'] = $marque . ', ' . $unestation->ville;
 								$SelectionFav[$ordreFav]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
 								$SelectionFav[$ordreFav]['prix'] = $prixlitre;
-								$SelectionFav[$ordreFav]['maj']  = date($monformatdate, strtotime($maj));
+								$SelectionFav[$ordreFav]['maj'] = self::TranslateDate($monformatdate, config::byKey('language'), strtotime($maj));
 								$SelectionFav[$ordreFav]['distance'] = $dist;
 								$SelectionFav[$ordreFav]['id'] = $mastationid;
 								$SelectionFav[$ordreFav]['coord'] = $lat . "," . $lng;
@@ -182,7 +185,7 @@ class prixcarburants extends eqLogic
 								$maselection[$idx]['adresse'] = $marque . ', ' . $unestation->ville;
 								$maselection[$idx]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
 								$maselection[$idx]['prix'] = $prixlitre;
-								$maselection[$idx]['maj']  = date($monformatdate, strtotime($maj));
+								$maselection[$idx]['maj'] = self::TranslateDate($monformatdate, config::byKey('language'), strtotime($maj));
 								$maselection[$idx]['distance'] = $dist;
 								$maselection[$idx]['id'] = $mastationid;
 								$maselection[$idx]['coord'] = $lat . "," . $lng;
@@ -329,27 +332,6 @@ class prixcarburants extends eqLogic
 			log::add(__CLASS__, 'debug', 'JSON file : ' . self::ZIP_PATH . '/listestations/stations' . $DepStation . '.json not available');
 			return __('Erreur', __FILE__);
 		}
-	}
-	
-	/** Function to calculate a distance between selected location and a station */
-	public static function distance($lat1, $lng1, $lat2, $lng2, $unit = 'k')
-	{
-		$earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
-		$rlo1 = deg2rad($lng1);
-		$rla1 = deg2rad($lat1);
-		$rlo2 = deg2rad($lng2);
-		$rla2 = deg2rad($lat2);
-		$dlo = ($rlo2 - $rlo1) / 2;
-		$dla = ($rla2 - $rla1) / 2;
-		$a = (sin($dla) * sin($dla)) + cos($rla1) * cos($rla2) * (sin($dlo) * sin($dlo));
-		$d = 2 * atan2(sqrt($a), sqrt(1 - $a));
-		return round(($earth_radius * $d) / 1000);
-	}
-
-	/** Function to sort fuel station */
-	public static function custom_sort($a, $b)
-	{
-		return $a['prix'] > $b['prix'];
 	}
 
 
@@ -551,10 +533,10 @@ class prixcarburants extends eqLogic
 
 	/*     * ********************* Méthodes d'instance ************************* */
 
-  	public function preInsert(){
-      	$this->setConfiguration('templatewidget','logos');
-    	
-    }
+	public function preInsert(){
+		$this->setConfiguration('templatewidget','logos');
+		
+	}
 	/** Method called before saving (creation and update therefore) of your */
 	public function preSave()
 	{
@@ -852,12 +834,12 @@ class prixcarburants extends eqLogic
 			return $replace;
 		}
 		$version = jeedom::versionAlias($_version);
-      
-      $template = $this->getConfiguration('templatewidget');
-      if ($template == "default")
-    	{
-    		return parent::toHtml($_version);
-    	}
+
+		$template = $this->getConfiguration('templatewidget');
+		if ($template == "default")
+		{
+			return parent::toHtml($_version);
+		}
 
 		// Gaz station template
 		$GazStation_html = '';
@@ -895,15 +877,68 @@ class prixcarburants extends eqLogic
 
 		return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'prixcarburants.template', 'prixcarburants')));
 	}
-  	/** Function to get the number of favorites selected */
-    	public function getFavNumber(){
+
+
+	/*     * ********************* Global functions ************************* */
+
+	/** Function to calculate a distance between selected location and a station */
+	public static function distance($lat1, $lng1, $lat2, $lng2, $unit = 'k')
+	{
+		$earth_radius = 6378137;	// Terre = sphère de 6378km de rayon
+		$rlo1 = deg2rad($lng1);
+		$rla1 = deg2rad($lat1);
+		$rlo2 = deg2rad($lng2);
+		$rla2 = deg2rad($lat2);
+		$dlo = ($rlo2 - $rlo1) / 2;
+		$dla = ($rla2 - $rla1) / 2;
+		$a = (sin($dla) * sin($dla)) + cos($rla1) * cos($rla2) * (sin($dlo) * sin($dlo));
+		$d = 2 * atan2(sqrt($a), sqrt(1 - $a));
+		return round(($earth_radius * $d) / 1000);
+	}
+
+	/** Function to sort fuel station */
+	public static function custom_sort($a, $b)
+	{
+		return $a['prix'] > $b['prix'];
+	}
+
+	/** Function to get the number of favorites selected */
+	public function getFavNumber(){
 		if($this->getConfiguration('Favoris')==false)return 0;
 		for($i = 1; $i<=10;$i++){
-		  $currSt = $this->getConfiguration('station'.$i.'_Commune', null);
-		  if($currSt == null)return $i-1;        	
+			$currSt = $this->getConfiguration('station'.$i.'_Commune', null);
+			if($currSt == null)return $i-1;
 		}
 		return false;
-  	}
+	}
+
+	/** Function to display French dates */
+	public static function TranslateDate($DateFormat, $language, $timestamp = null)
+	{
+		if ($timestamp === null) $timestamp = time();
+		$date = date($DateFormat, $timestamp);
+		
+		switch($language) {
+			case 'en_US':
+				//nothing
+				break;
+			case 'fr_FR':
+				$date = str_replace(
+					array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Feb', 'Apr', 'May', 'Jun', 'Jul', 'Aug'),
+					array('Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre', 'Fev', 'Avr', 'Mai', 'Juin', 'Juill', 'Août'),
+					$date
+				);
+				break;
+			case 'de_DE':
+				// TBD
+				break;
+			case 'es_ES':
+				// TBD
+				break;
+		}
+		
+		return $date;
+	}
 }
 class prixcarburantsCmd extends cmd
 {
