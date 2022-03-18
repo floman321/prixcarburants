@@ -180,7 +180,7 @@ require_once dirname(__FILE__).'/../../core/class/'.$plugin->getId().'.class.php
                                     <div class="col-sm-3">
 									<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="templatewidget">
 										<option value="default">{{Par défaut}}</option>
-										<option value="logos">{{Avec Logos}}</option>
+										<option value="0logo">{{Sans Logo}}</option>
 									</select>
                                    
 								</div>

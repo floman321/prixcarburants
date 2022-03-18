@@ -533,8 +533,8 @@ class prixcarburants extends eqLogic
 
 	/*     * ********************* Méthodes d'instance ************************* */
 
-	public function preInsert(){
-		$this->setConfiguration('templatewidget','logos');
+	public function preInsert() {
+		$this->setConfiguration('templatewidget','default');
 		
 	}
 	/** Method called before saving (creation and update therefore) of your */
@@ -835,13 +835,27 @@ class prixcarburants extends eqLogic
 		}
 		$version = jeedom::versionAlias($_version);
 
+		// Design parameters related to selected display (mobile vs desktop and w/ vs w/o logo)
 		$template = $this->getConfiguration('templatewidget');
-		if ($template == "default")
-		{
-			return parent::toHtml($_version);
+		$PicSize = 60;
+		if($template == 'default') {
+			$replace['#TemplateWidth#'] = 400;
+			$replace['#opacity#'] = 100;
+			$replace['#TextMargin#'] = 80;
+			$replace['#logowidth#'] = 60;
+		} else {
+			$replace['#TemplateWidth#'] = 180;
+			$replace['#opacity#'] = 0;
+			$replace['#TextMargin#'] = 10;
+			$replace['#logowidth#'] = 0;
+		}
+		if ($_version != 'dashboard') {
+			$PicSize = $PicSize/2;
+			$replace['#TextMargin#'] = $replace['#TextMargin#']/2;
+			$replace['#logowidth#'] = $replace['#logowidth#']/2;
 		}
 
-		// Gaz station template
+		// Fuel station template
 		$GazStation_html = '';
 		$GazStation_template = getTemplate('core', $version, 'gazstation.template', 'prixcarburants');
 		$GazStation_Qtty = 0;
@@ -859,8 +873,12 @@ class prixcarburants extends eqLogic
 				$DateRecover = $this->getCmd(null, 'TopMaJ_' . $i);
 				$replace['#TopMaJ#'] = is_object($DateRecover) ? __('le ', __FILE__) . $DateRecover->execCmd() : '';
 
-				$LogoStation = $this->getCmd(null, 'TopLogo_' . $i);
-				$replace['#LogoStation#'] = is_object($LogoStation) ? $LogoStation->execCmd() : '';
+				if ($template == "default") {
+					$LogoStation = $this->getCmd(null, 'TopLogo_' . $i);
+					$replace['#LogoStation#'] = is_object($LogoStation) ? '<img src="'.$LogoStation->execCmd().'" style="max-width: '.$PicSize.'px; max-height: '.$PicSize.'px;">' : '';
+				} else {
+					$replace['#LogoStation#'] = ' ';
+				}
 
 				$GazStation_html .= template_replace($replace, $GazStation_template);
 				$GazStation_Qtty++;
