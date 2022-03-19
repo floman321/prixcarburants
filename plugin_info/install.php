@@ -77,7 +77,7 @@ function prixcarburants_update() {
     }
 
     // test config  templatewidget
-    if($eqLogic->getConfiguration('templatewidget', null)==null)$eqLogic->setConfiguration('templatewidget', 'logos');
+    if($eqLogic->getConfiguration('templatewidget', null)==null)$eqLogic->setConfiguration('templatewidget', 'default');
     //save eqLogic
     $eqLogic->save();
   }
