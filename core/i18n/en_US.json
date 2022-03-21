@@ -61,7 +61,8 @@
     "Paramètres": "Settings",
     "Action": "Action",
     "nombre de stations" : "stations count",
-    "Favoris" : "Favorite"
+    "Favoris" : "Favorite",
+    "Sans Template" : "Whithout Template"
   },
   "plugins\/prixcarburants\/desktop\/js\/prixcarburants_conf.js": {
     "Cron mis à jour!": "Cron updated!",

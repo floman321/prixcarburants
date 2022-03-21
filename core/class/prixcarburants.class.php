@@ -843,11 +843,13 @@ class prixcarburants extends eqLogic
 			$replace['#opacity#'] = 100;
 			$replace['#TextMargin#'] = 80;
 			$replace['#logowidth#'] = 60;
-		} else {
+		} elseif($template == '0logo') {
 			$replace['#TemplateWidth#'] = 180;
 			$replace['#opacity#'] = 0;
 			$replace['#TextMargin#'] = 10;
 			$replace['#logowidth#'] = 0;
+		}else{
+			return parent::toHtml($_version);
 		}
 		if ($_version != 'dashboard') {
 			$PicSize = $PicSize/2;
