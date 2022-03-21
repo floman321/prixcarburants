@@ -776,6 +776,8 @@ class prixcarburants extends eqLogic
 					$prixcarburantsCmd->setIsHistorized(0);
 					$prixcarburantsCmd->setIsVisible(1);
 					$prixcarburantsCmd->setDisplay('showNameOndashboard', 0);
+					$prixcarburantsCmd->setTemplate('dashboard', 'prixcarburants::logoStation');
+					$prixcarburantsCmd->setTemplate('mobile', 'prixcarburants::logoStation');
 				}
 				$prixcarburantsCmd->setName('Top ' . $i . ' Logo');
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
