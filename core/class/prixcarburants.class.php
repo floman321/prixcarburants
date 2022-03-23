@@ -28,7 +28,18 @@ class prixcarburants extends eqLogic
 
 	const DEFAULT_CRON = '7 2 * * *'; // cron by default if not set 
 	const ZIP_PATH = __DIR__ . '/../../data'; // file path for zip file, data and so on
-
+	const DEFAULT_CMD = array(
+                              'id' => '',
+                              'adresse' => '',
+                              'adressecompl' => '',
+                              'maj' => '',
+                              'prix' => '',
+                              'distance' => '',
+                              'coord' => '',
+                              'waze' => '',
+                              'googleMap' => '',
+                              'logo' => ''
+                              );
 
 	/*     * *********************** Plugin static methods *************************** */
 
@@ -224,12 +235,21 @@ class prixcarburants extends eqLogic
 					self::updateVehiculeCmd($vehiculeId, $i,$lreservoir, $liste[$i - 1]);	
                   
 				} else {
-                  	$arr['adresse'] = $liste[$i - 1]['adresse'];
-                  	$arr['adressecompl']=$liste[$i - 1]['adressecompl'];
-                  	$arr['prix']=0;
-                 	$arr['logo']=$liste[$i - 1]['logo'];
-                  	$arr['maj']=__('Obsolète', __FILE__);
-                  	self::updateVehiculeCmd($vehiculeId, $i,$lreservoir,$arr);
+                  	if ($i <= $NbFavoris) {
+                      	$arr['adresse'] = $liste[$i - 1]['adresse'];
+                        $arr['adressecompl']=$liste[$i - 1]['adressecompl'];
+                        $arr['prix']=0;
+                        $arr['logo']=$liste[$i - 1]['logo'];
+                        $arr['maj']=__('Obsolète', __FILE__);
+                    } else {
+                      	$arr['adresse'] =__('Plus de station disponible dans le rayon sélectionné', __FILE__);
+                        $arr['adressecompl']=__('Plus de station disponible dans le rayon sélectionné', __FILE__);
+                      	$arr['prix']='';
+                        $arr['logo']='';
+                        $arr['maj']='';
+                    }
+                  	$arrMerged = $arr;//array_merge(self::DEFAULT_CMD,$arr);
+                  	self::updateVehiculeCmd($vehiculeId, $i,$lreservoir,$arrMerged);
 				}
 			}
 			$unvehicule->refreshWidget();
