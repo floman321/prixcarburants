@@ -48,6 +48,7 @@ class prixcarburants extends eqLogic
 
 			$maselection = array();
 			$SelectionFav = array();
+          	$vehiculeId = $unvehicule->getId();
 			$idx = 0;
 
 			$nom = $unvehicule->getName();
@@ -83,7 +84,7 @@ class prixcarburants extends eqLogic
 						$malat = config::byKey('info::latitude');
 						$malng = config::byKey('info::longitude');
 					} elseif ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
-						$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top 1 Adresse');
+						$macmd = cmd::byEqLogicIdCmdName($vehiculeId, 'Top 1 Adresse');
 						if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée', __FILE__));
 						return;
 					} else {
@@ -165,15 +166,16 @@ class prixcarburants extends eqLogic
 							} else {
 								$logo = $PathToLogo . 'AUCUNE.png';
 							}
-
-							if ($dminus5 >= strtotime($maj)) {
+							$computePrice = true;//flag to test if we should consider price if outdated base
+                            if ($dminus5 >= strtotime($maj))$computePrice=!$should_ignore;
+							/*if ($dminus5 >= strtotime($maj)) {
 								if ($should_ignore) continue;
-							}
+							}*/
 
 							if ($EstFavoris) { //Register favorite station
 								$SelectionFav[$ordreFav]['adresse'] = $marque . ', ' . $unestation->ville;
 								$SelectionFav[$ordreFav]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
-								$SelectionFav[$ordreFav]['prix'] = $prixlitre;
+								$SelectionFav[$ordreFav]['prix'] = $computePrice?$prixlitre:0;
 								$SelectionFav[$ordreFav]['maj'] = self::TranslateDate($monformatdate, config::byKey('language'), strtotime($maj));
 								$SelectionFav[$ordreFav]['distance'] = $dist;
 								$SelectionFav[$ordreFav]['id'] = $mastationid;
@@ -182,9 +184,10 @@ class prixcarburants extends eqLogic
 								$SelectionFav[$ordreFav]['googleMap'] = $urlMap . urlencode($malat . ',' . $malng) . '&destination=' . urlencode($lat . ',' . $lng);
 								$SelectionFav[$ordreFav]['logo'] = $logo;
 							} else { //Register station that are on the radius
+                              	if(!$computePrice)continue;
 								$maselection[$idx]['adresse'] = $marque . ', ' . $unestation->ville;
 								$maselection[$idx]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
-								$maselection[$idx]['prix'] = $prixlitre;
+								$maselection[$idx]['prix'] = $computePrice?$prixlitre:0;
 								$maselection[$idx]['maj'] = self::TranslateDate($monformatdate, config::byKey('language'), strtotime($maj));
 								$maselection[$idx]['distance'] = $dist;
 								$maselection[$idx]['id'] = $mastationid;
@@ -216,84 +219,62 @@ class prixcarburants extends eqLogic
 				} else {
 					$liste[$i - 1] = $maselection[$i - 1 - $NbFavoris];
 				}
-
+				
 				if ($liste[$i - 1]['prix'] != '') { //Price available so, there is enough station on selected range
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' ID');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['id']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Adresse');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['adresse']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Adresse complète');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['adressecompl']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' MAJ');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['maj']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Prix');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['prix']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Prix Plein');
-					if (is_object($macmd)) $macmd->event(round($liste[$i - 1]['prix'] * $lreservoir, 2));
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Distance');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['distance']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Coord');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['coord']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Waze');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['waze']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Google maps');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['googleMap']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Logo');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['logo']);
+					self::updateVehiculeCmd($vehiculeId, $i,$lreservoir, $liste[$i - 1]);	
+                  
 				} else {
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Adresse');
-					$macmd2 = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Adresse complète');
-					if (is_object($macmd)) {
-						if ($i <= $NbFavoris) {
-							$macmd->event(__('Favori pas correctement configuré', __FILE__));
-							$macmd2->event(__('Favori pas correctement configuré', __FILE__));
-						} else {
-							$macmd->event(__('Plus de station disponible dans le rayon sélectionné', __FILE__));
-							$macmd2->event(__('Plus de station disponible dans le rayon sélectionné', __FILE__));
-						}
-					}
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' ID');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' MAJ');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Prix');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Distance');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Prix Plein');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Coord');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['coord']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Waze');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Google maps');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Logo');
-					if (is_object($macmd)) $macmd->event('');
+                  	$arr['adresse'] = $liste[$i - 1]['adresse'];
+                  	$arr['adressecompl']=$liste[$i - 1]['adressecompl'];
+                  	$arr['prix']=0;
+                 	$arr['logo']=$liste[$i - 1]['logo'];
+                  	$arr['maj']=__('Obsolète', __FILE__);
+                  	self::updateVehiculeCmd($vehiculeId, $i,$lreservoir,$arr);
 				}
 			}
 			$unvehicule->refreshWidget();
 		}
 	}
+  	/** Function updateVehiculeCmd : use to save current top 
+    * $vId : eqLogic Id of the current equipement
+    * $currTop : integer : current top to be recorded
+    * $cmd : array : with all cmd referenced or empty
+    */
+  	public static function updateVehiculeCmd($vId,$currTop,$lreservoir, $cmdArr){
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' ID');
+        if (is_object($macmd)) $macmd->event($cmdArr['id']);
 
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Adresse');
+        if (is_object($macmd)) $macmd->event($cmdArr['adresse']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Adresse complète');
+        if (is_object($macmd)) $macmd->event($cmdArr['adressecompl']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' MAJ');
+        if (is_object($macmd)) $macmd->event($cmdArr['maj']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Prix');
+        if (is_object($macmd)) $macmd->event($cmdArr['prix']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Prix Plein');
+        if (is_object($macmd)) $macmd->event(round($cmdArr['prix'] * $lreservoir, 2));
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Distance');
+        if (is_object($macmd)) $macmd->event($cmdArr['distance']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Coord');
+        if (is_object($macmd)) $macmd->event($cmdArr['coord']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Waze');
+        if (is_object($macmd)) $macmd->event($cmdArr['waze']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Google maps');
+        if (is_object($macmd)) $macmd->event($cmdArr['googleMap']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Logo');
+        if (is_object($macmd)) $macmd->event($cmdArr['logo']);
+
+    }
 	/** Function to get zip file from government website then update all values */
 	public static function updatePrixCarburant()
 	{
@@ -320,7 +301,7 @@ class prixcarburants extends eqLogic
 	{
 		$json = @file_get_contents(self::ZIP_PATH . '/listestations/stations' . $DepStation . '.json');
 		if ($json !== false) {
-			log::add(__CLASS__, 'debug', 'JSON file : ' . self::ZIP_PATH . '/data/listestations/stations' . $DepStation . '.json available');
+			//log::add(__CLASS__, 'debug', 'JSON file : ' . self::ZIP_PATH . '/data/listestations/stations' . $DepStation . '.json available');
 			$parsed_json = json_decode($json, true);
 			foreach ($parsed_json['stations'] as $row) {
 				if ($row['id'] == $idstation) {
