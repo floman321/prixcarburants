@@ -238,7 +238,7 @@ class prixcarburants extends eqLogic
                   	if ($i <= $NbFavoris) {
                       	$arr['adresse'] = $liste[$i - 1]['adresse'];
                         $arr['adressecompl']=$liste[$i - 1]['adressecompl'];
-                        $arr['prix']=0;
+                        $arr['prix']='';
                         $arr['logo']=$liste[$i - 1]['logo'];
                         $arr['maj']=__('Obsolète', __FILE__);
                     } else {
