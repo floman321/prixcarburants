@@ -160,7 +160,8 @@ class prixcarburants extends eqLogic
 					$should_ignore = $unvehicule->getConfiguration('dateexpirevisible');
 					$daysminus = $unvehicule->getConfiguration('dateexpire');
 					$dminus5 = strtotime("-" . $daysminus . " days");
-
+					
+                  	$favorite_flag = false;
 					//Import and review XML file
 					$unestation = simplexml_import_dom($doc->importNode($reader->expand(), true));
 					foreach ($unestation->prix as $prix) {
@@ -194,6 +195,8 @@ class prixcarburants extends eqLogic
 								$SelectionFav[$ordreFav]['waze'] = $urlWaze . 'to=ll.' . urlencode($lat . ',' . $lng) . '&from=ll.' . urlencode($malat . ',' . $malng) . '&navigate=yes';
 								$SelectionFav[$ordreFav]['googleMap'] = $urlMap . urlencode($malat . ',' . $malng) . '&destination=' . urlencode($lat . ',' . $lng);
 								$SelectionFav[$ordreFav]['logo'] = $logo;
+                              	$favorite_flag  = true;// partie de la rustine
+                              	$SelectionFav[$ordreFav]['fuelFound'] = true;// partie de la rustine
 							} else { //Register station that are on the radius
                               	if(!$computePrice)continue;
 								$maselection[$idx]['adresse'] = $marque . ', ' . $unestation->ville;
@@ -208,11 +211,34 @@ class prixcarburants extends eqLogic
 								$maselection[$idx]['logo'] = $logo;
 								$idx++;
 							}
-						}
-					}
+						}//end if fueltype
+                      	
+					}//end foreach prix
+                  
+                  /* ***************************** RUSTINE PÄS TOP *************************************************************************** */
+                  // permet de palier au non passage dans la boucle d'un favoris si la station ne vends pas le type de carburant.
+                  
+                  	if($EstFavoris && !$favorite_flag){// if is a favorite but no fuel type referenced CECI EST UNE RUSTINE -> A VIRER UN JOUR
+                      $marque = prixcarburants::getMarqueStation($mastationid, $MaStationDep);
+                      $PathToLogo = '../../plugins/' . __CLASS__ . '/data/logo/';
+                      $LogoName = strtoupper(str_replace(' ', '', $marque));
+                      if (file_exists(self::ZIP_PATH . '/logo/' . $LogoName . '.png')) {
+								$logo = $PathToLogo . $LogoName . '.png';
+							} else {
+								$logo = $PathToLogo . 'AUCUNE.png';
+							}
+                      $SelectionFav[$ordreFav]['prix']='';
+                      $SelectionFav[$ordreFav]['adresse'] = $marque . ', ' . $unestation->ville;
+                      $SelectionFav[$ordreFav]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
+                      $SelectionFav[$ordreFav]['logo'] = $logo;
+                      $SelectionFav[$ordreFav]['fuelFound'] = $favorite_flag;
+                    }
+                 /* _________________________________________ FIN RUSTINE PAS TOP ______________________________________________________________ */
+                  
 				}
 			}
 			$reader->close();
+          
 
 			log::add('prixcarburants', 'debug', 'Step count selection: ' . count($maselection) . ' for equipement: ' . $nom);
 
@@ -236,11 +262,16 @@ class prixcarburants extends eqLogic
                   
 				} else {
                   	if ($i <= $NbFavoris) {
+                      	$arr['prix']='';
+                      	$arr['logo']=$liste[$i - 1]['logo'];
                       	$arr['adresse'] = $liste[$i - 1]['adresse'];
                         $arr['adressecompl']=$liste[$i - 1]['adressecompl'];
-                        $arr['prix']='';
-                        $arr['logo']=$liste[$i - 1]['logo'];
-                        $arr['maj']=__('Obsolète', __FILE__);
+                      
+                      	if($liste[$i - 1]['fuelFound']){//type de fuel trouvé dans la station favorite
+                          $arr['maj']=__('Obsolète', __FILE__);
+                        }else{// type de fuel non référencé dans la statiuon favorite
+                          $arr['maj']=__('Type de carburant non vendu en station', __FILE__);
+                        }
                     } else {
                       	$arr['adresse'] =__('Plus de station disponible dans le rayon sélectionné', __FILE__);
                         $arr['adressecompl']=__('Plus de station disponible dans le rayon sélectionné', __FILE__);
@@ -248,7 +279,7 @@ class prixcarburants extends eqLogic
                         $arr['logo']='';
                         $arr['maj']='';
                     }
-                  	$arrMerged = $arr;//array_merge(self::DEFAULT_CMD,$arr);
+                  	$arrMerged = array_merge(self::DEFAULT_CMD,$arr);
                   	self::updateVehiculeCmd($vehiculeId, $i,$lreservoir,$arrMerged);
 				}
 			}
@@ -277,7 +308,7 @@ class prixcarburants extends eqLogic
         if (is_object($macmd)) $macmd->event($cmdArr['prix']);
 
         $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Prix Plein');
-        if (is_object($macmd)) $macmd->event(round($cmdArr['prix'] * $lreservoir, 2));
+        if (is_object($macmd)) $macmd->event(round(($cmdArr['prix']?$cmdArr['prix']:0) * $lreservoir, 2));
 
         $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Distance');
         if (is_object($macmd)) $macmd->event($cmdArr['distance']);
