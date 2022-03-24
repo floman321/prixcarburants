@@ -56,20 +56,31 @@ class prixcarburants extends eqLogic
 
 		foreach ($Vehicules as $unvehicule) {
 			if ($unvehicule->getIsEnable() == 0) continue;
-
+			self::MAJOneVehicule($unvehicule);
+		}
+	}
+	public static function MAJOneVehicule($unvehicule){
 			$maselection = array();
 			$SelectionFav = array();
           	$vehiculeId = $unvehicule->getId();
-			$idx = 0;
-
+			$urlMap = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&origin=';;
+			$urlWaze = 'https://waze.com/ul?';
+			$should_ignore = $unvehicule->getConfiguration('dateexpirevisible');
+			$daysminus = $unvehicule->getConfiguration('dateexpire');
+      		$dminus5 = strtotime("-" . $daysminus . " days");
 			$nom = $unvehicule->getName();
-			$typecarburant = $unvehicule->getConfiguration('typecarburant', '');
-			if ($typecarburant == '') log::add('prixcarburants', 'error', __('Le type de carburant n\'est pas renseigné dans la configuration de Prix Carburants : ', __FILE__) . $nom);
 			$rayon = $unvehicule->getConfiguration('rayon', '30');
 			$nbstation = $unvehicule->getConfiguration('nbstation', '0');
+      		$PathToLogo = '../../plugins/' . __CLASS__ . '/data/logo/';
+			
+			$typecarburant = $unvehicule->getConfiguration('typecarburant', '');
+			if ($typecarburant == '') log::add('prixcarburants', 'error', __('Le type de carburant n\'est pas renseigné dans la configuration de Prix Carburants : ', __FILE__) . $nom);
+			
 			$monformatdate = $unvehicule->getConfiguration('formatdate', '');
 			if($monformatdate =='perso') $monformatdate = $unvehicule->getConfiguration('formatdate_perso', '');
 			log::add(__CLASS__,'debug', 'date format : '.$monformatdate);
+
+			$idx = 0;
 			//Get the list of favoris selected
 			$NbFavoris = 0;
 			if ($unvehicule->getConfiguration('Favoris') == '1') {
@@ -121,9 +132,10 @@ class prixcarburants extends eqLogic
 
 
 			$doc = new DOMDocument;
-			$urlMap = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&origin=';;
-			$urlWaze = 'https://waze.com/ul?';
+			
+
 			while ($reader->read()) {
+              	
 				if ($reader->nodeType == XMLReader::ELEMENT && $reader->name == 'pdv') {
 					$lat = $reader->getAttribute('latitude') / 100000;
 					$lng = $reader->getAttribute('longitude') / 100000;
@@ -134,106 +146,54 @@ class prixcarburants extends eqLogic
 
 					//Distance only when localisation define
 					$dist = 0;
-					if ($malat != 0 && $malng != 0) $dist = prixcarburants::distance($malat, $malng, $lat, $lng);
-
+					if ($malat != 0 && $malng != 0) $dist = self::distance($malat, $malng, $lat, $lng);
+					
 					//Check if this station is a favorite
-					$ordreFav = 0;
-					if ($NbFavoris > 0) {
-						for ($i = 1; $i <= $NbFavoris; $i++) {
-							if ($mastationid == $StationFav[$i] && $MaStationDep == $DepartementFav[$i]) {
-								$MonTest = True;
-								$EstFavoris = True;
-								$ordreFav = $i - 1;
-								break;
-							}
-						}
-					}
-					if ($MonTest == False) {
-						if ($unvehicule->getConfiguration('ViaLoca') == '1') {
-							if ($dist <= $rayon) $MonTest = True;
-						}
-					}
+					$MonTest  = $EstFavoris = in_array($mastationid, $StationFav) && in_array($MaStationDep, $DepartementFav);
+					$ordreFav = $EstFavoris?(array_search($mastationid, $StationFav)-1):0;
+                  	
+					if ($EstFavoris == false && $unvehicule->getConfiguration('ViaLoca') == '1' ) $MonTest = $dist <= $rayon;
 
 					//Register only station that are a favorite or on max radius
-					if ($MonTest == False) continue;
-
-					$should_ignore = $unvehicule->getConfiguration('dateexpirevisible');
-					$daysminus = $unvehicule->getConfiguration('dateexpire');
-					$dminus5 = strtotime("-" . $daysminus . " days");
-					
-                  	$favorite_flag = false;
-					//Import and review XML file
+					if ($MonTest == false) continue;
+                  
+                  	// general variable
+                  	$marque = prixcarburants::getMarqueStation($mastationid, $MaStationDep);
+                  	$LogoName = strtoupper(str_replace(' ', '', $marque));
+                  	$logo =file_exists(self::ZIP_PATH . '/logo/' . $LogoName . '.png')?$PathToLogo . $LogoName . '.png':$PathToLogo . 'AUCUNE.png';
 					$unestation = simplexml_import_dom($doc->importNode($reader->expand(), true));
-					foreach ($unestation->prix as $prix) {
-						if ($prix->attributes()->nom == $typecarburant) { //Filter by fuel type
-
-							$prixlitre = $prix->attributes()->valeur . '';
-							$maj = $prix->attributes()->maj . '';
-							$marque = prixcarburants::getMarqueStation($mastationid, $MaStationDep);
-
-							$PathToLogo = '../../plugins/' . __CLASS__ . '/data/logo/';
-							$LogoName = strtoupper(str_replace(' ', '', $marque));
-							if (file_exists(self::ZIP_PATH . '/logo/' . $LogoName . '.png')) {
-								$logo = $PathToLogo . $LogoName . '.png';
-							} else {
-								$logo = $PathToLogo . 'AUCUNE.png';
-							}
-							$computePrice = true;//flag to test if we should consider price if outdated base
-                            if ($dminus5 >= strtotime($maj))$computePrice=!$should_ignore;
-							/*if ($dminus5 >= strtotime($maj)) {
-								if ($should_ignore) continue;
-							}*/
-
-							if ($EstFavoris) { //Register favorite station
-								$SelectionFav[$ordreFav]['adresse'] = $marque . ', ' . $unestation->ville;
-								$SelectionFav[$ordreFav]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
-								$SelectionFav[$ordreFav]['prix'] = $computePrice?$prixlitre:0;
-								$SelectionFav[$ordreFav]['maj'] = self::TranslateDate($monformatdate, config::byKey('language'), strtotime($maj));
-								$SelectionFav[$ordreFav]['distance'] = $dist;
-								$SelectionFav[$ordreFav]['id'] = $mastationid;
-								$SelectionFav[$ordreFav]['coord'] = $lat . "," . $lng;
-								$SelectionFav[$ordreFav]['waze'] = $urlWaze . 'to=ll.' . urlencode($lat . ',' . $lng) . '&from=ll.' . urlencode($malat . ',' . $malng) . '&navigate=yes';
-								$SelectionFav[$ordreFav]['googleMap'] = $urlMap . urlencode($malat . ',' . $malng) . '&destination=' . urlencode($lat . ',' . $lng);
-								$SelectionFav[$ordreFav]['logo'] = $logo;
-                              	$favorite_flag  = true;// partie de la rustine
-                              	$SelectionFav[$ordreFav]['fuelFound'] = true;// partie de la rustine
-							} else { //Register station that are on the radius
-                              	if(!$computePrice)continue;
-								$maselection[$idx]['adresse'] = $marque . ', ' . $unestation->ville;
-								$maselection[$idx]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
-								$maselection[$idx]['prix'] = $computePrice?$prixlitre:0;
-								$maselection[$idx]['maj'] = self::TranslateDate($monformatdate, config::byKey('language'), strtotime($maj));
-								$maselection[$idx]['distance'] = $dist;
-								$maselection[$idx]['id'] = $mastationid;
-								$maselection[$idx]['coord'] = $lat . "," . $lng;
-								$maselection[$idx]['waze'] = $urlWaze . 'to=ll.' . urlencode($lat . ',' . $lng) . '&from=ll.' . urlencode($malat . ',' . $malng) . '&navigate=yes';
-								$maselection[$idx]['googleMap'] = $urlMap . urlencode($malat . ',' . $malng) . '&destination=' . urlencode($lat . ',' . $lng);
-								$maselection[$idx]['logo'] = $logo;
-								$idx++;
-							}
-						}//end if fueltype
-                      	
-					}//end foreach prix
-                  
-                  /* ***************************** RUSTINE PÄS TOP *************************************************************************** */
-                  // permet de palier au non passage dans la boucle d'un favoris si la station ne vends pas le type de carburant.
-                  
-                  	if($EstFavoris && !$favorite_flag){// if is a favorite but no fuel type referenced CECI EST UNE RUSTINE -> A VIRER UN JOUR
-                      $marque = prixcarburants::getMarqueStation($mastationid, $MaStationDep);
-                      $PathToLogo = '../../plugins/' . __CLASS__ . '/data/logo/';
-                      $LogoName = strtoupper(str_replace(' ', '', $marque));
-                      if (file_exists(self::ZIP_PATH . '/logo/' . $LogoName . '.png')) {
-								$logo = $PathToLogo . $LogoName . '.png';
-							} else {
-								$logo = $PathToLogo . 'AUCUNE.png';
-							}
-                      $SelectionFav[$ordreFav]['prix']='';
-                      $SelectionFav[$ordreFav]['adresse'] = $marque . ', ' . $unestation->ville;
-                      $SelectionFav[$ordreFav]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
-                      $SelectionFav[$ordreFav]['logo'] = $logo;
-                      $SelectionFav[$ordreFav]['fuelFound'] = $favorite_flag;
+                  	$prixlitre = self::getPriceFromStationXML($unestation, $typecarburant);
+                  	$computePrice = true;//flag to test if we should consider price if outdated base
+                    if ($prixlitre && $dminus5 >= strtotime($prixlitre['maj']))$computePrice=!$should_ignore;
+                  	
+                    if($EstFavoris){
+                   		$SelectionFav[$ordreFav]['adresse'] = $marque . ', ' . $unestation->ville;
+                        $SelectionFav[$ordreFav]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
+                        $SelectionFav[$ordreFav]['prix'] = $computePrice && $prixlitre?$prixlitre['prix']:0;
+                        $SelectionFav[$ordreFav]['maj'] = self::TranslateDate($monformatdate, config::byKey('language'), strtotime($prixlitre['maj']));
+                        $SelectionFav[$ordreFav]['distance'] = $dist;
+                        $SelectionFav[$ordreFav]['id'] = $mastationid;
+                        $SelectionFav[$ordreFav]['coord'] = $lat . "," . $lng;
+                        $SelectionFav[$ordreFav]['waze'] = $urlWaze . 'to=ll.' . urlencode($lat . ',' . $lng) . '&from=ll.' . urlencode($malat . ',' . $malng) . '&navigate=yes';
+                        $SelectionFav[$ordreFav]['googleMap'] = $urlMap . urlencode($malat . ',' . $malng) . '&destination=' . urlencode($lat . ',' . $lng);
+                        $SelectionFav[$ordreFav]['logo'] = $logo;
+                      	$SelectionFav[$ordreFav]['fuelFound'] = $prixlitre?true:false;
+                    
+                    }elseif($prixlitre && $computePrice){// not a favorite but in distance AND if has price found (carburant type founded) AND Date Ok
+                      	$maselection[$idx]['adresse'] = $marque . ', ' . $unestation->ville;
+                        $maselection[$idx]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
+                        $maselection[$idx]['prix'] = $computePrice && $prixlitre?$prixlitre['prix']:0;
+                        $maselection[$idx]['maj'] = self::TranslateDate($monformatdate, config::byKey('language'), strtotime($prixlitre['maj']));
+                        $maselection[$idx]['distance'] = $dist;
+                        $maselection[$idx]['id'] = $mastationid;
+                        $maselection[$idx]['coord'] = $lat . "," . $lng;
+                        $maselection[$idx]['waze'] = $urlWaze . 'to=ll.' . urlencode($lat . ',' . $lng) . '&from=ll.' . urlencode($malat . ',' . $malng) . '&navigate=yes';
+                        $maselection[$idx]['googleMap'] = $urlMap . urlencode($malat . ',' . $malng) . '&destination=' . urlencode($lat . ',' . $lng);
+                        $maselection[$idx]['logo'] = $logo;
+                        $idx++;
                     }
-                 /* _________________________________________ FIN RUSTINE PAS TOP ______________________________________________________________ */
+
+
                   
 				}
 			}
@@ -284,8 +244,23 @@ class prixcarburants extends eqLogic
 				}
 			}
 			$unvehicule->refreshWidget();
-		}
 	}
+  	/** getPriceFromStationXML : allow to get an array with keys : 'prix' for price corresponding at $typecarburant and 'maj' for update date corresponding
+    * $unestation : xml node extracted
+    * $typecarburant : the tyep of carburant 
+    * return false if carburant not found in the list
+    */
+  	public static function getPriceFromStationXML($unestation, $typecarburant){
+      foreach ($unestation->prix as $prix) {
+        if ($prix->attributes()->nom == $typecarburant) { //Filter by fuel type
+         
+          $prixlitre = $prix->attributes()->valeur . '';
+          $maj = $prix->attributes()->maj . '';
+           return array('prix'=>$prixlitre, 'maj'=>$maj);
+        }
+      }
+      return false;
+    }
   	/** Function updateVehiculeCmd : use to save current top 
     * $vId : eqLogic Id of the current equipement
     * $currTop : integer : current top to be recorded
