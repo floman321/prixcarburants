@@ -6,7 +6,7 @@ if (!isConnect('admin')) {
 $plugin = plugin::byId('prixcarburants');
 sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
-
+require_once dirname(__FILE__).'/../../core/class/'.$plugin->getId().'.class.php';
 ?>
 	<div class="row row-overflow">
 		<div class="col-xs-12 eqLogicThumbnailDisplay">
@@ -132,18 +132,60 @@ $eqLogics = eqLogic::byType($plugin->getId());
 								<div class="col-sm-3">
 									<select id="FormatDate" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="formatdate">
 										<option value="Y-m-d à G:i:s">{{Par défaut}}</option>
-										<option value="j M Y à G:i:s"><?php echo date("j M Y à G:i:s"); ?></option>
-										<option value="j M Y à G:i"><?php echo date("j M Y à G:i"); ?></option>
-										<option value="j M y à G:i:s"><?php echo date("j M y à G:i:s"); ?></option>
-										<option value="j M y à G:i"><?php echo date("j M y à G:i"); ?></option>
-										<option value="j-m-y à G:i:s"><?php echo date("j-m-y à G:i:s"); ?></option>
-										<option value="j-m-y à G:i"><?php echo date("j-m-y à G:i"); ?></option>
-										<option value="Y-m-j à G:i:s"><?php echo date("Y-m-j à G:i:s"); ?></option>
-										<option value="Y-m-j à G:i"><?php echo date("Y-m-j à G:i"); ?></option>
-										<option value="Y-m-j"><?php echo date("Y-m-j"); ?></option>
+										<?php if(config::byKey('language') == "fr_FR") { ?>
+										<option value="j F Y"><?php echo prixcarburants::TranslateDate("j F Y", config::byKey('language')); ?></option>
+										<option value="j F Y à G:i"><?php echo prixcarburants::TranslateDate("j F Y à G:i", config::byKey('language')); ?></option>
+										<option value="j F y"><?php echo prixcarburants::TranslateDate("j F y", config::byKey('language')); ?></option>
+										<option value="j F y à G:i"><?php echo prixcarburants::TranslateDate("j F y à G:i", config::byKey('language')); ?></option>
+										<option value="j M Y"><?php echo prixcarburants::TranslateDate("j M Y", config::byKey('language')); ?></option>
+										<option value="j M Y à G:i"><?php echo prixcarburants::TranslateDate("j M Y à G:i", config::byKey('language')); ?></option>
+										<option value="j M y"><?php echo prixcarburants::TranslateDate("j M y", config::byKey('language')); ?></option>
+										<option value="j M y à G:i"><?php echo prixcarburants::TranslateDate("j M y à G:i", config::byKey('language')); ?></option>
+										<option value="j/m/Y"><?php echo prixcarburants::TranslateDate("j/m/Y", config::byKey('language')); ?></option>
+										<option value="j/m/Y à G:i"><?php echo prixcarburants::TranslateDate("j/m/Y à G:i", config::byKey('language')); ?></option>
+										<option value="j/m/y"><?php echo prixcarburants::TranslateDate("j/m/y", config::byKey('language')); ?></option>
+										<option value="j/m/y à G:i"><?php echo prixcarburants::TranslateDate("j/m/y à G:i", config::byKey('language')); ?></option>
+										<?php } else { ?>
+										<option value="F j, Y"><?php echo prixcarburants::TranslateDate("F j, Y", config::byKey('language')); ?></option>
+										<option value="F j, Y, G:i"><?php echo prixcarburants::TranslateDate("F j, Y, G:i", config::byKey('language')); ?></option>
+										<option value="F j, y"><?php echo prixcarburants::TranslateDate("F j, y", config::byKey('language')); ?></option>
+										<option value="F j, y, G:i"><?php echo prixcarburants::TranslateDate("F j, y, G:i", config::byKey('language')); ?></option>
+										<option value="M j Y"><?php echo prixcarburants::TranslateDate("M j Y", config::byKey('language')); ?></option>
+										<option value="M j Y, G:i"><?php echo prixcarburants::TranslateDate("M j Y, G:i", config::byKey('language')); ?></option>
+										<option value="M j y"><?php echo prixcarburants::TranslateDate("M j y", config::byKey('language')); ?></option>
+										<option value="M j y, G:i"><?php echo prixcarburants::TranslateDate("M j y, G:i", config::byKey('language')); ?></option>
+										<option value="m.j.Y"><?php echo prixcarburants::TranslateDate("m.j.Y", config::byKey('language')); ?></option>
+										<option value="m.j.Y, G:i"><?php echo prixcarburants::TranslateDate("m.j.Y, G:i", config::byKey('language')); ?></option>
+										<option value="m.j.y"><?php echo prixcarburants::TranslateDate("m.j.y", config::byKey('language')); ?></option>
+										<option value="m.j.y, G:i"><?php echo prixcarburants::TranslateDate("m.j.y, G:i", config::byKey('language')); ?></option>
+										<?php } ?>
+                                        <option value="perso">{{Personnalisé}}</option>
 									</select>
+                                   
 								</div>
 							</div>
+                             <div id = "format_date_perso_wrapper">
+                             	
+                             	<div class="form-group">
+                                		<label class="col-sm-3 control-label" >{{Format date personnalisé :}}
+										<sup><i class="fas fa-question-circle tooltips" title="{{Format standard php, voir}} https://www.php.net/manual/fr/datetime.format.php"></i></sup></label>
+                                        <div class="col-sm-3">
+                                    		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="formatdate_perso" placeholder="{{format personnalisé-norme php}}"/>
+                                         </div>
+                                        
+                                    </div>
+                              </div>
+                              <div class="form-group">
+                              		<label class="col-sm-3 control-label" for="TypeCarburant">{{Template du Widget :}}</label>
+                                    <div class="col-sm-3">
+									<select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="templatewidget">
+										<option value="default">{{Par défaut}}</option>
+										<option value="0logo">{{Sans Logo}}</option>
+										<option value="noTemplate">{{Sans Template}}</option>
+									</select>
+                                   
+								</div>
+                              </div>
 							<div class="form-group">
 
 								<label class="col-sm-3 control-label" for="TypeCarburant">{{Type de carburant :}}</label>
@@ -159,14 +201,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
 									</select>
 								</div>
 							</div>
-                            <div class="form-group">
-                                  <label class="col-sm-3 control-label" for="name">{{Capacité du réservoir (litres) :}}</label>
-
-                                 	 <div class="col-sm-1">
-                                  		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="reservoirlitre" placeholder="{{En litres}}"/>
-                                  	</div>
+						   	<div class="form-group">
+							  	<label class="col-sm-3 control-label" for="name">{{Capacité du réservoir (litres) :}}</label>
+								 <div class="col-sm-1">
+									<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="reservoirlitre" placeholder="{{En litres}}"/>
+								</div>
 							</div>
-                            <div class="form-group">
+						    <div class="form-group">
                                   <label class="col-sm-3 control-label" for="name">{{Considérer date relevée comme expirée (jours) :}}</label>
                                  	 <div class="col-sm-1">
                                   		<input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="dateexpire" placeholder="{{En jours}}"/>
@@ -317,6 +358,6 @@ $eqLogics = eqLogic::byType($plugin->getId());
 		</div>
 	</div>
 	
-<?php include_file('desktop', 'prixcarburants-equipement', 'css', 'prixcarburants'); ?>
-<?php include_file('desktop', 'prixcarburants', 'js', 'prixcarburants');?>
+<?php include_file('desktop', $plugin->getId().'-equipement', 'css', $plugin->getId()); ?>
+<?php include_file('desktop', $plugin->getId(), 'js', $plugin->getId());?>
 <?php include_file('core', 'plugin.template', 'js');?>

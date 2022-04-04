@@ -17,6 +17,9 @@
 */
 
 /* * ***************************Includes********************************* */
+
+use PhpParser\Node\Stmt\Switch_;
+
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
 class prixcarburants extends eqLogic
@@ -25,7 +28,18 @@ class prixcarburants extends eqLogic
 
 	const DEFAULT_CRON = '7 2 * * *'; // cron by default if not set 
 	const ZIP_PATH = __DIR__ . '/../../data'; // file path for zip file, data and so on
-
+	const DEFAULT_CMD = array(
+                              'id' => '',
+                              'adresse' => '',
+                              'adressecompl' => '',
+                              'maj' => '',
+                              'prix' => '',
+                              'distance' => '',
+                              'coord' => '',
+                              'waze' => '',
+                              'googleMap' => '',
+                              'logo' => ''
+                              );
 
 	/*     * *********************** Plugin static methods *************************** */
 
@@ -42,17 +56,31 @@ class prixcarburants extends eqLogic
 
 		foreach ($Vehicules as $unvehicule) {
 			if ($unvehicule->getIsEnable() == 0) continue;
-
+			self::MAJOneVehicule($unvehicule);
+		}
+	}
+	public static function MAJOneVehicule($unvehicule){
 			$maselection = array();
 			$SelectionFav = array();
-			$idx = 0;
-
+          	$vehiculeId = $unvehicule->getId();
+			$urlMap = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&origin=';;
+			$urlWaze = 'https://waze.com/ul?';
+			$should_ignore = $unvehicule->getConfiguration('dateexpirevisible');
+			$daysminus = $unvehicule->getConfiguration('dateexpire');
+      		$dminus5 = strtotime("-" . $daysminus . " days");
 			$nom = $unvehicule->getName();
-			$typecarburant = $unvehicule->getConfiguration('typecarburant', '');
-			if ($typecarburant == '') log::add('prixcarburants', 'error', __('Le type de carburant n\'est pas renseigné dans la configuration de Prix Carburants : ', __FILE__) . $nom);
 			$rayon = $unvehicule->getConfiguration('rayon', '30');
 			$nbstation = $unvehicule->getConfiguration('nbstation', '0');
+      		$PathToLogo = '../../plugins/' . __CLASS__ . '/data/logo/';
+			
+			$typecarburant = $unvehicule->getConfiguration('typecarburant', '');
+			if ($typecarburant == '') log::add('prixcarburants', 'error', __('Le type de carburant n\'est pas renseigné dans la configuration de Prix Carburants : ', __FILE__) . $nom);
+			
 			$monformatdate = $unvehicule->getConfiguration('formatdate', '');
+			if($monformatdate =='perso') $monformatdate = $unvehicule->getConfiguration('formatdate_perso', '');
+			log::add(__CLASS__,'debug', 'date format : '.$monformatdate);
+
+			$idx = 0;
 			//Get the list of favoris selected
 			$NbFavoris = 0;
 			if ($unvehicule->getConfiguration('Favoris') == '1') {
@@ -78,7 +106,7 @@ class prixcarburants extends eqLogic
 						$malat = config::byKey('info::latitude');
 						$malng = config::byKey('info::longitude');
 					} elseif ($unvehicule->getConfiguration('geoloc', 'none') == 'none') {
-						$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top 1 Adresse');
+						$macmd = cmd::byEqLogicIdCmdName($vehiculeId, 'Top 1 Adresse');
 						if (is_object($macmd)) $macmd->event(__('Pas de localisation sélectionnée', __FILE__));
 						return;
 					} else {
@@ -104,9 +132,10 @@ class prixcarburants extends eqLogic
 
 
 			$doc = new DOMDocument;
-			$urlMap = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&origin=';;
-			$urlWaze = 'https://waze.com/ul?';
+			
+
 			while ($reader->read()) {
+              	
 				if ($reader->nodeType == XMLReader::ELEMENT && $reader->name == 'pdv') {
 					$lat = $reader->getAttribute('latitude') / 100000;
 					$lng = $reader->getAttribute('longitude') / 100000;
@@ -117,83 +146,59 @@ class prixcarburants extends eqLogic
 
 					//Distance only when localisation define
 					$dist = 0;
-					if ($malat != 0 && $malng != 0) $dist = prixcarburants::distance($malat, $malng, $lat, $lng);
-
+					if ($malat != 0 && $malng != 0) $dist = self::distance($malat, $malng, $lat, $lng);
+					
 					//Check if this station is a favorite
-					$ordreFav = 0;
-					if ($NbFavoris > 0) {
-						for ($i = 1; $i <= $NbFavoris; $i++) {
-							if ($mastationid == $StationFav[$i] && $MaStationDep == $DepartementFav[$i]) {
-								$MonTest = True;
-								$EstFavoris = True;
-								$ordreFav = $i - 1;
-								break;
-							}
-						}
-					}
-					if ($MonTest == False) {
-						if ($unvehicule->getConfiguration('ViaLoca') == '1') {
-							if ($dist <= $rayon) $MonTest = True;
-						}
-					}
+					$MonTest  = $EstFavoris = in_array($mastationid, $StationFav) && in_array($MaStationDep, $DepartementFav);
+					$ordreFav = $EstFavoris?(array_search($mastationid, $StationFav)-1):0;
+                  	
+					if ($EstFavoris == false && $unvehicule->getConfiguration('ViaLoca') == '1' ) $MonTest = $dist <= $rayon;
 
 					//Register only station that are a favorite or on max radius
-					if ($MonTest == False) continue;
-
-					$should_ignore = $unvehicule->getConfiguration('dateexpirevisible');
-					$daysminus = $unvehicule->getConfiguration('dateexpire');
-					$dminus5 = strtotime("-" . $daysminus . " days");
-
-					//Import and review XML file
+					if ($MonTest == false) continue;
+                  
+                  	// general variable
+                  	$marque = prixcarburants::getMarqueStation($mastationid, $MaStationDep);
+                  	$LogoName = strtoupper(str_replace(' ', '', $marque));
+                  	$logo =file_exists(self::ZIP_PATH . '/logo/' . $LogoName . '.png')?$PathToLogo . $LogoName . '.png':$PathToLogo . 'AUCUNE.png';
 					$unestation = simplexml_import_dom($doc->importNode($reader->expand(), true));
-					foreach ($unestation->prix as $prix) {
-						if ($prix->attributes()->nom == $typecarburant) { //Filter by fuel type
+                  	$prixlitre = self::getPriceFromStationXML($unestation, $typecarburant);
+                  	$computePrice = true;//flag to test if we should consider price if outdated base
+                    if ($prixlitre && $dminus5 >= strtotime($prixlitre['maj']))$computePrice=!$should_ignore;
+                  	
+                    if($EstFavoris){
+                   		$SelectionFav[$ordreFav]['adresse'] = $marque . ', ' . $unestation->ville;
+                        $SelectionFav[$ordreFav]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
+                        $SelectionFav[$ordreFav]['prix'] = $computePrice && $prixlitre?$prixlitre['prix']:0;
+                        $SelectionFav[$ordreFav]['maj'] = self::TranslateDate($monformatdate, config::byKey('language'), strtotime($prixlitre['maj']));
+                        $SelectionFav[$ordreFav]['distance'] = $dist;
+                        $SelectionFav[$ordreFav]['id'] = $mastationid;
+                        $SelectionFav[$ordreFav]['coord'] = $lat . "," . $lng;
+                        $SelectionFav[$ordreFav]['waze'] = $urlWaze . 'to=ll.' . urlencode($lat . ',' . $lng) . '&from=ll.' . urlencode($malat . ',' . $malng) . '&navigate=yes';
+                        $SelectionFav[$ordreFav]['googleMap'] = $urlMap . urlencode($malat . ',' . $malng) . '&destination=' . urlencode($lat . ',' . $lng);
+                        $SelectionFav[$ordreFav]['logo'] = $logo;
+                      	$SelectionFav[$ordreFav]['fuelFound'] = $prixlitre?true:false;
+                    
+                    }elseif($prixlitre && $computePrice){// not a favorite but in distance AND if has price found (carburant type founded) AND Date Ok
+                      	$maselection[$idx]['adresse'] = $marque . ', ' . $unestation->ville;
+                        $maselection[$idx]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
+                        $maselection[$idx]['prix'] = $computePrice && $prixlitre?$prixlitre['prix']:0;
+                        $maselection[$idx]['maj'] = self::TranslateDate($monformatdate, config::byKey('language'), strtotime($prixlitre['maj']));
+                        $maselection[$idx]['distance'] = $dist;
+                        $maselection[$idx]['id'] = $mastationid;
+                        $maselection[$idx]['coord'] = $lat . "," . $lng;
+                        $maselection[$idx]['waze'] = $urlWaze . 'to=ll.' . urlencode($lat . ',' . $lng) . '&from=ll.' . urlencode($malat . ',' . $malng) . '&navigate=yes';
+                        $maselection[$idx]['googleMap'] = $urlMap . urlencode($malat . ',' . $malng) . '&destination=' . urlencode($lat . ',' . $lng);
+                        $maselection[$idx]['logo'] = $logo;
+                        $idx++;
+                    }
 
-							$prixlitre = $prix->attributes()->valeur . '';
-							$maj = $prix->attributes()->maj . '';
-							$marque = prixcarburants::getMarqueStation($mastationid, $MaStationDep);
 
-							$PathToLogo = '../../plugins/' . __CLASS__ . '/data/logo/';
-							$LogoName = strtoupper(str_replace(' ', '', $marque));
-							if (file_exists(self::ZIP_PATH . '/logo/' . $LogoName . '.png')) {
-								$logo = $PathToLogo . $LogoName . '.png';
-							} else {
-								$logo = $PathToLogo . 'AUCUNE.png';
-							}
-
-							if ($dminus5 >= strtotime($maj)) {
-								if ($should_ignore) continue;
-							}
-
-							if ($EstFavoris) { //Register favorite station
-								$SelectionFav[$ordreFav]['adresse'] = $marque . ', ' . $unestation->ville;
-								$SelectionFav[$ordreFav]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
-								$SelectionFav[$ordreFav]['prix'] = $prixlitre;
-								$SelectionFav[$ordreFav]['maj']  = date($monformatdate, strtotime($maj));
-								$SelectionFav[$ordreFav]['distance'] = $dist;
-								$SelectionFav[$ordreFav]['id'] = $mastationid;
-								$SelectionFav[$ordreFav]['coord'] = $lat . "," . $lng;
-								$SelectionFav[$ordreFav]['waze'] = $urlWaze . 'to=ll.' . urlencode($lat . ',' . $lng) . '&from=ll.' . urlencode($malat . ',' . $malng) . '&navigate=yes';
-								$SelectionFav[$ordreFav]['googleMap'] = $urlMap . urlencode($malat . ',' . $malng) . '&destination=' . urlencode($lat . ',' . $lng);
-								$SelectionFav[$ordreFav]['logo'] = $logo;
-							} else { //Register station that are on the radius
-								$maselection[$idx]['adresse'] = $marque . ', ' . $unestation->ville;
-								$maselection[$idx]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
-								$maselection[$idx]['prix'] = $prixlitre;
-								$maselection[$idx]['maj']  = date($monformatdate, strtotime($maj));
-								$maselection[$idx]['distance'] = $dist;
-								$maselection[$idx]['id'] = $mastationid;
-								$maselection[$idx]['coord'] = $lat . "," . $lng;
-								$maselection[$idx]['waze'] = $urlWaze . 'to=ll.' . urlencode($lat . ',' . $lng) . '&from=ll.' . urlencode($malat . ',' . $malng) . '&navigate=yes';
-								$maselection[$idx]['googleMap'] = $urlMap . urlencode($malat . ',' . $malng) . '&destination=' . urlencode($lat . ',' . $lng);
-								$maselection[$idx]['logo'] = $logo;
-								$idx++;
-							}
-						}
-					}
+                  
 				}
 			}
 			$reader->close();
+          
 
 			log::add('prixcarburants', 'debug', 'Step count selection: ' . count($maselection) . ' for equipement: ' . $nom);
 
@@ -211,84 +216,91 @@ class prixcarburants extends eqLogic
 				} else {
 					$liste[$i - 1] = $maselection[$i - 1 - $NbFavoris];
 				}
-
+				
 				if ($liste[$i - 1]['prix'] != '') { //Price available so, there is enough station on selected range
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' ID');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['id']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Adresse');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['adresse']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Adresse complète');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['adressecompl']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' MAJ');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['maj']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Prix');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['prix']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Prix Plein');
-					if (is_object($macmd)) $macmd->event(round($liste[$i - 1]['prix'] * $lreservoir, 2));
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Distance');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['distance']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Coord');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['coord']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Waze');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['waze']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Google maps');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['googleMap']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Logo');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['logo']);
+					self::updateVehiculeCmd($vehiculeId, $i,$lreservoir, $liste[$i - 1]);	
+                  
 				} else {
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Adresse');
-					$macmd2 = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Adresse complète');
-					if (is_object($macmd)) {
-						if ($i <= $NbFavoris) {
-							$macmd->event(__('Favori pas correctement configuré', __FILE__));
-							$macmd2->event(__('Favori pas correctement configuré', __FILE__));
-						} else {
-							$macmd->event(__('Plus de station disponible dans le rayon sélectionné', __FILE__));
-							$macmd2->event(__('Plus de station disponible dans le rayon sélectionné', __FILE__));
-						}
-					}
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' ID');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' MAJ');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Prix');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Distance');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Prix Plein');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Coord');
-					if (is_object($macmd)) $macmd->event($liste[$i - 1]['coord']);
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Waze');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Google maps');
-					if (is_object($macmd)) $macmd->event('');
-
-					$macmd = cmd::byEqLogicIdCmdName($unvehicule->getId(), 'Top ' . $i . ' Logo');
-					if (is_object($macmd)) $macmd->event('');
+                  	if ($i <= $NbFavoris) {
+                      	$arr['prix']='';
+                      	$arr['logo']=$liste[$i - 1]['logo'];
+                      	$arr['adresse'] = $liste[$i - 1]['adresse'];
+                        $arr['adressecompl']=$liste[$i - 1]['adressecompl'];
+                      
+                      	if($liste[$i - 1]['fuelFound']){//type de fuel trouvé dans la station favorite
+                          $arr['maj']=__('Obsolète', __FILE__);
+                        }else{// type de fuel non référencé dans la statiuon favorite
+                          $arr['maj']=__('Type de carburant non vendu en station', __FILE__);
+                        }
+                    } else {
+                      	$arr['adresse'] =__('Plus de station disponible dans le rayon sélectionné', __FILE__);
+                        $arr['adressecompl']=__('Plus de station disponible dans le rayon sélectionné', __FILE__);
+                      	$arr['prix']='';
+                        $arr['logo']='';
+                        $arr['maj']='';
+                    }
+                  	$arrMerged = array_merge(self::DEFAULT_CMD,$arr);
+                  	self::updateVehiculeCmd($vehiculeId, $i,$lreservoir,$arrMerged);
 				}
 			}
 			$unvehicule->refreshWidget();
-		}
 	}
+  	/** getPriceFromStationXML : allow to get an array with keys : 'prix' for price corresponding at $typecarburant and 'maj' for update date corresponding
+    * $unestation : xml node extracted
+    * $typecarburant : the tyep of carburant 
+    * return false if carburant not found in the list
+    */
+  	public static function getPriceFromStationXML($unestation, $typecarburant){
+      foreach ($unestation->prix as $prix) {
+        if ($prix->attributes()->nom == $typecarburant) { //Filter by fuel type
+         
+          $prixlitre = $prix->attributes()->valeur . '';
+          $maj = $prix->attributes()->maj . '';
+           return array('prix'=>$prixlitre, 'maj'=>$maj);
+        }
+      }
+      return false;
+    }
+  	/** Function updateVehiculeCmd : use to save current top 
+    * $vId : eqLogic Id of the current equipement
+    * $currTop : integer : current top to be recorded
+    * $cmd : array : with all cmd referenced or empty
+    */
+  	public static function updateVehiculeCmd($vId,$currTop,$lreservoir, $cmdArr){
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' ID');
+        if (is_object($macmd)) $macmd->event($cmdArr['id']);
 
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Adresse');
+        if (is_object($macmd)) $macmd->event($cmdArr['adresse']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Adresse complète');
+        if (is_object($macmd)) $macmd->event($cmdArr['adressecompl']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' MAJ');
+        if (is_object($macmd)) $macmd->event($cmdArr['maj']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Prix');
+        if (is_object($macmd)) $macmd->event($cmdArr['prix']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Prix Plein');
+        if (is_object($macmd)) $macmd->event(round(($cmdArr['prix']?$cmdArr['prix']:0) * $lreservoir, 2));
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Distance');
+        if (is_object($macmd)) $macmd->event($cmdArr['distance']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Coord');
+        if (is_object($macmd)) $macmd->event($cmdArr['coord']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Waze');
+        if (is_object($macmd)) $macmd->event($cmdArr['waze']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Google maps');
+        if (is_object($macmd)) $macmd->event($cmdArr['googleMap']);
+
+        $macmd = cmd::byEqLogicIdCmdName($vId, 'Top ' . $currTop . ' Logo');
+        if (is_object($macmd)) $macmd->event($cmdArr['logo']);
+
+    }
 	/** Function to get zip file from government website then update all values */
 	public static function updatePrixCarburant()
 	{
@@ -315,7 +327,7 @@ class prixcarburants extends eqLogic
 	{
 		$json = @file_get_contents(self::ZIP_PATH . '/listestations/stations' . $DepStation . '.json');
 		if ($json !== false) {
-			log::add(__CLASS__, 'debug', 'JSON file : ' . self::ZIP_PATH . '/data/listestations/stations' . $DepStation . '.json available');
+			//log::add(__CLASS__, 'debug', 'JSON file : ' . self::ZIP_PATH . '/data/listestations/stations' . $DepStation . '.json available');
 			$parsed_json = json_decode($json, true);
 			foreach ($parsed_json['stations'] as $row) {
 				if ($row['id'] == $idstation) {
@@ -327,27 +339,6 @@ class prixcarburants extends eqLogic
 			log::add(__CLASS__, 'debug', 'JSON file : ' . self::ZIP_PATH . '/listestations/stations' . $DepStation . '.json not available');
 			return __('Erreur', __FILE__);
 		}
-	}
-	
-	/** Function to calculate a distance between selected location and a station */
-	public static function distance($lat1, $lng1, $lat2, $lng2, $unit = 'k')
-	{
-		$earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
-		$rlo1 = deg2rad($lng1);
-		$rla1 = deg2rad($lat1);
-		$rlo2 = deg2rad($lng2);
-		$rla2 = deg2rad($lat2);
-		$dlo = ($rlo2 - $rlo1) / 2;
-		$dla = ($rla2 - $rla1) / 2;
-		$a = (sin($dla) * sin($dla)) + cos($rla1) * cos($rla2) * (sin($dlo) * sin($dlo));
-		$d = 2 * atan2(sqrt($a), sqrt(1 - $a));
-		return round(($earth_radius * $d) / 1000);
-	}
-
-	/** Function to sort fuel station */
-	public static function custom_sort($a, $b)
-	{
-		return $a['prix'] > $b['prix'];
 	}
 
 
@@ -549,6 +540,10 @@ class prixcarburants extends eqLogic
 
 	/*     * ********************* Méthodes d'instance ************************* */
 
+	public function preInsert() {
+		$this->setConfiguration('templatewidget','default');
+		
+	}
 	/** Method called before saving (creation and update therefore) of your */
 	public function preSave()
 	{
@@ -788,6 +783,8 @@ class prixcarburants extends eqLogic
 					$prixcarburantsCmd->setIsHistorized(0);
 					$prixcarburantsCmd->setIsVisible(1);
 					$prixcarburantsCmd->setDisplay('showNameOndashboard', 0);
+					$prixcarburantsCmd->setTemplate('dashboard', 'prixcarburants::logoStation');
+					$prixcarburantsCmd->setTemplate('mobile', 'prixcarburants::logoStation');
 				}
 				$prixcarburantsCmd->setName('Top ' . $i . ' Logo');
 				$prixcarburantsCmd->setOrder($OrdreAffichage);
@@ -847,7 +844,29 @@ class prixcarburants extends eqLogic
 		}
 		$version = jeedom::versionAlias($_version);
 
-		// Gaz station template
+		// Design parameters related to selected display (mobile vs desktop and w/ vs w/o logo)
+		$template = $this->getConfiguration('templatewidget');
+		$PicSize = 60;
+		if($template == 'default') {
+			$replace['#TemplateWidth#'] = 400;
+			$replace['#opacity#'] = 100;
+			$replace['#TextMargin#'] = 80;
+			$replace['#logowidth#'] = 60;
+		} elseif($template == '0logo') {
+			$replace['#TemplateWidth#'] = 180;
+			$replace['#opacity#'] = 0;
+			$replace['#TextMargin#'] = 10;
+			$replace['#logowidth#'] = 0;
+		}else{
+			return parent::toHtml($_version);
+		}
+		if ($_version != 'dashboard') {
+			$PicSize = $PicSize/2;
+			$replace['#TextMargin#'] = $replace['#TextMargin#']/2;
+			$replace['#logowidth#'] = $replace['#logowidth#']/2;
+		}
+
+		// Fuel station template
 		$GazStation_html = '';
 		$GazStation_template = getTemplate('core', $version, 'gazstation.template', 'prixcarburants');
 		$GazStation_Qtty = 0;
@@ -865,8 +884,12 @@ class prixcarburants extends eqLogic
 				$DateRecover = $this->getCmd(null, 'TopMaJ_' . $i);
 				$replace['#TopMaJ#'] = is_object($DateRecover) ? __('le ', __FILE__) . $DateRecover->execCmd() : '';
 
-				$LogoStation = $this->getCmd(null, 'TopLogo_' . $i);
-				$replace['#LogoStation#'] = is_object($LogoStation) ? $LogoStation->execCmd() : '';
+				if ($template == "default") {
+					$LogoStation = $this->getCmd(null, 'TopLogo_' . $i);
+					$replace['#LogoStation#'] = is_object($LogoStation) ? '<img src="'.$LogoStation->execCmd().'" style="max-width: '.$PicSize.'px; max-height: '.$PicSize.'px;">' : '';
+				} else {
+					$replace['#LogoStation#'] = ' ';
+				}
 
 				$GazStation_html .= template_replace($replace, $GazStation_template);
 				$GazStation_Qtty++;
@@ -883,15 +906,68 @@ class prixcarburants extends eqLogic
 
 		return $this->postToHtml($_version, template_replace($replace, getTemplate('core', $version, 'prixcarburants.template', 'prixcarburants')));
 	}
-  	/** Function to get the number of favorites selected */
-    	public function getFavNumber(){
+
+
+	/*     * ********************* Global functions ************************* */
+
+	/** Function to calculate a distance between selected location and a station */
+	public static function distance($lat1, $lng1, $lat2, $lng2, $unit = 'k')
+	{
+		$earth_radius = 6378137;	// Terre = sphère de 6378km de rayon
+		$rlo1 = deg2rad($lng1);
+		$rla1 = deg2rad($lat1);
+		$rlo2 = deg2rad($lng2);
+		$rla2 = deg2rad($lat2);
+		$dlo = ($rlo2 - $rlo1) / 2;
+		$dla = ($rla2 - $rla1) / 2;
+		$a = (sin($dla) * sin($dla)) + cos($rla1) * cos($rla2) * (sin($dlo) * sin($dlo));
+		$d = 2 * atan2(sqrt($a), sqrt(1 - $a));
+		return round(($earth_radius * $d) / 1000);
+	}
+
+	/** Function to sort fuel station */
+	public static function custom_sort($a, $b)
+	{
+		return $a['prix'] > $b['prix'];
+	}
+
+	/** Function to get the number of favorites selected */
+	public function getFavNumber(){
 		if($this->getConfiguration('Favoris')==false)return 0;
 		for($i = 1; $i<=10;$i++){
-		  $currSt = $this->getConfiguration('station'.$i.'_Commune', null);
-		  if($currSt == null)return $i-1;        	
+			$currSt = $this->getConfiguration('station'.$i.'_Commune', null);
+			if($currSt == null)return $i-1;
 		}
 		return false;
-  	}
+	}
+
+	/** Function to display French dates */
+	public static function TranslateDate($DateFormat, $language, $timestamp = null)
+	{
+		if ($timestamp === null) $timestamp = time();
+		$date = date($DateFormat, $timestamp);
+		
+		switch($language) {
+			case 'en_US':
+				//nothing
+				break;
+			case 'fr_FR':
+				$date = str_replace(
+					array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December', 'Feb', 'Apr', 'May', 'Jun', 'Jul', 'Aug'),
+					array('Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Decembre', 'Fev', 'Avr', 'Mai', 'Juin', 'Juill', 'Août'),
+					$date
+				);
+				break;
+			case 'de_DE':
+				// TBD
+				break;
+			case 'es_ES':
+				// TBD
+				break;
+		}
+		
+		return $date;
+	}
 }
 class prixcarburantsCmd extends cmd
 {
