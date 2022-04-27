@@ -884,6 +884,9 @@ class prixcarburants extends eqLogic
 				$replace['#TopVille#'] = is_object($TopAdresse) ? explode(",", $TopAdresse->execCmd())[1] : '';
 				if($replace['#TopMarque#'] == __('Plus de station disponible dans le rayon sélectionné', __FILE__)) $EmptyStation++;
 
+				$FullAdress = $this->getCmd(null, 'TopAdresseCompl_' . $i);
+				$replace['#FullAdress#'] = is_object($FullAdress) ? $FullAdress->execCmd() : '';
+
 				$PrixStation = $this->getCmd(null, 'TopPrix_' . $i);
 				if(is_object($PrixStation)) {
 					$replace['#TopPrix#'] = $PrixStation->execCmd() != '' ? '<a style="font-weight: bold;">'.$PrixStation->execCmd().'</a> €/l' : '';
