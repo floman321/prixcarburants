@@ -62,6 +62,7 @@ class prixcarburants extends eqLogic
 	public static function MAJOneVehicule($unvehicule){
 			$maselection = array();
 			$SelectionFav = array();
+			$StationFav = array();
           	$vehiculeId = $unvehicule->getId();
 			$urlMap = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&origin=';;
 			$urlWaze = 'https://waze.com/ul?';
@@ -882,6 +883,9 @@ class prixcarburants extends eqLogic
 				$replace['#TopMarque#'] = is_object($TopAdresse) ? explode(",", $TopAdresse->execCmd())[0] : '';
 				$replace['#TopVille#'] = is_object($TopAdresse) ? explode(",", $TopAdresse->execCmd())[1] : '';
 				if($replace['#TopMarque#'] == __('Plus de station disponible dans le rayon sélectionné', __FILE__)) $EmptyStation++;
+
+				$FullAdress = $this->getCmd(null, 'TopAdresseCompl_' . $i);
+				$replace['#FullAdress#'] = is_object($FullAdress) ? $FullAdress->execCmd() : '';
 
 				$PrixStation = $this->getCmd(null, 'TopPrix_' . $i);
 				if(is_object($PrixStation)) {
