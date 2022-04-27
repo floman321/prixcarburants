@@ -62,6 +62,7 @@ class prixcarburants extends eqLogic
 	public static function MAJOneVehicule($unvehicule){
 			$maselection = array();
 			$SelectionFav = array();
+			$StationFav = array();
           	$vehiculeId = $unvehicule->getId();
 			$urlMap = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&origin=';;
 			$urlWaze = 'https://waze.com/ul?';
