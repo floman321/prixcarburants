@@ -62,6 +62,7 @@ class prixcarburants extends eqLogic
 	public static function MAJOneVehicule($unvehicule){
 			$maselection = array();
 			$SelectionFav = array();
+			$StationFav = array();
           	$vehiculeId = $unvehicule->getId();
 			$urlMap = 'https://www.google.com/maps/dir/?api=1&travelmode=driving&dir_action=navigate&origin=';;
 			$urlWaze = 'https://waze.com/ul?';
@@ -115,6 +116,7 @@ class prixcarburants extends eqLogic
 							$coordonnees = $cmd->execCmd();
 						} else {
 							log::add(__CLASS__, 'error', __('commande de localisation non trouvée ', __FILE__));
+                          	return false;
 						}
 						$expcoord = explode(",", $coordonnees);
 						$malat = $expcoord[0];
@@ -871,18 +873,35 @@ class prixcarburants extends eqLogic
 		$GazStation_template = getTemplate('core', $version, 'gazstation.template', 'prixcarburants');
 		$GazStation_Qtty = 0;
 
+		$EmptyStation = 0;
 		for ($i = 1; $i <= 20; $i++) {
-			//$TopAdresse_i = $this->getCmd(null, 'TopAdresse_'.$i);
 			if (is_object($this->getCmd(null, 'TopAdresse_' . $i))) {
+				$arr['prix']='';
+			  $arr['logo']='';
+			  $arr['maj']='';
 				$TopAdresse = $this->getCmd(null, 'TopAdresse_' . $i);
 				$replace['#TopMarque#'] = is_object($TopAdresse) ? explode(",", $TopAdresse->execCmd())[0] : '';
 				$replace['#TopVille#'] = is_object($TopAdresse) ? explode(",", $TopAdresse->execCmd())[1] : '';
+				if($replace['#TopMarque#'] == __('Plus de station disponible dans le rayon sélectionné', __FILE__)) $EmptyStation++;
+
+				$FullAdress = $this->getCmd(null, 'TopAdresseCompl_' . $i);
+				$replace['#FullAdress#'] = is_object($FullAdress) ? $FullAdress->execCmd() : '';
 
 				$PrixStation = $this->getCmd(null, 'TopPrix_' . $i);
-				$replace['#TopPrix#'] = is_object($PrixStation) ? $PrixStation->execCmd() : '';
+				if(is_object($PrixStation)) {
+					$replace['#TopPrix#'] = $PrixStation->execCmd() != '' ? '<a style="font-weight: bold;">'.$PrixStation->execCmd().'</a> €/l' : '';
+				} else {
+					$replace['#TopPrix#'] = '';
+				}
+				
 
-				$DateRecover = $this->getCmd(null, 'TopMaJ_' . $i);
-				$replace['#TopMaJ#'] = is_object($DateRecover) ? __('le ', __FILE__) . $DateRecover->execCmd() : '';
+				$MajStation = $this->getCmd(null, 'TopMaJ_' . $i);
+				if(is_object($MajStation)) {
+					$replace['#TopMaJ#'] = $MajStation->execCmd() != '' ? __('le ', __FILE__) . $MajStation->execCmd() : '';
+				} else {
+					$replace['#TopMaJ#'] = '';
+				}
+				
 
 				if ($template == "default") {
 					$LogoStation = $this->getCmd(null, 'TopLogo_' . $i);
@@ -891,8 +910,10 @@ class prixcarburants extends eqLogic
 					$replace['#LogoStation#'] = ' ';
 				}
 
-				$GazStation_html .= template_replace($replace, $GazStation_template);
-				$GazStation_Qtty++;
+				if($EmptyStation <= 1) {
+					$GazStation_html .= template_replace($replace, $GazStation_template);
+					$GazStation_Qtty++;
+				}
 			}
 		}
 
