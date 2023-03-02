@@ -97,9 +97,11 @@ require_once dirname(__FILE__).'/../../core/class/'.$plugin->getId().'.class.php
 									<select id="ObjParent" class="eqLogicAttr form-control" data-l1key="object_id">
 										<option value="">{{Aucun}}</option>
 										<?php
-										foreach (jeeObject::all() as $object) {
-											echo '<option value="' . $object->getId() . '">' . $object->getName() . '</option>';
+										$options = '';
+										foreach ((jeeObject::buildTree(null, false)) as $object) {
+											$options .= '<option value="' . $object->getId() . '">' . str_repeat('&nbsp;&nbsp;', $object->getConfiguration('parentNumber')) . $object->getName() . '</option>';
 										}
+										echo $options;
 										?>
 									</select>
 								</div>
@@ -344,10 +346,12 @@ require_once dirname(__FILE__).'/../../core/class/'.$plugin->getId().'.class.php
 					<table id="table_cmd" class="table table-bordered table-condensed">
 						<thead>
 							<tr>
-								<th>#</th>
-								<th>{{Nom}}</th>
-								<th style="width: 250px;">{{Paramètres}}</th>
-								<th>{{Action}}</th>
+								<th class="hidden-xs" style="min-width:50px;width:70px;">ID</th>
+								<th style="min-width:200px;width:350px;">{{Nom}}</th>
+								<th>{{Type}}</th>
+								<th style="min-width:260px;">{{Options}}</th>
+								<th>{{Etat}}</th>
+								<th style="min-width:80px;width:200px;">{{Actions}}</th>
 							</tr>
 						</thead>
 						<tbody>
