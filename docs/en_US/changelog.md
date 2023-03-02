@@ -1,5 +1,8 @@
 # Changelog : Prix Carburants
 
+## 03/02/2022 :
+- Update equipment page design to latest Jeedom standard.
+
 ## 08/14/2022 :
 - Update gaz station list.
 

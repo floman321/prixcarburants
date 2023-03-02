@@ -59,7 +59,10 @@
     "Max favoris ajoutable": "Max favoris ajoutable",
     "Nom": "Nom",
     "Paramètres": "Paramètres",
-    "Action": "Action"
+    "Action": "Action",
+    "nombre de stations" : "nombre de stations",
+    "Favoris" : "Favoris",
+    "Sans Template" : "Sans Template"
   },
   "plugins\/prixcarburants\/desktop\/js\/prixcarburants_conf.js": {
     "Cron mis à jour!": "Cron mis à jour!",
@@ -84,7 +87,8 @@
     "Aucun Cron Défini pour la mise à jour, passage au défaut :": "Aucun Cron Défini pour la mise à jour, passage au défaut :",
     "Actualiser": "Actualiser",
     "Erreur regExp Expression": "Erreur regExp Expression",
-    "le ": "on "
+    "le ": "le ",
+    "Obsolète" : "Obsolète"
   },
   "plugins\/prixcarburants\/plugin_info\/configuration.php": {
     "Liste Prix": "Liste Prix",

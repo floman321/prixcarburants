@@ -1,5 +1,9 @@
 # Changelog : Prix Carburants
 
+## 02/03/2022 :
+- Correction d'une erreur de traduction sur le template.
+- Mise en conformité de la page de l'équipemet avec les derniers standard Jeedom.
+
 ## 14/08/2022 :
 - Mise à jour de la liste des stations.
 
