@@ -8,6 +8,7 @@
 - Mise à jour de la liste des stations.
 
 ## 14/03/2022 :
+## 11/05/2022 :
 - Ajout de widgets mobile et desktop avec vu du logo de la station (liste des logos à compléter)
 - Distance de la station est égale à 0 s'il n'y a pas de localisation de renseignée.
 

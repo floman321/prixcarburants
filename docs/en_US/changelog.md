@@ -7,6 +7,8 @@
 - Update gaz station list.
 
 ## 03/14/2022 :
+
+## 05/11/2022 :
 - Add mobile and desktop widgets with station logo view (list of logos to be completed)
 - Distance to gaz station is egal to 0km if ther isn't any localisation define yet.
 
