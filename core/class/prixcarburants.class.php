@@ -949,6 +949,8 @@ class prixcarburants extends eqLogic
 	/** Function to sort fuel station */
 	public static function custom_sort($a, $b)
 	{
+		if(empty($a['prix']) || $a['prix'] == 0  )return true;
+		if(empty($b['prix']) || $b['prix'] == 0 )return false;
 		return $a['prix'] > $b['prix'];
 	}
 

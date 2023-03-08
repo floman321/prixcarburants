@@ -1,13 +1,18 @@
 # Changelog : Prix Carburants
 
-### TODO list
-- Add coloration to highlight data that are up to date in comparison with data that has not been updated since a while
+## 03/02/2022 :
+- Update equipment page design to latest Jeedom standard.
+
+## 08/14/2022 :
+- Update gaz station list.
+
+## 03/14/2022 :
 
 ## 05/11/2022 :
 - Add mobile and desktop widgets with station logo view (list of logos to be completed)
 - Distance to gaz station is egal to 0km if ther isn't any localisation define yet.
 
-## 03/04/2022 - BETA :
+## 03/04/2022 :
 - added definition of price list update frequency in the equipment config
 - modification of the display layout in the equipment
 - added geolocation command for top station calculation.
