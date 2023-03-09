@@ -731,7 +731,7 @@ class prixcarburants extends eqLogic
 					$prixcarburantsCmd->setEqLogic_id($this->getId());
 					$prixcarburantsCmd->setLogicalId('Coord_' . $i);
 					$prixcarburantsCmd->setType('info');
-					$prixcarburantsCmd->setSubType('other');
+					$prixcarburantsCmd->setSubType('string');
 					$prixcarburantsCmd->setIsHistorized(0);
 					$prixcarburantsCmd->setIsVisible(0);
 					$prixcarburantsCmd->setDisplay('showNameOndashboard', 0);
