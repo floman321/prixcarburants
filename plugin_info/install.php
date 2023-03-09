@@ -80,6 +80,15 @@ function prixcarburants_update() {
     if($eqLogic->getConfiguration('templatewidget', null)==null)$eqLogic->setConfiguration('templatewidget', 'default');
     //save eqLogic
     $eqLogic->save();
+
+    // Update command that had as subtype `other` instead of `string` on 'TopxCoord'
+    for ($i = 1; $i <= 20; $i++) {
+      $prixcarburantsCmd = $eqLogic->getCmd(null, 'Coord_' . $i);
+			if (is_object($prixcarburantsCmd)) {
+        $prixcarburantsCmd->setSubType('string');
+        $prixcarburantsCmd->save();
+      }
+    }
   }
   
   // check cron 
