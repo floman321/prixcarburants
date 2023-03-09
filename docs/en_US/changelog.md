@@ -1,5 +1,8 @@
 # Changelog : Prix Carburants
 
+## 03/09/2022 :
+ - Bug fix to correct an error when saving an equipment already existing, more detail: https://community.jeedom.com/t/encart-de-codes-a-lenregistrement/103026
+
 ## 03/02/2022 :
 - Update equipment page design to latest Jeedom standard.
 
