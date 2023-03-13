@@ -1,6 +1,12 @@
 # Changelog : Prix Carburants
 
-## 02/03/2022 :
+## 12/03/2023 :
+ - Mise en place du lien cliquable sur les prix pour afficher le graphique d'évolution, quand la commande est historisée.
+
+## 09/03/2023 :
+ - Correction d'un bug lors de la sauvegarde d'un équipement existant, plus de détail : https://community.jeedom.com/t/encart-de-codes-a-lenregistrement/103026
+
+## 02/03/2023 :
 - Correction d'une erreur de traduction sur le template.
 - Mise en conformité de la page de l'équipemet avec les derniers standard Jeedom.
 
