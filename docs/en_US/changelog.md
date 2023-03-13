@@ -1,5 +1,8 @@
 # Changelog : Prix Carburants
 
+## 03/13/2023:
+ - Add history link directly on fuel price from template, when history is activated.
+
 ## 03/09/2023 :
  - Bug fix to correct an error when saving an equipment already existing, more detail: https://community.jeedom.com/t/encart-de-codes-a-lenregistrement/103026
 
