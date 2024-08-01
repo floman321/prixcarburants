@@ -853,7 +853,7 @@ class prixcarburants extends eqLogic
 			$replace['#TemplateWidth#'] = 400;
 			$replace['#opacity#'] = 100;
 			$replace['#TextMargin#'] = 80;
-			$replace['#logowidth#'] = 60;
+			$replace['#logowidth#'] = 80;
 		} elseif($template == '0logo') {
 			$replace['#TemplateWidth#'] = 180;
 			$replace['#opacity#'] = 0;
@@ -888,8 +888,14 @@ class prixcarburants extends eqLogic
 				$replace['#FullAdress#'] = is_object($FullAdress) ? $FullAdress->execCmd() : '';
 
 				$PrixStation = $this->getCmd(null, 'TopPrix_' . $i);
+				$replace['#history#'] = '';
+				$replace['#history_id#'] = '';
 				if(is_object($PrixStation)) {
-					$replace['#TopPrix#'] = $PrixStation->execCmd() != '' ? '<a style="font-weight: bold;">'.$PrixStation->execCmd().'</a> €/l' : '';
+					$replace['#TopPrix#'] = $PrixStation->execCmd() != '' ? $PrixStation->execCmd() : '';
+					if ($PrixStation->getIsHistorized() == 1) {
+						$replace['#history_id#'] = $PrixStation->getId();
+						$replace['#history#'] = 'history cursor';
+					}
 				} else {
 					$replace['#TopPrix#'] = '';
 				}
