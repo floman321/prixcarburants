@@ -11,6 +11,8 @@
 	"maxDependancyInstallTime" : 0,
 	"changelog" : "https://floman321.github.io/prixcarburants/#language#/changelog",
 	"documentation" : "https://floman321.github.io/prixcarburants/#language#/",
+	"changelog_beta" : "https://floman321.github.io/prixcarburants/#language#/changelog",
+	"documentation_beta" : "https://floman321.github.io/prixcarburants/#language#/",
 	"link" : {
 		"forum":"https://community.jeedom.com/t/plugin-tiers-sujet-principal-prix-carburants/23547"
 	},
