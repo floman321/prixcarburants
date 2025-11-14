@@ -123,7 +123,9 @@ class prixcarburants extends eqLogic
 						$malng = $expcoord[1];
 					}
 				}
-			}
+			} else {
+              $nbstation = 0;
+            }
 
 			//Prepare and parse XML file
 
@@ -179,8 +181,7 @@ class prixcarburants extends eqLogic
                         $SelectionFav[$ordreFav]['waze'] = $urlWaze . 'to=ll.' . urlencode($lat . ',' . $lng) . '&from=ll.' . urlencode($malat . ',' . $malng) . '&navigate=yes';
                         $SelectionFav[$ordreFav]['googleMap'] = $urlMap . urlencode($malat . ',' . $malng) . '&destination=' . urlencode($lat . ',' . $lng);
                         $SelectionFav[$ordreFav]['logo'] = $logo;
-                      	$SelectionFav[$ordreFav]['fuelFound'] = $prixlitre?true:false;
-                    
+                      	$SelectionFav[$ordreFav]['fuelFound'] = $prixlitre?true:false;                  
                     }elseif($prixlitre && $computePrice){// not a favorite but in distance AND if has price found (carburant type founded) AND Date Ok
                       	$maselection[$idx]['adresse'] = $marque . ', ' . $unestation->ville;
                         $maselection[$idx]['adressecompl'] = $unestation->adresse . ", " . $reader->getAttribute('cp') . ' ' . $unestation->ville;
@@ -216,12 +217,14 @@ class prixcarburants extends eqLogic
 				if ($i <= $NbFavoris) {
 					$liste[$i - 1] = $SelectionFav[$i - 1];
 				} else {
-					$liste[$i - 1] = $maselection[$i - 1 - $NbFavoris];
+                  	$n = $i - 1 - $NbFavoris;
+                  	if (isset($maselection[$n])) {
+						$liste[$i - 1] = $maselection[$n];
+                    }
 				}
 				
-				if ($liste[$i - 1]['prix'] != '') { //Price available so, there is enough station on selected range
-					self::updateVehiculeCmd($vehiculeId, $i,$lreservoir, $liste[$i - 1]);	
-                  
+				if (isset($liste[$i - 1]['prix']) && $liste[$i - 1]['prix'] != '') { //Price available so, there is enough station on selected range
+					self::updateVehiculeCmd($vehiculeId, $i,$lreservoir, $liste[$i - 1]);                  
 				} else {
                   	if ($i <= $NbFavoris) {
                       	$arr['prix']='';
@@ -877,12 +880,21 @@ class prixcarburants extends eqLogic
 		for ($i = 1; $i <= 20; $i++) {
 			if (is_object($this->getCmd(null, 'TopAdresse_' . $i))) {
 				$arr['prix']='';
-			  $arr['logo']='';
-			  $arr['maj']='';
+			  	$arr['logo']='';
+			  	$arr['maj']='';
+              
 				$TopAdresse = $this->getCmd(null, 'TopAdresse_' . $i);
-				$replace['#TopMarque#'] = is_object($TopAdresse) ? explode(",", $TopAdresse->execCmd())[0] : '';
-				$replace['#TopVille#'] = is_object($TopAdresse) ? explode(",", $TopAdresse->execCmd())[1] : '';
-				if($replace['#TopMarque#'] == __('Plus de station disponible dans le rayon sélectionné', __FILE__)) $EmptyStation++;
+              	if (is_object($TopAdresse)) {
+                  	$TopAdresse_value = $TopAdresse->execCmd();
+                  	if ($TopAdresse_value != __('Plus de station disponible dans le rayon sélectionné', __FILE__)) {
+                      	$replace['#TopMarque#'] = explode(",", $TopAdresse_value)[0];
+						$replace['#TopVille#'] = explode(",", $TopAdresse_value)[1];
+                    } else {
+                      $replace['#TopMarque#'] = __('Plus de station disponible dans le rayon sélectionné', __FILE__);
+                      $replace['#TopVille#'] = '';
+                      $EmptyStation++;
+                    }                  	
+                }
 
 				$FullAdress = $this->getCmd(null, 'TopAdresseCompl_' . $i);
 				$replace['#FullAdress#'] = is_object($FullAdress) ? $FullAdress->execCmd() : '';
