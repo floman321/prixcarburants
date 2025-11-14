@@ -102,7 +102,7 @@ class prixcarburants extends eqLogic
 			if ($unvehicule->getConfiguration('ViaLoca') == '1') {
 				if ($nbstation == '0') {
 					log::add('prixcarburants', 'error', __('Le nombre de station n\'est pas renseigné dans la configuration de Prix Carburants : ', __FILE__) . $nom);
-				} else {                    
+				} else {
 					if ($unvehicule->getConfiguration('jeedom_loc') == 1) {
 						$malat = config::byKey('info::latitude');
 						$malng = config::byKey('info::longitude');
@@ -168,7 +168,7 @@ class prixcarburants extends eqLogic
 					$unestation = simplexml_import_dom($doc->importNode($reader->expand(), true));
                   	$prixlitre = self::getPriceFromStationXML($unestation, $typecarburant);
                   	$computePrice = true;//flag to test if we should consider price if outdated base
-                    if ($prixlitre && $dminus5 >= strtotime($prixlitre['maj']))$computePrice=!$should_ignore;                  	
+                    if ($prixlitre && $dminus5 >= strtotime($prixlitre['maj']))$computePrice=!$should_ignore;
                   	
                     if($EstFavoris){
                    		$SelectionFav[$ordreFav]['adresse'] = $marque . ', ' . $unestation->ville;
